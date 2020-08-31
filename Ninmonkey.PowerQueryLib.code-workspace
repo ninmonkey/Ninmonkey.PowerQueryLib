@@ -4,5 +4,14 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"[markdown]": {
+			"editor.formatOnSave": true,
+			"editor.wordWrap": "on",
+			// "editor.quickSuggestions": false,
+			"editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced"
+			// "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+			// "editor.defaultFormatter": "vscode.markdown-language-features",
+		}
+	}
 }
