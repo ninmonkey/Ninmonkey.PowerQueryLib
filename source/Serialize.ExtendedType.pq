@@ -1,16 +1,24 @@
-// TypeAsText
-/*
-from: https://github.com/microsoft/DataConnectors/blob/460babf2f8c44ec82d7e08d1b65b156984c6ba75/samples/UnitTesting/UnitTesting.query.pq#L210-L244
 
-Note:
-    The original serializes **everything**
-    This only shows type names as text
+/*
+
+
+Todo
+    Type.AsText() will invoke this for non-primative type checking
+
+    Should Type.AsText()
+    See: Type.AsText() to get primative ty
+
+Better naming?
+    Serialize.ExtendedTypeName()
+    Serialize.ExtendedType()
+    ExtendedTypeName.AsText()
+
 
 */
 let
 
     /* Optional parameter: Is this being used as part of a function signature? */
-    Type.AsText =  (x, optional funtype as logical) =>
+    ExtendedTypeName.AsText =  (x, optional funtype as logical) =>
         let
             isFunctionType = (x as type) => try if Type.FunctionReturn(x) is type then true else false otherwise false,
             isTableType = (x as type) =>  try if Type.TableSchema(x) is table then true else false otherwise false,
@@ -45,4 +53,4 @@ let
                 if base = type list then "list"
                 else "any /*Actually unknown type*/")
 in
-    Type.AsText
+    ExtendedTypeName.AsText
