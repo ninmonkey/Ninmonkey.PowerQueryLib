@@ -1,0 +1,9 @@
+Name, Value
+Culture.Current, en-US
+ODataOmitValues.Nulls, nulls
+WebMethod.Delete, DELETE
+WebMethod.Get, GET
+WebMethod.Head, HEAD
+WebMethod.Patch, PATCH
+WebMethod.Post, POST
+WebMethod.Put, PUT
