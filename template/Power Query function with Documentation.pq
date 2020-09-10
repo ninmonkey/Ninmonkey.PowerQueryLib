@@ -1,6 +1,9 @@
 let
     /*
     ref: https://docs.microsoft.com/en-us/power-query/handlingdocumentation
+
+    AllowedValues may be dynamic:
+        https://ssbi-blog.de/blog/technical-topics-english/writing-documentation-for-custom-m-functions-part3/
     */
 
     Documentation = type function (
@@ -15,6 +18,7 @@ let
             Documentation.SampleValues = {1, 9},
             // as a dropdown, but not enforced
             Documentation.AllowedValues = {34, 99}
+
         ]),
         b as (type number meta [
             Documentation.FieldCaption = "Second Number",
