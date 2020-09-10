@@ -2,6 +2,17 @@
 
 Custom functions for Power BI
 
+Take a look at [test_All.pbix](source\test\test_All.pbix) for examples.
+
+You can also use it to copy -> paste the functions you want in one go.
+
+## CSV data files
+
+- list of all `*.Type`: [List Types.csv](Docs\List Types.csv)
+- list of `type text` constants [List Text.csv](Docs\List Text.csv)
+- list of all `type number` constants [List Numbers.csv](Docs\List Numbers.csv)
+- list of all `type function`s [List Functions - All.csv](Docs\List Functions - All.csv)
+
 ## Examples in: Ninmonkey.PowerQueryLib-ExampleReports
 
 **TextAsList.pbix**
