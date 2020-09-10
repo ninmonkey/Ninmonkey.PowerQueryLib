@@ -1,9 +1,17 @@
 # Todo
 
+## first
+
+- [ ] automate generation of [template\Reused Allowed Values - template.md](template\Reused Allowed Values - template.md)
+
+## Table schema related functions
+
+- [ ] <https://docs.microsoft.com/en-us/power-query/samples/trippin/6-schema/readme>
+
 ## collect
 
-- DecimalToDottedDecimal
-- DecimalToBinary / int32
+- [ ] DecimalToDottedDecimal
+ -[ ]  DecimalToBinary / int32
 
 ## ListAsText
 

@@ -1,4 +1,3 @@
-
 /*
 
 Input:
@@ -22,4 +21,4 @@ let
             string
 
 in
-    fnListAsIp
+    IP.DottedDecimalFromList
