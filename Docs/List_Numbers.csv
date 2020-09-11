@@ -1,108 +1,108 @@
-Name, Value
-AccessControlKind.Allow, 1
-AccessControlKind.Deny, 0
-BinaryEncoding.Base64, 0
-BinaryEncoding.Hex, 1
-BinaryOccurrence.Optional, 0
-BinaryOccurrence.Repeating, 2
-BinaryOccurrence.Required, 1
-ByteOrder.BigEndian, 1
-ByteOrder.LittleEndian, 0
-Compression.Brotli, 3
-Compression.Deflate, 1
-Compression.GZip, 0
-Compression.LZ4, 4
-Compression.None, -1
-Compression.Snappy, 2
-Compression.Zstandard, 5
-CsvStyle.QuoteAfterDelimiter, 0
-CsvStyle.QuoteAlways, 1
-Day.Friday, 5
-Day.Monday, 1
-Day.Saturday, 6
-Day.Sunday, 0
-Day.Thursday, 4
-Day.Tuesday, 2
-Day.Wednesday, 3
-ExtraValues.Error, 1
-ExtraValues.Ignore, 2
-ExtraValues.List, 0
-GroupKind.Global, 1
-GroupKind.Local, 0
-HiveProtocol.HTTP, 2
-HiveProtocol.Standard, 1
-JoinAlgorithm.Dynamic, 0
-JoinAlgorithm.LeftHash, 3
-JoinAlgorithm.LeftIndex, 5
-JoinAlgorithm.PairwiseHash, 1
-JoinAlgorithm.RightHash, 4
-JoinAlgorithm.RightIndex, 6
-JoinAlgorithm.SortMerge, 2
-JoinKind.FullOuter, 3
-JoinKind.Inner, 0
-JoinKind.LeftAnti, 4
-JoinKind.LeftOuter, 1
-JoinKind.RightAnti, 5
-JoinKind.RightOuter, 2
-JoinSide.Left, 0
-JoinSide.Right, 1
-LimitClauseKind.AnsiSql2008, 4
-LimitClauseKind.Limit, 3
-LimitClauseKind.LimitOffset, 2
-LimitClauseKind.None, 0
-LimitClauseKind.Top, 1
-MissingField.Error, 0
-MissingField.Ignore, 1
-MissingField.UseNull, 2
-Number.E, 2.718281828
-Number.Epsilon, 4.94066E-324
-Number.NaN, NaN
-Number.NegativeInfinity, -Infinity
-Number.PI, 3.141592654
-Number.PositiveInfinity, Infinity
-Occurrence.All, 2
-Occurrence.First, 0
-Occurrence.Last, 1
-Occurrence.Optional, 0
-Occurrence.Repeating, 2
-Occurrence.Required, 1
-Order.Ascending, 0
-Order.Descending, 1
-Precision.Decimal, 1
-Precision.Double, 0
-QuoteStyle.Csv, 1
-QuoteStyle.None, 0
-RelativePosition.FromEnd, 1
-RelativePosition.FromStart, 0
-RoundingMode.AwayFromZero, 2
-RoundingMode.Down, 1
-RoundingMode.ToEven, 4
-RoundingMode.TowardZero, 3
-RoundingMode.Up, 0
-SapBusinessWarehouseExecutionMode.BasXml, 64
-SapBusinessWarehouseExecutionMode.BasXmlGzip, 65
-SapBusinessWarehouseExecutionMode.DataStream, 66
-SapHanaDistribution.All, 3
-SapHanaDistribution.Connection, 1
-SapHanaDistribution.Off, 0
-SapHanaDistribution.Statement, 2
-SapHanaRangeOperator.Equals, 4
-SapHanaRangeOperator.GreaterThan, 0
-SapHanaRangeOperator.GreaterThanOrEquals, 2
-SapHanaRangeOperator.LessThan, 1
-SapHanaRangeOperator.LessThanOrEquals, 3
-SapHanaRangeOperator.NotEquals, 5
-SparkProtocol.Azure, 1
-SparkProtocol.HTTP, 2
-SparkProtocol.Standard, 0
-TextEncoding.Ascii, 20127
-TextEncoding.BigEndianUnicode, 1201
-TextEncoding.Unicode, 1200
-TextEncoding.Utf16, 1200
-TextEncoding.Utf8, 65001
-TextEncoding.Windows, 1252
-TraceLevel.Critical, 1
-TraceLevel.Error, 2
-TraceLevel.Information, 8
-TraceLevel.Verbose, 16
-TraceLevel.Warning, 4
+"Name","Value"
+"AccessControlKind.Allow","1"
+"AccessControlKind.Deny","0"
+"BinaryEncoding.Base64","0"
+"BinaryEncoding.Hex","1"
+"BinaryOccurrence.Optional","0"
+"BinaryOccurrence.Repeating","2"
+"BinaryOccurrence.Required","1"
+"ByteOrder.BigEndian","1"
+"ByteOrder.LittleEndian","0"
+"Compression.Brotli","3"
+"Compression.Deflate","1"
+"Compression.GZip","0"
+"Compression.LZ4","4"
+"Compression.None","-1"
+"Compression.Snappy","2"
+"Compression.Zstandard","5"
+"CsvStyle.QuoteAfterDelimiter","0"
+"CsvStyle.QuoteAlways","1"
+"Day.Friday","5"
+"Day.Monday","1"
+"Day.Saturday","6"
+"Day.Sunday","0"
+"Day.Thursday","4"
+"Day.Tuesday","2"
+"Day.Wednesday","3"
+"ExtraValues.Error","1"
+"ExtraValues.Ignore","2"
+"ExtraValues.List","0"
+"GroupKind.Global","1"
+"GroupKind.Local","0"
+"HiveProtocol.HTTP","2"
+"HiveProtocol.Standard","1"
+"JoinAlgorithm.Dynamic","0"
+"JoinAlgorithm.LeftHash","3"
+"JoinAlgorithm.LeftIndex","5"
+"JoinAlgorithm.PairwiseHash","1"
+"JoinAlgorithm.RightHash","4"
+"JoinAlgorithm.RightIndex","6"
+"JoinAlgorithm.SortMerge","2"
+"JoinKind.FullOuter","3"
+"JoinKind.Inner","0"
+"JoinKind.LeftAnti","4"
+"JoinKind.LeftOuter","1"
+"JoinKind.RightAnti","5"
+"JoinKind.RightOuter","2"
+"JoinSide.Left","0"
+"JoinSide.Right","1"
+"LimitClauseKind.AnsiSql2008","4"
+"LimitClauseKind.Limit","3"
+"LimitClauseKind.LimitOffset","2"
+"LimitClauseKind.None","0"
+"LimitClauseKind.Top","1"
+"MissingField.Error","0"
+"MissingField.Ignore","1"
+"MissingField.UseNull","2"
+"Number.E","2.718281828"
+"Number.Epsilon","4.94066E-324"
+"Number.NaN","NaN"
+"Number.NegativeInfinity","-Infinity"
+"Number.PI","3.141592654"
+"Number.PositiveInfinity","Infinity"
+"Occurrence.All","2"
+"Occurrence.First","0"
+"Occurrence.Last","1"
+"Occurrence.Optional","0"
+"Occurrence.Repeating","2"
+"Occurrence.Required","1"
+"Order.Ascending","0"
+"Order.Descending","1"
+"Precision.Decimal","1"
+"Precision.Double","0"
+"QuoteStyle.Csv","1"
+"QuoteStyle.None","0"
+"RelativePosition.FromEnd","1"
+"RelativePosition.FromStart","0"
+"RoundingMode.AwayFromZero","2"
+"RoundingMode.Down","1"
+"RoundingMode.ToEven","4"
+"RoundingMode.TowardZero","3"
+"RoundingMode.Up","0"
+"SapBusinessWarehouseExecutionMode.BasXml","64"
+"SapBusinessWarehouseExecutionMode.BasXmlGzip","65"
+"SapBusinessWarehouseExecutionMode.DataStream","66"
+"SapHanaDistribution.All","3"
+"SapHanaDistribution.Connection","1"
+"SapHanaDistribution.Off","0"
+"SapHanaDistribution.Statement","2"
+"SapHanaRangeOperator.Equals","4"
+"SapHanaRangeOperator.GreaterThan","0"
+"SapHanaRangeOperator.GreaterThanOrEquals","2"
+"SapHanaRangeOperator.LessThan","1"
+"SapHanaRangeOperator.LessThanOrEquals","3"
+"SapHanaRangeOperator.NotEquals","5"
+"SparkProtocol.Azure","1"
+"SparkProtocol.HTTP","2"
+"SparkProtocol.Standard","0"
+"TextEncoding.Ascii","20127"
+"TextEncoding.BigEndianUnicode","1201"
+"TextEncoding.Unicode","1200"
+"TextEncoding.Utf16","1200"
+"TextEncoding.Utf8","65001"
+"TextEncoding.Windows","1252"
+"TraceLevel.Critical","1"
+"TraceLevel.Error","2"
+"TraceLevel.Information","8"
+"TraceLevel.Verbose","16"
+"TraceLevel.Warning","4"
