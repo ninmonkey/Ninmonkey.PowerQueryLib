@@ -6,12 +6,11 @@ Take a look at [test_All.pbix](source\test\test_All.pbix) for examples.
 
 You can also use it to copy -> paste the functions you want in one go.
 
-## CSV data files
+## Language data as `CSV`
 
-- list of all `*.Type`: [List Types.csv](Docs\List Types.csv)
-- list of `type text` constants [List Text.csv](Docs\List Text.csv)
-- list of all `type number` constants [List Numbers.csv](Docs\List Numbers.csv)
-- list of all `type function`s [List Functions - All.csv](Docs\List Functions - All.csv)
+- [All PowerQuery Functions](./Docs/List_Functions-All.csv)
+- [All PowerQuery Constants](./Docs/List_Constants-All.csv)
+- [All *.Types](./Docs/List_Types.csv) . This is all built-in types like `Int64.Type`, `Currency.Type`, etc.
 
 ## Examples in: Ninmonkey.PowerQueryLib-ExampleReports
 

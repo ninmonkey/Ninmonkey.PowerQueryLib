@@ -12,11 +12,12 @@ Compression.Brotli, 3
 Compression.Deflate, 1
 Compression.GZip, 0
 Compression.LZ4, 4
-Compression.None, -1
+Compression.None	-,
 Compression.Snappy, 2
 Compression.Zstandard, 5
 CsvStyle.QuoteAfterDelimiter, 0
 CsvStyle.QuoteAlways, 1
+Culture.Current	en-,
 Day.Friday, 5
 Day.Monday, 1
 Day.Saturday, 6
@@ -54,11 +55,11 @@ LimitClauseKind.Top, 1
 MissingField.Error, 0
 MissingField.Ignore, 1
 MissingField.UseNull, 2
-Number.E, 2.718281828
-Number.Epsilon, 4.94066E-324
+Number.E	2.,
+Number.Epsilon	4.94066E-,
 Number.NaN, NaN
-Number.NegativeInfinity, -Infinity
-Number.PI, 3.141592654
+Number.NegativeInfinity	-,
+Number.PI	3.,
 Number.PositiveInfinity, Infinity
 Occurrence.All, 2
 Occurrence.First, 0
@@ -66,6 +67,7 @@ Occurrence.Last, 1
 Occurrence.Optional, 0
 Occurrence.Repeating, 2
 Occurrence.Required, 1
+ODataOmitValues.Nulls, nulls
 Order.Ascending, 0
 Order.Descending, 1
 Precision.Decimal, 1
@@ -106,3 +108,9 @@ TraceLevel.Error, 2
 TraceLevel.Information, 8
 TraceLevel.Verbose, 16
 TraceLevel.Warning, 4
+WebMethod.Delete, DELETE
+WebMethod.Get, GET
+WebMethod.Head, HEAD
+WebMethod.Patch, PATCH
+WebMethod.Post, POST
+WebMethod.Put, PUT

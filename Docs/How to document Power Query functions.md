@@ -4,13 +4,18 @@
 
 <!-- code_chunk_output -->
 
+- [Template: Power Query function with Documentation](#template-power-query-function-with-documentation)
 - [Cheatsheets: Metadata for Documentation](#cheatsheets-metadata-for-documentation)
   - [Functions](#functions)
-  - [Parameter](#parameter)
+  - [Examples](#examples)
+  - [Parameters](#parameters)
 - [References](#references)
 
-
 <!-- /code_chunk_output -->
+
+## Template: Power Query function with Documentation
+
+A template to document custom functions: [Power Query function with Documentation.pq](./../template/Power Query function with Documentation.pq)
 
 docs:
 
@@ -24,22 +29,31 @@ docs:
 
 | Field                         | Type | Description                          |
 | ----------------------------- | ---- | ------------------------------------ |
-| Documentation.Examples        | list | `list` of `record`s of examples      |
-| D | text | Full description                     |
-| Documentation.Name            | text | "displayd on function invoke dialog" |
+| Documentation.LongDescription | `text` | shown inside function help   |
+| Documentation.Name            | `text` | Short name / description |
+| Documentation.Examples        | `list` | `list` of `record`s of Examples      |
 
-**test**: is this the UI, or intellisense?
+### Examples
 
-### Parameter
+| Field                         | Type | Description                          |
+| ----------------------------- | ---- | ------------------------------------ |
+| Description        | `text` | Name of this example |
+| Code        | `text` | Power Query example code |
+| Result        | `text` | Result of examplePower Query example code |
+
+### Parameters
+
+Choose either `AllowedValues` or `SampleValues`. Neither type is enforced.
+The choice is purely how the visual is. Either a text box with grayed out text, otherwise a drop down box.
 
 | Field                          | Type    | Details                                                                                                                                               |
 | ------------------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Documentation.AllowedValues    | list    | List of valid `value`s for this parameter. <br/>Shows a **UI dropdown** Providing this field will change the input from a textbox to a drop down list |
-| Documentation.FieldCaption     | text    | Friendly display name to use for the parameter.                                                                                                       |
-| Documentation.FieldDescription | text    | Description to show next to the display name.                                                                                                         |
-| Documentation.SampleValues     | list    | List of sample values to be displayed (as faded text) inside of the text box.                                                                         |
-| Formatting.IsMultiLine         | boolean | Allows you to create a multi-line input, for example for pasting in native queries.                                                                   |
-| Formatting.IsCode              | boolean | Formats the input field for code, commonly with multi-line inputs. Uses a code-like font rather than the standard font.                               |
+| Documentation.AllowedValues    | `list`    | Sample values that **populate a dropdown box**. Values are not actually enforced. |
+| Documentation.FieldCaption     | `text`    | Friendly display name to use for the parameter.                                                                                                       |
+| Documentation.FieldDescription | `text`    | Description to show next to the display name.                                                                                                         |
+| Documentation.SampleValues     | `list`    | List of sample values to be displayed (as faded text) inside of the text box.                                                                         |
+| Formatting.IsMultiLine         | `logical` | Input box should be multi-line     |
+| Formatting.IsCode              | `logical` | Marks field as 'code'. Uses monospace font. |
 
 ## References
 
