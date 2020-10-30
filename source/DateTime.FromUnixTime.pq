@@ -15,47 +15,27 @@ let
 
         see also:
             https://en.wikipedia.org/wiki/Unix_time#UTC_basis
+            .net class for duration: https://docs.microsoft.com/en-us/dotnet/api/system.timespan?view=netcore-3.1
+
+        when out of range, the user facing error is:
+            > An error occurred in the ‘DateTime_FromUnixTime’ query. Expression.Error: The Duration operation failed because the resulting duration falls outside the range of allowed values.
 
 
         */
+
         let
             UnixEpoch = #datetime(1970, 1, 1, 0, 0, 0),
-            NumberOfDigits = Text.Length( Text.From( unixTime ) ),
-            // guessModifier
-            //     = if NumberOfDigits <= 10 then 1
-            //     else if NumberOfDigits <= 13 then 1000
-            //     else if NumberOfDigits <= 16 then 1000000
-            //     else Error.Record(
-            //         "OutOfBounds",
-            //         "Attempted to detect UnixTime, it is out of range",
-            //         "Count = " & Number.ToText( NumberOfDigits )
-            //     ),
             modifier
                 = if mode = "s" or mode = "sec" then 1
-                else if mode = "ms" then 1000
-                else if mode = "ns" then 1000000
+                else if mode = "ms" then 1e3
+                else if mode = "ns" then 1e9
                 else 1,
 
             offsetDuration = #duration(0, 0, 0, (unixTime / modifier) ),
-                // let result =
-                //     try
-                //     otherwise
-                //         error Error.Record("bad", unixTime, modifier)
-                // in
-                //     if result[HasError] then result[Error] else result[Value]
-                // ,
-            // offsetDuration = #duration(0, 0, 0, (unixTime / modifier) ),
-
-                    // Error.Record("bad", unixTime, modifier)
-
             tryDatetime = try UnixEpoch + offsetDuration,
-            // Maybe return datetime
-            // asUtc = DateTime.AddZone( tryDatetime , 0, 0),
-            // l = DateTimeZone.ToLocal(asUtc),
-
             result = tryDatetime
         in
-            if result[HasError] then result[Error] else result[Value]
+            if result[HasError] then error result[Error] else result[Value]
 
 in
     DateTime_FromUnixTime
