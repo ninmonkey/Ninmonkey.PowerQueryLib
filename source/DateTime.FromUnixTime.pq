@@ -31,22 +31,29 @@ let
             //         "Count = " & Number.ToText( NumberOfDigits )
             //     ),
             modifier
-                = if mode = "s" then 1
+                = if mode = "s" or mode = "sec" then 1
                 else if mode = "ms" then 1000
                 else if mode = "ns" then 1000000
-                else null,
+                else 1,
 
-            offsetDuration = try
-                    #duration(0, 0, 0, (unixTime / modifier) )
-                otherwise
-                    Error.Record("bad", unixTime, modifier)
-                ,
+            offsetDuration = #duration(0, 0, 0, (unixTime / modifier) ),
+                // let result =
+                //     try
+                //     otherwise
+                //         error Error.Record("bad", unixTime, modifier)
+                // in
+                //     if result[HasError] then result[Error] else result[Value]
+                // ,
+            // offsetDuration = #duration(0, 0, 0, (unixTime / modifier) ),
+
+                    // Error.Record("bad", unixTime, modifier)
+
             tryDatetime = try UnixEpoch + offsetDuration,
             // Maybe return datetime
-            asUtc = DateTime.AddZone( tryDatetime , 0, 0),
-            l = DateTimeZone.ToLocal(asUtc),
+            // asUtc = DateTime.AddZone( tryDatetime , 0, 0),
+            // l = DateTimeZone.ToLocal(asUtc),
 
-            result = l
+            result = tryDatetime
         in
             if result[HasError] then result[Error] else result[Value]
 
