@@ -1,26 +1,4 @@
 let
-    DateTime_FromUnixTime = (unixTime as number) as any =>
-        let
-            UnixEpoch = #datetime(1970, 1, 1, 0, 0, 0),
-            NumberOfDigits = Text.Length( Text.From( unixTime ) ),
-            modifier =
-                if NumberOfDigits <= 10 then 1
-                else if NumberOfDigits <= 13 then 1000
-                else if NumberOfDigits <= 16 then 1000000
-                else Error.Record(
-                    "OutOfBounds",
-                    "Attempted to detect UnixTime, it is out of range",
-                    "Count = " & Number.ToText( NumberOfDigits )
-                ),
-            offsetDuration = try
-                    #duration(0, 0, 0, (unixTime / modifier) )
-                otherwise
-                    Error.Record("bad", unixTime, Modifier)
-                ,
-            result = try UnixEpoch + offsetDuration
-        in
-            if result[HasError] then result[Error][Message] else result[Value],
-
     /*
     if textUnitPrice[HasError] then textUnitPrice[Error][Message]
         //Continue expression flow
@@ -28,19 +6,20 @@ let
     */
 
 
-    /*
-
-    DateTime.FromFileTime
-    DateTimeZone.FromFileTime
-
-    To use the epoch "12:00 midnight, January 1, 1601", use the functions
-        DateTime.FromFileTime, and DateTimeZone.FromFileTime
-    */
 
     sampSec = 1604073449,
     sampMs = sampSec * 1000,
     sampNs = sampMs * 1000,
     UnixEpoch = #datetime(1970, 1, 1, 0, 0, 0),
+    // const = [
+    //     UnixEpoch = UnixEpoch,
+    // ]
+
+    // maximum values for numbers
+    max = [
+        uint32 = Number.Power(2, 32) - 1,
+        int32 = Number.Power(2, 31) - 1
+    ],
 
 
     sampleTest = {
@@ -52,7 +31,10 @@ let
         [Name = "17 digits", Value = 16040719521234433 ],
         [Name = "floating", Value = 1095379201.25 ],
         [Name = "floating converted int", Value = Int32.From( 1095379201.25) ],
-        [Name = "20 digits", Value = 12345123451234512345 ]
+        [Name = "20 digits", Value = 12345123451234512345 ],
+        [Name = "max unsigned int32", Value = max[uint32] ],
+        [Name = "max int32", Value = max[int32] ]
+
     },
     t = Table.FromRecords(
         sampleTest,
@@ -74,6 +56,9 @@ let
     mDuration = #duration(0, 0, 0, (sampNs / 1000) ),
     mRes = UnixEpoch + mDuration,
     rOneStep = UnixEpoch + #duration(0, 0, 0, (sampNs / 1000) ),
+    max_uInt32 = 4294967295 - Number.Power(2, 32),
+    max_Int32 = 2147483647 = Number.Power(2,31) - 1 and 2147483647 = max[int32] + 1,
+
 
 
     Custom1 = DateTime_FromUnixTime( sampNs ),
@@ -109,9 +94,7 @@ let
         each DateTimeZone.From( _[Result_Default] ),
         type datetimezone
     ),
-
-
-            // 2004-09-17T00:00:33.25 	2004-09-17T00:00:01.25 	1095379201.25
+    // 2004-09-17T00:00:33.25 	2004-09-17T00:00:01.25 	1095379201.25
 
 
 
@@ -125,6 +108,10 @@ let
         type datetime
 
     ),
-    Custom2 = unitTest_t3
+    unitTest_t4 = unitTest_t3,
+    unitTest_t5 = Table.AddColumn(unitTest_t4, "try timezone", each DateTime.AddZone( [Expected], 0, null), type datetimezone),
+    unitTest_t6 = Table.AddColumn(unitTest_t5, "Local Time", each DateTimeZone.ToLocal([try timezone]), type datetimezone),
+    #"Table of Contents of Results" = [ #"Main Results" = t2, #"Manual Tests" = unitTest_t3 ],
+    #"MainFinal test" = #"Table of Contents of Results"[Main Results]
 in
-    Custom2
+    #"MainFinal test"
