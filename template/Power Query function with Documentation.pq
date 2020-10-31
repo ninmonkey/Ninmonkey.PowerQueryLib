@@ -26,16 +26,16 @@ let
             Formatting.IsMultiLine = true,
             Formatting.IsCode = false,
             Documentation.SampleValues = {4, 7}
-        ]))
-        as table meta [
-            Documentation.Name = "[Name] SumNumbers",
-            Documentation.LongDescription = "[LongDesc] Adds two numbers",
-            Documentation.Examples = {[
-                Description = "Sum two numbers",
-                Code = "let sum = Func(1, 3) in sum",
-                Result = "4"
-            ]}
-        ],
+        ])
+    ) as table meta [
+        Documentation.Name = "[Name] SumNumbers",
+        Documentation.LongDescription = "[LongDesc] Adds two numbers",
+        Documentation.Examples = {[
+            Description = "Sum two numbers",
+            Code = "let sum = Func(1, 3) in sum",
+            Result = "4"
+        ]}
+    ],
 
     SumNum = (a as number, b as number) as number =>
         a + b

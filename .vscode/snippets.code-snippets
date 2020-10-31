@@ -1,0 +1,35 @@
+{
+    // Place your Ninmonkey.PowerQueryLib workspace snippets here. Each snippet is defined under a snippet name and has a scope,
+    "Add Custom Column": {
+        "Add Custom Column": {
+            "prefix": "Add Column",
+            "scope": "powerquery",
+            "description": "Table ⁞ Add a custom column. If text is selected that becomes the inner each expression.",
+            "body": [
+                "${1:StepName} = Table.AddColumn(",
+                "    ${2:TableName},",
+                "    \"${3:ColumnName}\",",
+                "    each ${0:$TM_SELECTED_TEXT}",
+                "    ${4:type any}",
+                "),",
+            ],
+        },
+    },
+    "Custom Function": {
+        "Custom Function": {
+            "prefix": "Function",
+            "description": "Function ⁞ add a new function",
+            "scope": "powerquery",
+            "body": [
+                "/* about:",
+                "*/",
+                "${1:Name} = (${2}) as ${3}  =>",
+                "    let",
+                "        ${4}  = ${0}",
+                "",
+                "    in",
+                "        ${4},",
+            ],
+        },
+    },
+}
