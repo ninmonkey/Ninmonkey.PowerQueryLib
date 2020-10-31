@@ -1,17 +1,15 @@
 let
-    DateTime_FromUnixTime = (unixTime as number, optional mode as text) as any =>
+    DateTime_FromUnixTime = (unixTime as number, optional mode as text) as datetime =>
         /*
-
+        Convert Unix date times to a `datetime`
         modes
             "s" is seconds
             "ms" is milliseconds
             "ns" is nanoseconds
 
-        DateTime.FromFileTime
-        DateTimeZone.FromFileTime
-
         To use the epoch "12:00 midnight, January 1, 1601", use the functions
-            DateTime.FromFileTime, and DateTimeZone.FromFileTime
+            DateTime.FromFileTime
+            DateTimeZone.FromFileTime
 
         see also:
             https://en.wikipedia.org/wiki/Unix_time#UTC_basis
@@ -19,8 +17,6 @@ let
 
         when out of range, the user facing error is:
             > An error occurred in the ‘DateTime_FromUnixTime’ query. Expression.Error: The Duration operation failed because the resulting duration falls outside the range of allowed values.
-
-
         */
 
         let
