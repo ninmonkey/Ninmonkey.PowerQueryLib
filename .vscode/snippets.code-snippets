@@ -1,15 +1,112 @@
 {
-    // Place your Ninmonkey.PowerQueryLib workspace snippets here. Each snippet is defined under a snippet name and has a scope,
+    /*
+            examples:
+
+            transforming input
+                https: //code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples
+
+            if you want ex:
+                type table
+
+            - [1] default lets you replace full
+            - [2] tab lets you replace one keeping the first part
+            "${1:another ${2:placeholder}}"
+            - [3]
+                record type that loops forver, record type
+            - [4]
+                insert inline table definitions
+
+            - [4]
+                inlike correct list to table
+            - [5]
+                - [5] inline rename columns
+                - [5] inline transform columns
+                - [5] inline move tables
+                - [5] inline transformtyeps
+
+        */
+    "Web.Contents | Basic HTTP Request": {
+        "Web.Contents | Basic HTTP Request": {
+            "prefix": "Web Request",
+            "description": "Web  ⁞ A basic HTTP Request",
+            "body": [
+                "webResponse = ",
+                "    let",
+                "        Headers = [",
+                "            Accept=\"application/json\"",
+                "        ],",
+                "        BaseUrl = \"${1:https://httpbin.org}\",",
+                "        Options = [",
+                "            RelativePath = \"${2:/get}\",",
+                "            Headers = Headers,",
+                "            Query = [",
+                "                ${3:ArgName = Value}",
+                "            ]",
+                "        ],",
+                "        Response = Web.Contents(BaseUrl, Options),",
+                "        Result = Json.Document(Response)",
+                "    in",
+                "        Result${0}",
+            ],
+        },
+    },
+    "Web.Contents | Advanced HTTP Request": {
+        "Web.Contents | Advanced HTTP Request": {
+            "prefix": "Web Request Advanced",
+            "description": "Web  ⁞ A HTTP Request with all options",
+            "body": [
+                "/*",
+                "Handle authentication by passing an API token either through another query parameter called APIToken or via an HTTP header also called APIToken",
+                "",
+                "Header Key name used when saving API key in the credential store instead of power query",
+                "see more: <https://gist.github.com/ninmonkey/aab7ceddc3addd3c24c0d27ed976a785#preventing-errors-refreshing-on-the-live-service> , and <https://docs.microsoft.com/en-us/powerquery-m/web-contents#syntax>",
+                "*/",
+                "webResponse = ",
+                "    let",
+                "        Headers = [",
+                "            Accept =\"application/json\"",
+                "            // APIToken = \"...\"",
+                "            // #\"Authorization\" = accessToken",
+                "        ],",
+                "        BaseUrl = \"https://httpbin.org\",",
+                "        Options = [",
+                "            APIKeyName = \"apikey\", // enables credentail store",
+                "            RelativePath = \"/get\",",
+                "            Headers = Headers",
+                "            // Timeout = 100, // using seconds",
+                "            // IsRetry = true, // true will ignore existing response in the cache",
+                "            // disable builtin handling of specific status codes",
+                "            // ManualStatusHandling = {\"401\", \"404\"}",
+                "",
+                "            // exclude these HTTP header keys from being part of the calculation for caching data.",
+                "            // ExcludedFromCacheKey = {\"header_key_num1\", ...}",
+                "            ",
+                "        ],",
+                "        //  If key 'Content' is used: request type will be POST",
+                "        // Content = \"\"",
+                "",
+                "        Query = [",
+                "            ArgName = Value",
+                "        ],",
+                "        Response = Web.Contents(BaseUrl, Options),",
+                "        Result = Json.Document(Response)",
+                "    in",
+                "        Result",
+                "",
+                "        ",
+            ],
+        },
+    },
     "Add Custom Column": {
         "Add Custom Column": {
             "prefix": "Add Column",
-            "scope": "powerquery",
             "description": "Table ⁞ Add a custom column. If text is selected that becomes the inner each expression.",
             "body": [
                 "${1:StepName} = Table.AddColumn(",
                 "    ${2:TableName},",
                 "    \"${3:ColumnName}\",",
-                "    each ${0:$TM_SELECTED_TEXT}",
+                // "    each ${0:$TM_SELECTED_TEXT}",
+                "    each ${0}",
                 "    ${4:type any}",
                 "),",
             ],
@@ -19,7 +116,6 @@
         "Custom Function": {
             "prefix": "Function",
             "description": "Function ⁞ add a new function",
-            "scope": "powerquery",
             "body": [
                 "/* about:",
                 "*/",
