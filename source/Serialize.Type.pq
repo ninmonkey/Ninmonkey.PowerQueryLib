@@ -3,19 +3,10 @@
 
 
 Todo:
-    Clean up, add unit testing for all types.
+    - [ ] Better name: Type.ToText
+    - [ ] Clean up, add unit testing for all types.
 
-alias?
-Better naming ?
-    - Serialize.TypeName()
-    - Type.NameAsText()
-
-
-from: https://github.com/microsoft/DataConnectors/blob/460babf2f8c44ec82d7e08d1b65b156984c6ba75/samples/UnitTesting/UnitTesting.query.pq#L210-L244
-
-Note:
-    The original serializes **everything**
-    This only shows type names as text
+Originally based on: <https://github.com/microsoft/DataConnectors/blob/460babf2f8c44ec82d7e08d1b65b156984c6ba75/samples/UnitTesting/UnitTesting.query.pq#L210-L244>
 
 */
 let
