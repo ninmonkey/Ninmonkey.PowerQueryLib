@@ -504,12 +504,6 @@ in
 in
     #"Template: function with documentation"
 
-// built in comparison
-let
-    Source = Text.Combine
-in
-    Source
-
 // DateTime_FromUnixTime
 let
     DateTime_FromUnixTime = (unixTime as number, optional mode as text) as any =>
@@ -842,6 +836,7 @@ let
     call = DateTime_FromUnixTime( rec[Value] ) ,
 
     results = [
+        Todo = "Validate test, datetime as local/utc",
         Record = rec,
         Call = call
     ]
@@ -877,3 +872,510 @@ let
     ]
 in
     Results
+
+// Value_ToPowerQuery
+// Value_ToPowerQuery
+/*
+    serializes values as power query source code
+
+    from: https://github.com/microsoft/DataConnectors/blob/master/samples/UnitTesting/UnitTesting.query.pq
+*/
+let Value.ToPowerQuery = (value, optional depth) =>
+    let
+        List.TransformAndCombine = (list, transform, separator) => Text.Combine(List.Transform(list, transform), separator),
+
+        Serialize.Binary =      (x) => "#binary(" & Serialize(Binary.ToList(x)) & ") ",
+
+        Serialize.Function =    (x) => _serialize_function_param_type(
+                                          Type.FunctionParameters(Value.Type(x)),
+                                          Type.FunctionRequiredParameters(Value.Type(x)) ) &
+                                       " as " &
+                                       _serialize_function_return_type(Value.Type(x)) &
+                                       " => (...) ",
+
+        Serialize.List =        (x) => "{" & List.TransformAndCombine(x, Serialize, ", ") & "} ",
+
+        Serialize.Record =      (x) => "[ " &
+                                       List.TransformAndCombine(
+                                            Record.FieldNames(x),
+                                            (item) => Serialize.Identifier(item) & " = " & Serialize(Record.Field(x, item)),
+                                            ", ") &
+                                       " ] ",
+
+        Serialize.Table =       (x) => "#table( type " &
+                                        _serialize_table_type(Value.Type(x)) &
+                                        ", " &
+                                        Serialize(Table.ToRows(x)) &
+                                        ") ",
+
+        Serialize.Identifier =  Expression.Identifier,
+
+        Serialize.Type =        (x) => "type " & _serialize_typename(x),
+
+
+        _serialize_typename =    (x, optional funtype as logical) =>                        /* Optional parameter: Is this being used as part of a function signature? */
+                                    let
+                                        isFunctionType = (x as type) => try if Type.FunctionReturn(x) is type then true else false otherwise false,
+                                        isTableType = (x as type) =>  try if Type.TableSchema(x) is table then true else false otherwise false,
+                                        isRecordType = (x as type) => try if Type.ClosedRecord(x) is type then true else false otherwise false,
+                                        isListType = (x as type) => try if Type.ListItem(x) is type then true else false otherwise false
+                                    in
+
+                                        if funtype=null and isTableType(x) then _serialize_table_type(x) else
+                                        if funtype=null and isListType(x) then "{ " & @_serialize_typename( Type.ListItem(x) ) & " }" else
+                                        if funtype=null and isFunctionType(x) then "function " & _serialize_function_type(x) else
+                                        if funtype=null and isRecordType(x) then _serialize_record_type(x) else
+
+                                        if x = type any then "any" else
+                                        let base = Type.NonNullable(x) in
+                                          (if Type.IsNullable(x) then "nullable " else "") &
+                                          (if base = type anynonnull then "anynonnull" else
+                                          if base = type binary then "binary" else
+                                          if base = type date   then "date"   else
+                                          if base = type datetime then "datetime" else
+                                          if base = type datetimezone then "datetimezone" else
+                                          if base = type duration then "duration" else
+                                          if base = type logical then "logical" else
+                                          if base = type none then "none" else
+                                          if base = type null then "null" else
+                                          if base = type number then "number" else
+                                          if base = type text then "text" else
+                                          if base = type time then "time" else
+                                          if base = type type then "type" else
+
+                                          /* Abstract types: */
+                                          if base = type function then "function" else
+                                          if base = type table then "table" else
+                                          if base = type record then "record" else
+                                          if base = type list then "list" else
+
+                                          "any /*Actually unknown type*/"),
+
+        _serialize_table_type =     (x) =>
+                                           let
+                                             schema = Type.TableSchema(x)
+                                           in
+                                             "table " &
+                                             (if Table.IsEmpty(schema) then "" else
+                                                 "[" & List.TransformAndCombine(
+                                                     Table.ToRecords(Table.Sort(schema,"Position")),
+                                                     each Serialize.Identifier(_[Name]) & " = " & _[Kind],
+                                                     ", ") &
+                                                 "] "),
+
+        _serialize_record_type =    (x) =>
+                                            let flds = Type.RecordFields(x)
+                                            in
+                                                if Record.FieldCount(flds)=0 then "record" else
+                                                    "[" & List.TransformAndCombine(
+                                                        Record.FieldNames(flds),
+                                                        (item) => Serialize.Identifier(item) & "=" & _serialize_typename(Record.Field(flds,item)[Type]),
+                                                        ", ") &
+                                                    (if Type.IsOpenRecord(x) then ", ..." else "") &
+                                                    "]",
+
+        _serialize_function_type =  (x) => _serialize_function_param_type(
+                                              Type.FunctionParameters(x),
+                                              Type.FunctionRequiredParameters(x) ) &
+                                            " as " &
+                                            _serialize_function_return_type(x),
+
+        _serialize_function_param_type = (t,n) =>
+                                let
+                                    funsig = Table.ToRecords(
+                                        Table.TransformColumns(
+                                            Table.AddIndexColumn( Record.ToTable( t ), "isOptional", 1 ),
+                                            { "isOptional", (x)=> x>n } ) )
+                                in
+                                    "(" &
+                                    List.TransformAndCombine(
+                                        funsig,
+                                        (item)=>
+                                            (if item[isOptional] then "optional " else "") &
+                                            Serialize.Identifier(item[Name]) & " as " & _serialize_typename(item[Value], true),
+                                        ", ") &
+                                     ")",
+
+        _serialize_function_return_type = (x) => _serialize_typename(Type.FunctionReturn(x), true),
+
+        Serialize = (x) as text =>
+                           if x is binary       then try Serialize.Binary(x) otherwise "null /*serialize failed*/"        else
+                           if x is date         then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is datetime     then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is datetimezone then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is duration     then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is function     then try Serialize.Function(x) otherwise "null /*serialize failed*/"      else
+                           if x is list         then try Serialize.List(x) otherwise "null /*serialize failed*/"          else
+                           if x is logical      then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is null         then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is number       then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is record       then try Serialize.Record(x) otherwise "null /*serialize failed*/"        else
+                           if x is table        then try Serialize.Table(x) otherwise "null /*serialize failed*/"         else
+                           if x is text         then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is time         then try Expression.Constant(x) otherwise "null /*serialize failed*/"     else
+                           if x is type         then try Serialize.Type(x) otherwise "null /*serialize failed*/"          else
+                           "[#_unable_to_serialize_#]"
+    in
+        try Serialize(value) otherwise "<serialization failed>"
+in
+    Value.ToPowerQuery
+
+// Inspect_Table
+let
+    Inspect.Table = "NYI"
+in
+    Inspect.Table
+
+// Inspect_Column
+let
+    Inspect.Column = (source as table, column as text) as record =>
+        // Get number of values, type, count
+        let
+            colValues = Table.Column(source, column),
+            result = [
+                // TableName = "todo",  // created in parent func TableStats
+                ColumnName = column,
+
+                Count = List.Count( colValues ),
+                Count_Distinct = List.Count( List.Distinct( colValues ) ),
+
+                Table_Type = Value_ToPowerQuery( Value.Type( source ) ),
+                FirstRecord_Type =  Value_ToPowerQuery( Value.Type( colValues{0} ?? null ) ),
+
+                Schema = Table.Schema( source ),
+
+                PowerQuery = Value_ToPowerQuery( source ),
+                All_Values = colValues,
+                Distinct_Values = Table.Distinct( Table.SelectColumns( source, {column}, MissingField.Error ) )
+            ]
+        in
+            result
+in
+    Inspect.Column
+
+// Table_FindDuplicates
+let
+    Table.FindDuplicates = "nyi"
+in
+    Table.FindDuplicates
+
+// SampleData_DuplicateValues
+let
+    // a mixture of almost-distinct, and non-distinct values
+    Source = #table(
+        type table[String = text, Description = text],
+        {
+            { "-91", "negative 91" },
+            { "1", "one" },
+            { "cat", "cat lowercase" },
+            { "CAT", "cat uppercase" },
+            { "1", "one" },
+            { "1#(lf)", "1 newline" },
+            { "0", "zero" },
+            { "0", "zero" },
+            { "0  ", "zero /w space" },
+            { "0", "zero" }
+        }
+    ),
+    convertNumber = Table.AddColumn(
+        Source,
+        "Number",
+        each try Number.From( [String] ) otherwise null,
+        type nullable number
+    )
+in
+    convertNumber
+
+// SummarizeRecord - sketch
+// Record_Schema
+let
+    /*
+    About:
+        get the schema of a Record
+    */
+
+
+    fn_Record_Schema = (source as record) as table =>
+        let
+            names = Record.FieldNames( source ),
+            schemaList = List.Transform(
+                names,
+                (name as any) =>
+                    let
+                        fieldValue = Record.Field(source, name)
+                    in
+                        [
+                            Name = name,
+                            Type = Type_ToText( Value.Type( fieldValue ) ),
+                            Value = fieldValue
+
+                        ]
+            ),
+            resultTable = Table.FromRecords(
+                schemaList,
+                type table[
+                    Name = text,
+                    Type = Type.Type,
+                    Value = any],
+                MissingField.Error)
+        in
+            resultTable,
+
+// Summarize_Record
+// let
+    /*
+    converts records into a string
+
+        let
+            source =
+        in
+            Summarize_Record(source)
+
+    Example: Basic
+        input:
+
+            [ Name = "Dog", Age = 3, DogYears = 3*3 ],
+
+        output: as text:
+            '[ Age = 3, DogYears = 9, Name = "Dog" ]'
+
+    Example: Values are converted using 'culture':
+        input:
+            [ now = DateTime.LocalNow(), utc = DateTimeZone.UtcNow(), culture = Culture.Current ]
+
+
+        output as text:
+            [ now = 1/7/2021 10:52:12 AM, utc = 1/7/2021 4:52:12 PM +00:00, culture = en-US ]
+
+    Example3:
+        options = [ separator = "#(lf,tab)", prefix = "[#(lf,tab)", suffix = "#(lf)]" ],
+
+        output:
+
+            [
+                culture = en-US
+                now = 1/7/2021 11:14:59 AM
+                utc = 1/7/2021 5:14:59 PM +00:00
+            ]
+
+    when options[sort] = true
+        in:
+            [ Name = cat, Lives = 9 ]
+        out:
+            [ Lives = 9, Name = cat ]
+
+    Example 4:
+        in:
+            [ Num = 123.45 ]
+
+        with default
+            [ Num = 123.45 ]
+
+        with [ culture = "de-DE" ]
+            [ Num = 123,45 ]
+
+
+    */
+
+    fn_Summarize_Record = (source as record, optional options as nullable record) as text =>
+        let
+            // supports nested records
+            // next: simplify parameter handling w/ Validate_OptionalArgRecord
+            // future: support nested recursively?
+            // future:  allow Text.From error to just place a default value
+
+
+
+            outputPrefix = Text.From(options[prefix]? ?? "[ "),
+            outputSuffix = Text.From(options[suffix]? ?? " ]"),
+            outputSeparator = Text.From(options[separator]? ?? ", "),
+            culture = options[culture]? ?? null,
+
+            // outputSuffix = options[suffix]? ??  " ]",
+            optionSort = options[sort]?  ?? true,
+
+            _n = Record.FieldNames( source ),
+            names = if optionSort then List.Sort(_n) else _n,
+
+
+            pairs = List.Transform(
+                names,
+                (key as text) =>
+                    let
+                        value = Record.Field( source, key ),
+
+                        valueIsRecord = Type.Is( Value.Type(value), type record),
+                        maybeFlatValue =
+                            try if valueIsRecord then @fn_Summarize_Record( value, options )
+                            else value,
+
+                        // do not throw by default
+                        flatValue =
+                            if maybeFlatValue[HasError]
+                            then "< " & Type_ToText(Value.Type(value)) & " >"
+                            else maybeFlatValue[Value],
+                        pair = [
+                            Key = key,
+                            Value = try flatValue otherwise "<obj>"
+                        ]
+                    in
+                        pair
+            ),
+            flat_pairsAsText = List.Transform(
+                pairs,
+                (field as record) =>
+                    field[Key] & " = "  & Text.From( field[Value], culture )
+            ),
+
+            transformPair = (field as record) as text =>
+                let
+                    result  = field[Key] & " = "  & Text.From( field[Value], culture )
+                in
+                    result,
+
+                    // isRecord =
+                    //     Value.Is(
+                    //         type record,
+                    //         Value.Type( field[Value] )
+                    //     )
+                // in
+                //     if isRecord then
+                //         //"[nested]"
+                //         "<<" &
+                //         @fn_Summarize_Record( field[Value] )
+                //         & ">>"
+                //     else
+
+
+            pairsAsText = List.Transform(
+                pairs,
+                (field as record) => transformPair(field)
+            ),
+            x3 = outputPrefix & Text.Combine( pairsAsText, outputSeparator ) & outputSuffix
+        in
+            x3,
+
+    fin = 1
+in
+    fin
+
+// Web_Request
+// webRequest
+let
+    /*
+    Example using the url:
+        https://www.metaweather.com/api/location/search?lattlong=36.96,-122.02
+
+        webRequest(
+            "https://www.metaweather.com",
+            "api/location/search",
+            [ lattlong = "36.96,-122.02" ]
+        )
+
+    */
+    Documentation = type function (
+        staticPath as (type text meta [
+            Documentation.FieldCaption = "Base Url",
+            Documentation.FieldDescription = "Minimum of a url, usually up to '.com'",
+            Documentation.SampleValues = {"https://www.metaweather.com"}
+        ]),
+        relativePath as (type text meta [
+            Documentation.FieldCaption = "relativePath",
+            Documentation.FieldDescription = "Everything after '.com' up until a '?'#(lf)ie: API Endpoint",
+            Documentation.SampleValues = {"api/location/search"}
+        ]),
+        optional query as (type nullable record meta [
+            Documentation.FieldCaption = "r",
+            Documentation.FieldDescription = "a",
+            Documentation.AllowedValues = {
+                "[ lattlong = ""36.96,-122.02"" ]"
+                }
+        ]),
+        optional asRaw as (type nullable logical meta [
+            Documentation.FieldCaption = "return raw? (True skips parsing JSON)",
+            Documentation.FieldDescription = "Set to 'true' to get non-JSON data",
+            Documentation.AllowedValues = { true, false, null}
+        ]),
+        optional headers as (type nullable record meta [
+            Documentation.FieldCaption = "return raw? (True skips parsing JSON)",
+            Documentation.FieldDescription = "Set to 'true' to get non-JSON data",
+            Documentation.AllowedValues = {
+                [ Accept ="application/json" ]
+            }
+        ])
+    ) as table meta [
+        Documentation.Name = "Web.Request",
+        Documentation.LongDescription = "short, domain name",
+        Documentation.Examples = {
+                [
+                    Description = "Generate one value",
+                    Code = "RandomInt(10, 20)",
+                    Result = "11"
+                ],
+                [
+                    Description = "Generate one value",
+                    Code = "RandomInt(10, 20)",
+                    Result = "11"
+                ]
+            }
+        ],
+
+
+    function_Web.Request = (
+        staticPath as text,                 // domain
+        relativePath as text,               // basically use everything after ".com" to "?"
+        optional query as nullable record,  // url query string
+        optional asRaw as nullable logical, // use true if content is not Json
+        optional headers as nullable record
+    ) as any =>
+        let
+            query = query ?? [],
+            asRaw = asRaw ?? false, // toggles calling Json.Document() or not
+            headers = headers ?? [
+                Accept="application/json"
+            ],
+
+            baseUrl = staticPath,
+            options = [
+                RelativePath = relativePath,
+                Headers = headers,
+                Query = query
+                // ManualStatusHandling = {400, 404}
+            ],
+            // wrap 'Response' in 'Binary.Buffer' if you are using it multiple times
+            response = Web.Contents(staticPath, options),
+            metadata = Value.Metadata(response),
+            buffered = Binary.Buffer(response),
+            result = Json.Document(buffered)
+        in
+            [
+                response = if asRaw then buffered else result,
+                status_code = metadata[Response.Status],
+                metadata = metadata
+            ]
+in
+    Value.ReplaceType( function_Web.Request, Documentation)
+
+// toggle table max limit - SampleData_DuplicateValues (2)
+let
+    // Config_MaxRows = null, // null means keep everything
+    Config_MaxRows = 2000, // or set the number of rows
+    Raw_Source = test_DateTime_FromUnixTime,
+
+    Source
+        = if Config_MaxRows <> null
+            then Table.FirstN(Raw_Source, Config_MaxRows)
+            else Raw_Source,
+
+
+    NumRows = Table.RowCount(Source)
+
+in
+    NumRows
+
+// Web_Request - Invoke Test
+let
+    Source = "x",
+    fn = Web_Request
+in
+    fn
