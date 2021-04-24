@@ -1,30 +1,11 @@
 {
-    /*
-            examples:
+/*
 
-            transforming input
-                https: //code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples
+    examples:
 
-            if you want ex:
-                type table
-
-            - [1] default lets you replace full
-            - [2] tab lets you replace one keeping the first part
-            "${1:another ${2:placeholder}}"
-            - [3]
-                record type that loops forver, record type
-            - [4]
-                insert inline table definitions
-
-            - [4]
-                inlike correct list to table
-            - [5]
-                - [5] inline rename columns
-                - [5] inline transform columns
-                - [5] inline move tables
-                - [5] inline transformtyeps
-
-        */
+        transforming input: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples>
+        new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
+    */
     "Web.Contents | Basic HTTP Request": {
         "Web.Contents | Basic HTTP Request": {
             "prefix": "Web Request",
@@ -43,6 +24,7 @@
                 "                ${3:ArgName = Value}",
                 "            ]",
                 "        ],",
+                "        // wrap 'Response' in 'Binary.Buffer' if you are using it multiple times",
                 "        Response = Web.Contents(BaseUrl, Options),",
                 "        Result = Json.Document(Response)",
                 "    in",
@@ -69,8 +51,12 @@
                 "            // #\"Authorization\" = accessToken",
                 "        ],",
                 "        BaseUrl = \"https://httpbin.org\",",
+                "        Query = [",
+                "            ArgName = Value",
+                "        ],",
                 "        Options = [",
-                "            APIKeyName = \"apikey\", // enables credentail store",
+                "            Query = Query,",
+                "            //ApiKeyName = \"apikey\", // enables credential store",
                 "            RelativePath = \"/get\",",
                 "            Headers = Headers",
                 "            // Timeout = 100, // using seconds",
@@ -85,9 +71,6 @@
                 "        //  If key 'Content' is used: request type will be POST",
                 "        // Content = \"\"",
                 "",
-                "        Query = [",
-                "            ArgName = Value",
-                "        ],",
                 "        Response = Web.Contents(BaseUrl, Options),",
                 "        Result = Json.Document(Response)",
                 "    in",
@@ -127,5 +110,5 @@
                 "        ${4},",
             ],
         },
-    },
+    }
 }
