@@ -21,7 +21,7 @@ let
 
     TableToJson = (source as table, optional encoding as nullable number) as text =>
         let
-            encoding = if encoding <> null then encoding else TextEncoding.Utf8,
+            encoding = encoding ?? TextEncoding.Utf8,
             bin = Json.FromValue(source, encoding),
             jsonAsText = Text.FromBinary(bin, encoding)
         in
