@@ -1,7 +1,8 @@
 let
     /*
-    ref: https://docs.microsoft.com/en-us/power-query/handlingdocumentation
-    for rounding see also: Number.Round* family of functions.
+        Source: https://github.com/ninmonkey/Ninmonkey.PowerQueryLib
+        About: Randomized Int. [2021-04-22]
+        See Also: Number.Round* family of functions, and <https://docs.microsoft.com/en-us/power-query/handlingdocumentation>
     */
 
     Documentation = type function (

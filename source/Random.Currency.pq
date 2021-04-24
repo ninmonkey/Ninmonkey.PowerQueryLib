@@ -1,7 +1,9 @@
-// RandomCurrency
 let
-    /* randomly generate currency within a range
-    optional culture */
+    /*
+    About: randomly generate currency within a range [2021-04-23]
+    optional culture
+    Return Type: [Currency]
+     */
     RandomCurrency = (
             min as number,
             max as number,
