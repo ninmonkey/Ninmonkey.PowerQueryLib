@@ -1,0 +1,12 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Library",
+            "type": "shell",
+            "command": "pwsh.exe -f './util/Invoke-BuildPowerQueryLib.ps1'",
+            "problemMatcher": [],
+        }
+    ]
+}
