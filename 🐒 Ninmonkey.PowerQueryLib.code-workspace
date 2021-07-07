@@ -1,17 +1,29 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"[markdown]": {
-			"editor.formatOnSave": true,
-			"editor.wordWrap": "on",
-			// "editor.quickSuggestions": false,
-			"editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced"
-			// "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
-			// "editor.defaultFormatter": "vscode.markdown-language-features",
-		}
-	}
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "[markdown]": {
+            "editor.formatOnSave": true,
+            "editor.wordWrap": "on",
+            // "editor.quickSuggestions": false,
+            "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced"
+            // "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+            // "editor.defaultFormatter": "vscode.markdown-language-features",
+        }
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Invoke-BuildPowerQueryLib.ps1",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/util/Invoke-BuildPowerQueryLib.ps1",
+                "cwd": "${workspaceFolder}"
+            }
+        ]
+    }
 }
