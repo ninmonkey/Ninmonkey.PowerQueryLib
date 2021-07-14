@@ -1,3 +1,4 @@
+using namespace System.Text.StringBuilder;
 $Config = @{
     AutoOpenEditor = $false
 }
@@ -36,6 +37,8 @@ function Invoke-BuildPowerQueryLib {
     $Files = Get-ChildItem -Path $Path -Filter '*.pq' -Recurse
     $Now = Get-Date
 
+    "abc$bdsf"
+
     $TemplateHeader = @"
 /* PowerQueryLib
     Generated on: $($Now.ToShortDateString()) $($Now.ToShortTimeString())
@@ -66,20 +69,32 @@ function Invoke-BuildPowerQueryLib {
         Source
 
     #>
-    $TemplateQuerySuffix
-    $TemplateQueryPrefix
-    $TemplateFooter
+    $slist = [System.Text.StringBuilder]::new()
+    $TemplateQueryPrefix = "`n`n## start ->"
+    $TemplateQuerySuffix = "`n`n## <-- end"
+    $LinePrefix = "`n`t"
+    $TemplateFooter = "`n`n`t`t`t<footer here>"
 
     $QueryContents = $TemplateHeader
     $QueryContents += $TemplateQueryPrefix
+    $slist.Append( $QueryContents )
+
     $QueryContents += $Files | ForEach-Object {
         $curFile = $_
         $Contents = Get-Content -Path $curFile -Encoding Utf8
         $Name = $curFile
         # 'let {0} =' -f $curFile.BaseName
+        $TemplateQueryPrefix
         $Contents | ForEach-Object {
-            "`n`t$_"
+            $curLine = $_
+            "${LinePrefix}${curLine}"
         }
+        $Contents
+        $Contents | Set-Content -Path temp:\dump.pq # debug
+
+        Get-Content temp:\dump.pq
+        $TemplateQuerySuffix
+
         # "`nin`n`t{0}," -f $curFile.BaseName
         # "`n`t,"
     }
@@ -88,6 +103,7 @@ function Invoke-BuildPowerQueryLib {
 
 
     # $Files
+    $QueryContents | Set-Content -Path temp:\dump.pq # debug
     $QueryContents
     | Set-Content -Path $ExportPath -Encoding 'utf8'
 
