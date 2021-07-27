@@ -1,10 +1,19 @@
 {
     "folders": [
         {
-            "path": "."
+            "path": ".",
+            "name": "[Lib] 📌"
+        },
+        {
+            "path": "..\\PowerQuery-ExampleReports",
+            "name": "[ref: ExampleReports]"
         }
     ],
     "settings": {
+        "files.exclude": {
+            "**/*.pbix": false,
+            "**/*.pbit": false,
+        },
         "[markdown]": {
             "editor.formatOnSave": true,
             "editor.wordWrap": "on",
