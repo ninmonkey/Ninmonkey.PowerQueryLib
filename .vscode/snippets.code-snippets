@@ -6,6 +6,20 @@
         transforming input: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples>
         new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
     */
+    "Transform.Literal.Text | Transforms Quote Literal": {
+        "prefix": "Quote Text",
+        "description": "Transforms Quote Literal  ⁞   Ex: Sorted Table ⇒ \"#Sorted Table\"\n\nDoes not escape inner quotes",
+        "body": [
+            "#\"${1:$TM_SELECTED_TEXT}\"${0}",
+        ],
+    },
+    "Constant.Text | Insert Newline literal": {
+        "prefix": "Newline escaped",
+        "description": "Inserts Newline Literal  ⁞   ",
+        "body": [
+            "#\"(nl,cr)\"${0}",
+        ],
+    },
     "Web.Contents | Basic HTTP Request": {
         "prefix": "Web Request",
         "description": "Web  ⁞ A basic HTTP Request",

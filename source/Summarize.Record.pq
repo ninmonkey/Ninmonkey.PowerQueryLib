@@ -83,14 +83,31 @@ let
                 (key as text) =>
                     let
                         value = Record.Field( source, key ),
-
                         valueIsRecord = Type.Is( Value.Type(value), type record),
+                        /*
                         flatValue =
                             if valueIsRecord then @fn_Summarize_Record( value, options )
                             else value,
                         pair = [
                             Key = key,
                             Value = flatValue
+                        ]
+                        */
+
+                        // do not throw by default
+                        maybeFlatValue =
+                            try
+                                if valueIsRecord then @fn_Summarize_Record( value, options )
+                                else value,
+
+                        flatValue =
+                            if maybeFlatValue[HasError]
+                            then "< " & Type_ToText(Value.Type(value)) & " >"
+                            else maybeFlatValue[Value],
+
+                        pair = [
+                            Key = key,
+                            Value = try flatValue otherwise "<obj>"
                         ]
                     in
                         pair
@@ -125,7 +142,10 @@ let
                 pairs,
                 (field as record) => transformPair(field)
             ),
-            x3 = outputPrefix & Text.Combine( pairsAsText, outputSeparator ) & outputSuffix
+            x3 = (outputPrefix
+                & Text.Combine( pairsAsText, outputSeparator )
+                & outputSuffix
+            )
         in
             x3
 in
