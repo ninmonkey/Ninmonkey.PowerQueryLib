@@ -1,15 +1,16 @@
-
 // ListAsText
 /*
 
 options:
-    Suffix      type: text
-    Prefix      type: text
-    Separator   type: text
+    Suffix type: text    default  ff {
+    Prefix type: text    default   {
+    Separator   type: text    default: {
 
 Note:
     The original serializes **everything**
     This only shows type names as text
+
+    this is not a round-trip serialization
 
 */
 let
