@@ -2,8 +2,8 @@
 /*
 
 options:
-    Suffix type: text    default  ff {
-    Prefix type: text    default   {
+    Suffix type: text    default: "{"
+    Prefix type: text    default: "{"
     Separator   type: text    default: {
 
 Note:
@@ -28,6 +28,8 @@ let
                 else seed & Separator & Text.From(item)),
 
         output = Prefix & joined & Suffix
+
+        
     in
         output
 in
