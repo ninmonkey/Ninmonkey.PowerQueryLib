@@ -5,6 +5,7 @@
 
         transforming input: <https://code.visualstudio.com/docs/editor/userdefinedsnippets#_transform-examples>
         new: snippet variables: <https://code.visualstudio.com/updates/v1_53#_new-snippet-variables>
+        docs: <https://code.visualstudio.com/docs/editor/userdefinedsnippets>
     */
     "Transform.Literal.Text | Transforms Quote Literal": {
         "prefix": "Quote Text",
@@ -101,6 +102,18 @@
             "    each ${0}",
             "    ${4:type any}",
             "),",
+        ],
+    },
+    "Has Error Expression": {
+        "prefix": "HasError",
+        "description": "try: =>  HasError expression",
+        "body": [
+            "",
+            "   let",
+            "      maybeVal = try ${1:$TM_SELECTED_TEXT}",
+            "   in",
+            "      if maybeVal[HasError] then maybeVal[Error] else maybeVal[Value]${0:,}",
+            "",
         ],
     },
     "Custom Function": {
