@@ -1,5 +1,5 @@
 let
-    SampleInput = GenerateDocs_OnType as table,
+    SampleInput = GenerateDocs_OnType, // as table,
     source = SampleInput,
 
     Table_ToMarkdown = (source as table) as any => // text ?
@@ -19,7 +19,7 @@ let
     future:
         tie into the better text coercion funcs
     */
-    Format_RowsToMarkdown(row as record) as any => // text
+    Format_RowsToMarkdown = (row as record) as any => // text
             let
                 values = Record.FieldValues(row),
                 joinPipe = Text.Combine(values, " | "),
@@ -39,7 +39,7 @@ let
                 source, Format_RowsToMarkdown
             )
         in
-            generate_lines
+            generate_lines,
 
 
 

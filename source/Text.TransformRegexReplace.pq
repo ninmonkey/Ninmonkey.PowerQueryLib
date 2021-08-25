@@ -1,5 +1,11 @@
 // Regex_Replace
 let
+    /*
+    future: this could be extended, by waiting for a css selector
+
+        Web.BrowserContents("https://microsoft.com", [WaitFor = [Selector = "div.ready"]])
+    */
+
     Source =
         (string as nullable text, pattern as text, optional replacement as text, optional modifiers as text) =>
             let
