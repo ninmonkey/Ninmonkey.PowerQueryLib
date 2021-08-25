@@ -1,0 +1,93 @@
+/*
+Credit: From
+    https://dax.tips/2019/10/02/dax-base-conversions/#hex2dec
+
+See also:
+    https://dax.tips/2019/10/03/dax-bitwise-calculations/
+
+Multiple queries as one script for convenience:
+*/
+
+
+//
+/* Hex2Dec: HexStrings to Decimal
+    input:  FF
+    output: 255
+    output Type: whole number
+    */
+EVALUATE
+    VAR ConvertMe = "FF"
+    VAR HEX2DEC =
+        SUMX(
+            // Loop control
+            GENERATESERIES(0,LEN(ConvertMe)-1) ,
+            // Inner Calc
+            VAR c = MID(ConvertMe,LEN(ConvertMe) - [value],1)
+            VAR d = SWITCH(c,"A",10,"B",11,"C",12,"D",13,"E",14,"F",15,int(c))
+            RETURN
+                d * POWER(16,[value])
+            )
+    RETURN
+        { HEX2DEC } // Returns 255
+
+
+/* Dec2Bin: Decimal to BinaryStrings
+    input:  55
+    output: 00110111125
+    output Type: Text
+    */
+    EVALUATE
+        VAR ConvertMe = 55
+        VAR BitTable =
+            GENERATESERIES ( 1, 8 )
+        VAR DEC2BIN =
+            CONCATENATEX (
+                BitTable,
+                MOD ( TRUNC ( ConvertMe / POWER ( 2, [value] - 1 ) ), 2 ),
+                ,
+                [Value], DESC
+            )
+        RETURN
+            { DEC2BIN } //Returns 001101111
+
+/* Bin2Dec: BinaryString to Whole number
+    input:  0000101110
+    output: 46
+    output Type: WholeNumber or just Number?
+    */
+    EVALUATE
+    VAR ConvertMe = "0000101110"
+    VAR BIN2DEC =
+        SUMX (
+            // Loop control
+            GENERATESERIES ( 0, LEN ( ConvertMe ) - 1 ),
+            // Inner Calc
+            VAR c =
+                MID ( ConvertMe, LEN ( ConvertMe ) - [value], 1 )
+            RETURN
+                c * POWER ( 2, [value] )
+        )
+    RETURN
+        { BIN2DEC } // Returns 46
+
+
+/* Dec2Hex: Decimal to HexString
+    input:  255
+    output: FF
+    output Type: Text
+        */
+    EVALUATE
+    VAR ConvertMe = 255
+    VAR Base = 16
+    VAR BitTable =
+        GENERATESERIES ( 1, 8 )
+    VAR DEC2HEX =
+        CONCATENATEX(
+            BitTable,
+            VAR c = MOD ( TRUNC ( ConvertMe / POWER ( base, [value] - 1 ) ),base )
+            RETURN SWITCH(c,10,"A",11,"B",12,"C",13,"D",14,"E",15,"F",c),
+            ,
+            [Value],Desc)
+
+    RETURN
+        { DEC2HEX } // Returns 'FF'
