@@ -1,0 +1,53 @@
+Calculated Rune =
+/*
+Docs:
+    Extra links if you're curious
+
+    [NonChars](https://www.unicode.org/faq/private_use.html#nonchar1)
+    [C0 and C1 Control Chars](https://en.wikipedia.org/wiki/C0_and_C1_control_codes)
+    [TOC of blocks / index of all groups](https://www.compart.com/en/unicode/plane/U+0000)
+    [surrogate pairs @ globalization/encoding](https://docs.microsoft.com/en-us/globalization/encoding/surrogate-pairs)
+
+    unicode-max:            1114111  0x10ffff
+    [c0]:                   [0x0, 0x1f]
+    space:                  32 / 0x20
+    del                     127 / 0x7f
+    0x2421 = 9249 ␡
+
+    Block:
+        "Ascii" / "latin":          0x0000..0x007f
+        "latin-1 suppliment"        0x0080..0x00ff
+        "Control Char Symbols":     0x2400..0x243f
+
+    Planes:
+        Private Use Areas   plane 15 (U+F0000-U+FFFFD)
+        Private Use 2       plane 16 (U+100000-U+10FFFD)
+
+        Supplementary
+        Supplementary Multilingual Plane (SMP)          0x10000..0x1FFFF
+        Supplementary Ideographic Plane (SIP)-          0x20000..0x2FFFF
+        Supplementary Special-purpose Plane (SSP)       0xe0000..0xEFFFF
+
+
+Verified
+    0..32,
+    127,
+*/
+var curCodepoint = SELECTEDVALUE( Number[Codepoint] )
+var x = IFERROR(
+    SWITCH(
+        TRUE(),
+        // curCodepoint < 32, "Control Chars", // if you want to just cut it off
+        curCodepoint < 33,
+            UNICHAR( curCodepoint + 9216 ),  // = 0x2400
+        curCodepoint = 127,
+            UNICHAR( 9249 ),
+        curCodepoint >= 1114111,
+            "Too Big", // 0x10ffff
+        IFERROR(
+            UNICHAR( curCodepoint ), "Failed!"
+        )
+    )
+
+, "OuterError")
+return x
