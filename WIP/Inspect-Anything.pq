@@ -21,17 +21,20 @@ let
                 {results_basic, results_detailed}),
 
 
+    // q = Value.Compare()
+    targets = [
+        JoinAlgorithm.Type = JoinAlgorithm.Type,
+        DirectQueryCapabilities.From = DirectQueryCapabilities.From,
+        Value.Compare = Value.Compare, // type: comparisonCriteria
+        equate = "?" // type: equationCriteria
+    ],
+
     test = InspectObject( {"a".."4"}),
     test2 = InspectObject( Rations ),
     test3 = InspectObject( GenerateDocs_OnAlgoType ),
 
-    target = JoinAlgorithm.Type,
-    target2 = DirectQueryCapabilities.From,
-
-    // q = Value.Compare()
-
-    Value.Compare // type: comparisonCriteria
-    equationCriteria // type: equationCriteria
+    // target = targets{0},
+    target = Rations,
 
     test_results = [
         Metadata = Value.Metadata( target ),

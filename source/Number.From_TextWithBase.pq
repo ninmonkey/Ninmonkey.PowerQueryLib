@@ -3,15 +3,15 @@ let
     /*
     better naming idea?
 
-        Number.From_TextWithBase
+        Number.FromTextWithBaseWithBase
         TextTo_NumberWithBase
-        Number.From_Text
-        Number.From_TextBase
+        Number.FromTextWithBase
+        Number.FromTextWithBaseBase
         Text.To_NumberWithBase
 
      */
 
-    Number.From_Text = (Input as text, optional Base as number) as number =>
+    Number.FromTextWithBase = (Input as text, optional Base as number) as number =>
         // original from: <https://xxlbi.com/blog/converting-hexadecimal-to-decimal-numbers-in-power-query/>
         let
             Symbols = {"0".."9"} & {"A".."F"},
@@ -39,10 +39,10 @@ let
                 Result,
 
     tests = {
-        Number.From_Text("0101", 2) = 5,
-        Number.From_Text("ff", 16) = 255
+        Number.FromTextWithBase("0101", 2) = 5,
+        Number.FromTextWithBase("ff", 16) = 255
     },
     Final =
-        if enableTest then tests else Number.From_Text
+        if enableTest then tests else Number.FromTextWithBase
 in
     Final

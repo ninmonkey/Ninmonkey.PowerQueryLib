@@ -21,6 +21,29 @@
             "#\"(nl,cr)\"${0}",
         ],
     },
+    "Template | Empty Measure Table": {
+        "prefix": "Measure Table",
+        "description": "Creates an empty table to hold Measures",
+        "body": [
+            "let",
+            "    MeasureTable = #table(type table[MeasureName_ = text], {})",
+            "in",
+            "    MeasureTable",
+        ],
+    },
+    "Table.Join | Table Inner Join": {
+        "prefix": "Table [inner] join",
+        "description": "Table.Join for inner (or other)",
+        "body": [
+            "joined = Table.Join(",
+            "    ${1:sourceLeft}, \"${2:LeftKey}\",",
+            "    ${3:sourceRight}, \"${4:Unit Id}\",",
+            "    ${5:JoinKind.Inner}${0},  // joinKind: optional nullable number",
+            "    null,            // joinAlgorithm: nullable number",
+            "    null             // keyEqualityComparers: optional nullable list",
+            ")",
+        ],
+    },
     "Web.Contents | Basic HTTP Request": {
         "prefix": "Web Request",
         "description": "Web  ⁞ A basic HTTP Request",
