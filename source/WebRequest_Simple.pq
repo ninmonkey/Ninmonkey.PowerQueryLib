@@ -1,9 +1,13 @@
-
+// WebRequest_Simple
 let
-    
+
     /*
-    Wrapper for Web.Contents  returns response metadata 
+    Wrapper for Web.Contents  returns response metadata
         for options, see: <https://docs.microsoft.com/en-us/powerquery-m/web-contents#__toc360793395>
+    update:
+        - MaybeErrResponse: Quick example of parsing an error result.
+        - Raw text is returned, this is useful when there's an error
+        - now response[json] does not throw, when the data isn't json to begin with (false errors)
 
     */
     WebRequest_Simple
@@ -13,43 +17,55 @@ let
             optional options       as nullable record
         )
         as record =>
-        let 
-    
+        let
+
             headers = options[Headers]?, //or: ?? [ Accept = "application/json" ],
 
-            merged_options = [      
+            merged_options = [
                 Query = options[Query]?,
                 RelativePath = relative_path,
-                ManualStatusHandling = options[ManualStatusHandling]? ?? { 400, 404 },
+                ManualStatusHandling = options[ManualStatusHandling]? ?? { 400, 404, 406 },
                 Headers = headers
             ],
-        
+
             bytes = Web.Contents(base_url, merged_options),
             response = Binary.Buffer(bytes),
             response_metadata = Value.Metadata( bytes ),
             status_code = response_metadata[Response.Status]?,
+            response_text = Text.Combine( Lines.FromBinary(response,null,null, TextEncoding.Utf8), "" ),
             json = Json.Document(response),
+            IsJsonX = not (try json)[HasError],
             Final = [
                 request_url = metadata[Content.Uri](),
+                response_text = response_text,
                 status_code = status_code,
                 metadata = response_metadata,
-                IsJson = not (try json)[HasError],
+                IsJson = IsJsonX,
                 response = response,
-                json = json
+
+                json = if IsJsonX then json else null
             ]
-        in 
+        in
             Final,
 
     tests = {
         WebRequest_Simple("https://httpbin.org", "json"), // expect: json
-        WebRequest_Simple("https://www.google.com")       // expect: html
+        WebRequest_Simple("https://www.google.com"),       // expect: html
+        WebRequest_Simple("https://httpbin.org", "/headers"),
+        WebRequest_Simple("https://httpbin.org", "/status/codes/406"), // exect 404
+        WebRequest_Simple("https://httpbin.org", "/status/406"), // exect 406
+        WebRequest_Simple("https://httpbin.org", "/get", [ Text = "Hello World"])
     },
 
     FinalResults = Table.FromRecords(tests,
         type table[
-            status_code = text, request_url = text, metadata = record,
-            response = binary, IsJson = logical, json = any],
+            status_code = Int64.Type, request_url = text,
+            metadata = record,
+            response_text = text,
+            IsJson = logical, json = any,
+            response = binary
+        ],
         MissingField.Error
-    )    
+    )
 in
     FinalResults
