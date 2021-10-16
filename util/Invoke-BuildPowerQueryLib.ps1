@@ -28,11 +28,27 @@ function Invoke-BuildPowerQueryLib {
         # Basee / Root Directories to search
         [Alias('Path')]
         [Parameter(Position = 0)]
-        [string]$BaseDirectory
+        [string]$BaseDirectory,
+
+        # List of regex's that include files
+        [Alias('Regex')]
+        [Parameter(Position = 1)]
+        [string[]]$IncludeRegex = '.*',
+
+        # to ignore
+        [Alias('RegexExclude')]
+        [Parameter(Position = 1)]
+        [string[]]$ExcludeRegex = '\.old\.pq',
+
+        # show matching files, do not run
+        [parameter()]
+        [switch]$List
+
+
     )
     begin {}
     process {
-        $buildMeta = @{
+        $buildMeta = [ordered]@{
             StartTime = Get-Date
             Version   = $Config.AppVersion
         }
@@ -52,7 +68,50 @@ function Invoke-BuildPowerQueryLib {
             ExportPath    = $ExportPath
             Files         = $Files
             Now           = $Now
+            Regex         = $IncludeRegex
+            ExcludeRegex  = $ExcludeRegex
         }
+
+
+        $filesSelected = $Files | Where-Object {
+            foreach ($Regex in $IncludeRegex) {
+                if ($_.Name -match $Regex) {
+                    $True
+                    return
+                }
+            }
+            $false
+            return
+        }
+
+        $FilesFiltered = $filesSelected | Where-Object {
+            foreach ($Regex in $ExcludeRegex) {
+                if ($_.Name -match $Regex) {
+                    $false
+                    return
+                }
+            }
+            $true
+            return
+        }
+
+
+
+        $BuildMeta += @{
+            FilesSelected      = $filesSelected
+            FilesSelectedCount = $filesSelected.Count
+            FilesFiltered      = $FilesFiltered
+            FilesFilteredCount = $FilesFiltered.Count
+            FilesNames         = $FilesFiltered | Join-String -sep ', ' -prop 'BaseName' -SingleQuote
+        }
+
+
+        if ($List) {
+            $FilesFiltered
+            return
+        }
+
+
 
         $TemplateHeader = @"
 /* PowerQueryLib : v $($Config.AppVersion)
@@ -127,22 +186,37 @@ in
         # )
         #     'dfs'
 
-        $joinedQueries = @(
-            # 0 equals list
-            $curSrc = 'let Nin = 10 in Nin'
-            $curFileBase = 'Nin'
-            '{0} = {1}' -f @(
-                $curFileBase
-                $curSrc
-            )
+        # 0 equals list
+        # $curSrc = 'let Nin = 10 in Nin'
+        # $curFileBase = 'Nin'
+        # '{0} = {1}' -f @(
+        #     $curFileBase
+        #     $curSrc
+        # )
 
-            $curSrc = 'let Nin = 90 in Nin'
-            $curFileBase = 'Bar'
+        $joinedQueries = $FilesFiltered | ForEach-Object {
+            $curFile = $_
+            $curFileBase = '#"{0}"' -f @(
+                $curFile.BaseName
+            )
+            $curSrc = Get-Content -Path $curFile
+
             '{0} = {1}' -f @(
                 $curFileBase
                 $curSrc
             )
-        ) | Join-String -sep ",`n" | Format-IndentText -Depth 3
+        }
+        | Join-String -sep ",`n"
+        # | Format-IndentText -Depth 3
+
+        $buildMeta.FinalText = $joinedQueries
+
+        # $curSrc = 'let Nin = 90 in Nin'
+        # $curFileBase = 'Bar'
+        # '{0} = {1}' -f @(
+        #     $curFileBase
+        #     $curSrc
+        # )
 
         [void]$querysb.AppendFormat( $Template.RootBody, $joinedQueries )
         # $querysb.AppendFormat( $Template.RootBody, $kwargs )
@@ -161,9 +235,29 @@ in
 
 }
 
+$RegexIncludeList = @(
+    'web'
+)
+$RegexExcludeList = @(
+    '\.old\.pq$'
+)
+
+$splat_build = @{
+    BaseDirectory = $LibRoot
+    Infa          = 'Continue'
+}
+
 'start'
 $LibRoot = Join-Path $PSScriptRoot 'source' | Get-Item -ea ignore
-$results = Invoke-BuildPowerQueryLib -BaseDirectory $LibRoot -Infa Continue
+$results = Invoke-BuildPowerQueryLib @splat_build -IncludeRegex $RegexIncludeList -ExcludeRegex $RegexExcludeList
 $Results | format-dict
-
 'done'
+# $ColorNames = @{
+#     SubtleEmphasis = @{ fg = gray75; bg = gray20; }
+# }
+$fileNameColor = @(
+    $results.FilesFiltered | Join-String -sep ', ' -SingleQuote:$false {
+        $_.BaseName | write-color gray75 -bg gray20 }
+)
+
+$fileNameColor | Join-String -op 'Wrote: '
