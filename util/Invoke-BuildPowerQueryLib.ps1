@@ -2,7 +2,7 @@ using namespace System.Text.StringBuilder;
 #Requires -Version 7.0.0
 #Requires -Module Dev.Nin, Ninmonkey.console
 
-Import-Module Ninmonkey.Console, Dev.nin
+Import-Module Ninmonkey.Console, Dev.nin -wa ignore
 $Config = @{
     AutoOpenEditor = $false
     AppVersion     = 0.1
@@ -14,6 +14,9 @@ function Invoke-BuildPowerQueryLib {
         Exports library as a single query, for import
     .description
         merge library into a single query, for import.
+
+        $Options['IncludeFile']
+            is a list of $file.Name that are always imported
     .example
         PS> Invoke-BuildPowerQueryLib -path 'c:\stuff\source'
     .notes
@@ -25,10 +28,15 @@ function Invoke-BuildPowerQueryLib {
         PositionalBinding = $false
     )]
     param (
-        # Basee / Root Directories to search
+        # Base / Root Directories to search
         [Alias('Path')]
         [Parameter(Position = 0)]
         [string]$BaseDirectory,
+
+        # ExportPath
+        # [Alias('Path')]
+        [Parameter()]
+        [string]$ExportPath,
 
         # List of regex's that include files
         [Alias('Regex')]
@@ -42,78 +50,92 @@ function Invoke-BuildPowerQueryLib {
 
         # show matching files, do not run
         [parameter()]
-        [switch]$List
+        [switch]$List,
+
+        # extra options
+        [Alias('Config')]
+        [parameter()]
+        [hashtable]$Options
 
 
     )
     begin {}
     process {
-        $buildMeta = [ordered]@{
-            StartTime = Get-Date
-            Version   = $Config.AppVersion
-        }
-        'building...' | write-color darkgreen | Write-Information
-        if ([string]::IsNullOrWhiteSpace($BaseDirectory)) {
-            $BaseDirectory = Join-Path $PSScriptRoot '../source'
-        }
-        $Path = Get-Item -ea stop $BaseDirectory
-        $ExportPath = Join-Path $PSScriptRoot '../.output/PowerQueryLib.pq' # | Get-Item -ea stop
-
-        $Files = Get-ChildItem -Path $Path -Filter '*.pq' -Recurse
-        $Now = Get-Date
-
-        $BuildMeta += @{
-            BaseDirectory = $BaseDirectory
-            Path          = $Path
-            ExportPath    = $ExportPath
-            Files         = $Files
-            Now           = $Now
-            Regex         = $IncludeRegex
-            ExcludeRegex  = $ExcludeRegex
-        }
-
-
-        $filesSelected = $Files | Where-Object {
-            foreach ($Regex in $IncludeRegex) {
-                if ($_.Name -match $Regex) {
-                    $True
-                    return
-                }
+        try {
+            $buildMeta = [ordered]@{
+                StartTime = Get-Date
+                Version   = $Config.AppVersion
             }
-            $false
-            return
-        }
-
-        $FilesFiltered = $filesSelected | Where-Object {
-            foreach ($Regex in $ExcludeRegex) {
-                if ($_.Name -match $Regex) {
-                    $false
-                    return
-                }
+            '[Invoke-Build]: building...' | write-color darkgreen | Write-Information
+            if ([string]::IsNullOrWhiteSpace($BaseDirectory)) {
+                $BaseDirectory = Join-Path $PSScriptRoot '../source'
             }
-            $true
-            return
-        }
+            $Path = Get-Item -ea stop $BaseDirectory
+            if(! $ExportPath ) {
+                $ExportPath = Join-Path $PSScriptRoot '../.output/PowerQueryLib.pq' # | Get-Item -ea stop
+            }
+
+            $Files = Get-ChildItem -Path $Path -Filter '*.pq' -Recurse
+            $Now = Get-Date
+
+            $BuildMeta += @{
+                BaseDirectory = $BaseDirectory
+                Path          = $Path
+                ExportPath    = $ExportPath
+                Files         = $Files
+                Now           = $Now
+                Regex         = $IncludeRegex
+                ExcludeRegex  = $ExcludeRegex
+            }
+
+
+            $filesSelected = $Files | Where-Object {
+                if ( ($Options)?['IncludeFile'] -contains $_.Name ) {
+                    $true; return
+                }
+                foreach ($Regex in $IncludeRegex) {
+                    if ($_.Name -match $Regex) {
+                        $True
+                        return
+                    }
+                }
+                $false
+                return
+            }
+
+            $FilesFiltered = $filesSelected | Where-Object {
+                if ( ($Options)?['IncludeFile'] -contains $_.Name ) {
+                    $true; return
+                }
+
+                foreach ($Regex in $ExcludeRegex) {
+                    if ($_.Name -match $Regex) {
+                        $false; return
+                    }
+                }
+                $true; return
+            }
 
 
 
-        $BuildMeta += @{
-            FilesSelected      = $filesSelected
-            FilesSelectedCount = $filesSelected.Count
-            FilesFiltered      = $FilesFiltered
-            FilesFilteredCount = $FilesFiltered.Count
-            FilesName          = $FilesFiltered | Join-String -sep ', ' -prop 'BaseName' -SingleQuote
-        }
+            $BuildMeta += @{
+                FilesSelected      = $filesSelected
+                FilesSelectedCount = $filesSelected.Count
+                FilesFiltered      = $FilesFiltered
+                FilesFilteredCount = $FilesFiltered.Count
+                FilesName          = $FilesFiltered | Join-String -sep ', ' -prop 'BaseName' -SingleQuote
+                Options            = $Options
+            }
 
 
-        if ($List) {
-            $FilesFiltered
-            return
-        }
+            if ($List) {
+                $FilesFiltered
+                return
+            }
 
 
 
-        $TemplateHeader = @"
+            $TemplateHeader = @"
 /* PowerQueryLib : v $($Config.AppVersion)
     Generated on: $($Now.ToShortDateString()) $($Now.ToShortTimeString())
     Source:
@@ -122,7 +144,7 @@ function Invoke-BuildPowerQueryLib {
 */
 "@
 
-        <#
+            <#
     target:
     let
 
@@ -150,13 +172,13 @@ function Invoke-BuildPowerQueryLib {
 
 
     #>
-        $ExportPath = Get-Item -ea 'Stop' $ExportPath
+            $ExportPath = Get-Item -ea 'Stop' $ExportPath
 
-        $querySb = [System.Text.StringBuilder]::new()
-        [void]$querySb.Append( $TemplateHeader )
-        $Template = @{}
+            $querySb = [System.Text.StringBuilder]::new()
+            [void]$querySb.Append( $TemplateHeader )
+            $Template = @{}
 
-        $Template.Header = @'
+            $Template.Header = @'
 let
     Metadata = [
         LastExecution = DateTime.FixedLocalNow(),
@@ -168,16 +190,16 @@ let
     ],
 
 '@
-        $queryInfo = @(
-            $Config.AppVersion
-            $Now.ToString('o')
+            $queryInfo = @(
+                $Config.AppVersion
+                $Now.ToString('o')
             (Get-GitCommitHash ) -replace '\r?\n', ''
-            $IncludeRegex | Join-String -sep ', ' -SingleQuote
-            $ExcludeRegex | Join-String -sep ', ' -SingleQuote
-        )
-        [void]$querysb.AppendFormat( $Template.Header, $queryInfo)
+                $IncludeRegex | Join-String -sep ', ' -SingleQuote
+                $ExcludeRegex | Join-String -sep ', ' -SingleQuote
+            )
+            [void]$querysb.AppendFormat( $Template.Header, $queryInfo)
 
-        $Template.RootBody = @'
+            $Template.RootBody = @'
     FinalRecord = [
 {0}
     ]
@@ -185,98 +207,129 @@ in
     FinalRecord
 '@
 
-        # $querySB.AppendFormat(
-        #     $Template.RootBody,
-        # )
-        #     'dfs'
+            # $querySB.AppendFormat(
+            #     $Template.RootBody,
+            # )
+            #     'dfs'
 
-        # 0 equals list
-        # $curSrc = 'let Nin = 10 in Nin'
-        # $curFileBase = 'Nin'
-        # '{0} = {1}' -f @(
-        #     $curFileBase
-        #     $curSrc
-        # )
+            # 0 equals list
+            # $curSrc = 'let Nin = 10 in Nin'
+            # $curFileBase = 'Nin'
+            # '{0} = {1}' -f @(
+            #     $curFileBase
+            #     $curSrc
+            # )
 
-        $joinedQueries = $FilesFiltered | ForEach-Object {
-            $curFile = $_
-            $curFileBase = '#"{0}"' -f @(
-                $curFile.BaseName
-            )
-            $curSrc = Get-Content -Path $curFile -Raw
+            $joinedQueries = $FilesFiltered | ForEach-Object {
+                $curFile = $_
+                $curFileBase = '#"{0}"' -f @(
+                    $curFile.BaseName
+                )
+                $curSrc = Get-Content -Path $curFile -Raw
 
-            '{0} = {1}' -f @(
-                $curFileBase
-                $curSrc -join "`n"
-            )
+                '{0} = {1}' -f @(
+                    $curFileBase
+                    $curSrc -join "`n"
+                )
+            }
+            | Join-String -sep ",`n"
+            # | Format-IndentText -Depth 3
+
+            $buildMeta.FinalText = $joinedQueries
+
+
+            # $curSrc = 'let Nin = 90 in Nin'
+            # $curFileBase = 'Bar'
+            # '{0} = {1}' -f @(
+            #     $curFileBase
+            #     $curSrc
+            # )
+
+            [void]$querysb.AppendFormat( $Template.RootBody, $joinedQueries )
+            # $querysb.AppendFormat( $Template.RootBody, $kwargs )
+            $QuerySb | Set-Content -Path $ExportPath -Encoding 'utf8'
+            $buildMeta
         }
-        | Join-String -sep ",`n"
-        # | Format-IndentText -Depth 3
-
-        $buildMeta.FinalText = $joinedQueries
-
-
-        # $curSrc = 'let Nin = 90 in Nin'
-        # $curFileBase = 'Bar'
-        # '{0} = {1}' -f @(
-        #     $curFileBase
-        #     $curSrc
-        # )
-
-        [void]$querysb.AppendFormat( $Template.RootBody, $joinedQueries )
-        # $querysb.AppendFormat( $Template.RootBody, $kwargs )
-        $QuerySb | Set-Content -Path $ExportPath -Encoding 'utf8'
-        "Wrote: $($ExportPath)" | write-color green | Write-Information
-
-        # $QuerySb | Set-Content -Path temp:\dump.pq # debug
-        $buildMeta
+        catch {
+            Write-Error -ErrorRecord $_ 'Build {} failed'
+        }
     }
     end {
-        $BuildMeta | Format-Dict | Write-Information
-        'done' | write-color darkgreen | Write-Information
+
+        @(
+            hr
+            $clist = @{
+                H1             = @{
+                    Fg = 'orange'
+                }
+                BacktickCode   = @{
+                    Bg = 'gray20'
+                    Fg = 'gray75'
+                }
+                SubtleEmphasis = @{
+                    Bg = 'gray20'
+                    Fg = 'gray75'
+                }
+                SubtleDim      = @{ # de-emphasis
+
+                    Fg = 'gray40'
+                }
+            }
+            write-color $clist.H1.Fg -t 'Files filtered out: '
+            $buildMeta.Files
+            | Where-Object { $_ -notin $buildMeta.FilesFiltered }
+            | Join-String -sep ', ' -SingleQuote:$false {
+                $_.BaseName
+                | write-color gray75 -bg gray20
+            }
+            # | Write-Information
+
+            hr
+            # | Write-Information
+            $BuildMeta | Format-Dict
+            # | Write-Information
+            # | Write-Information
+            hr
+
+            # $ColorNames = @{
+            #     SubtleEmphasis = @{ fg = gray75; bg = gray20; }
+            # }
+
+
+            $Options.Detailed = $false
+            if (! $Options.Detailed) {
+                write-color $clist.H1.Fg -t 'Files Exported: '
+                $splat_backtick = $clist.SubtleEmphasis
+                @(
+                    $results.FilesFiltered
+                    | Join-String -sep ', ' -SingleQuote:$false {
+                        $_.BaseName
+                        | write-color @splat_backtick
+                    }
+                )
+                | Join-String
+            }
+            else {
+                write-color $clist.H1.Fg -t 'Files Exported: '
+                $splat_backtick = $clist.SubtleEmphasis
+                @(
+                    $results.FilesFiltered
+                    | Join-String -sep ', ' -SingleQuote:$false {
+                        @(
+                            $_.BaseName | write-color @splat_backtick
+                            ' {0:n2}' -f @(
+                                Format-FileSize $_.Length
+                            )
+                        )
+                    }
+                )
+                | Join-String
+            }
+            $ExportPath | write-color green | join-string -op (write-color yellow -t 'Wrote: ')
+
+            '[Invoke-Build]: done' | write-color darkgreen
+        ) | Write-Information
 
     }
 
 }
-
-$RegexIncludeList = @(
-    'web'
-    'text'
-    # 'date'
-    # 'summarize'
-    # 'ToText'
-)
-$RegexExcludeList = @(
-    '$test_'
-    'wordwrap'
-    'regex'
-    'shared -'
-    'WebRequest'
-    '\.old\.pq$'
-)
-
-$splat_build = @{
-    BaseDirectory = $LibRoot
-    Infa          = 'Continue'
-}
-
-'start'
-$LibRoot = Join-Path $PSScriptRoot 'source' | Get-Item -ea ignore
-$results = Invoke-BuildPowerQueryLib @splat_build -IncludeRegex $RegexIncludeList -ExcludeRegex $RegexExcludeList
-# $Results | format-dict
-
-# $ColorNames = @{
-#     SubtleEmphasis = @{ fg = gray75; bg = gray20; }
-# }
-$fileNameColor = @(
-    $results.FilesFiltered | Join-String -sep ', ' -SingleQuote:$false {
-        $_.BaseName | write-color gray75 -bg gray20 }
-    | ForEach-Object tostring
-)
-$FilenameColor | Join-String -os ' ...'
-
-
-write-color 'orange' -t 'Files filtered out: '
-$results.Files | Where-Object { $_ -notin $results.FilesFiltered }
-| Join-String -sep ', ' -SingleQuote:$false {
-    $_.BaseName | write-color gray75 -bg gray20 }

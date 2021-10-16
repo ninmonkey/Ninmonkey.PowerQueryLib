@@ -53,6 +53,13 @@
         "version": "0.2.0",
         "configurations": [
             {
+                "name": "Build ➔ blog_sketch.pq",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder:pqlib}/util/profile_blog.ps1",
+                "cwd": "${workspaceFolder:pqlib}"
+            },
+            {
                 "name": "Invoke-BuildPowerQueryLib.ps1",
                 "type": "PowerShell",
                 "request": "launch",
