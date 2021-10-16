@@ -1,5 +1,6 @@
 using namespace System.Text.StringBuilder;
 #Requires -Version 7.0.0
+#Requires -Module Dev.Nin, Ninmonkey.console
 
 Import-Module Ninmonkey.Console, Dev.nin
 $Config = @{
@@ -96,13 +97,24 @@ function Invoke-BuildPowerQueryLib {
         [void]$querySb.Append( $TemplateHeader )
         $Template = @{}
 
-        $Template.RootBody = @'
+        $Template.Header = @'
 let
     Metadata = [
         LastExecution = DateTime.FixedLocalNow(),
-        PQLib = 0.1
+        PQLib = "{0}",
+        GeneratedOn = "{1}",
+        Commit = "{2}"
     ],
 
+'@
+        $queryInfo = @(
+            $Config.AppVersion
+            $Now.ToString('o')
+            (Get-GitCommitHash ) -replace '\r?\n', ''
+        )
+        [void]$querysb.AppendFormat( $Template.Header, $queryInfo)
+
+        $Template.RootBody = @'
     FinalRecord = [
 {0}
     ]
