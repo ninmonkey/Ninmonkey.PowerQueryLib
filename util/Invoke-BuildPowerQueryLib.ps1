@@ -1,4 +1,6 @@
 using namespace System.Text.StringBuilder;
+#Requires -Version 7.0.0
+
 Import-Module Ninmonkey.Console, Dev.nin
 $Config = @{
     AutoOpenEditor = $false
@@ -102,7 +104,7 @@ let
     ],
 
     FinalRecord = [
-        {0}
+{0}
     ]
 in
     FinalRecord
@@ -113,11 +115,24 @@ in
         # )
         #     'dfs'
 
-        [string[]]$qArgs = @(
+        $joinedQueries = @(
             # 0 equals list
-            'Nin = 10'
-        )
-        [void]$querysb.AppendFormat( $Template.RootBody, $qArgs )
+            $curSrc = 'let Nin = 10 in Nin'
+            $curFileBase = 'Nin'
+            '{0} = {1}' -f @(
+                $curFileBase
+                $curSrc
+            )
+
+            $curSrc = 'let Nin = 90 in Nin'
+            $curFileBase = 'Bar'
+            '{0} = {1}' -f @(
+                $curFileBase
+                $curSrc
+            )
+        ) | Join-String -sep ",`n" | Format-IndentText -Depth 3
+
+        [void]$querysb.AppendFormat( $Template.RootBody, $joinedQueries )
         # $querysb.AppendFormat( $Template.RootBody, $kwargs )
 
 
