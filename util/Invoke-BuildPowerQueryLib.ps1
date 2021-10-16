@@ -1,6 +1,8 @@
 using namespace System.Text.StringBuilder;
+Import-Module Ninmonkey.Console, Dev.nin
 $Config = @{
     AutoOpenEditor = $false
+    AppVersion     = 0.1
 }
 
 function Invoke-BuildPowerQueryLib {
@@ -17,7 +19,6 @@ function Invoke-BuildPowerQueryLib {
         - [ ] Param $BaseDirectory[] for multiple imports
     #>
     [CmdletBinding(
-        # DefaultParameterSetName='sdf',
         PositionalBinding = $false
     )]
     param (
@@ -26,29 +27,40 @@ function Invoke-BuildPowerQueryLib {
         [Parameter(Position = 0)]
         [string]$BaseDirectory
     )
+    begin {}
+    process {
+        $buildMeta = @{
+            StartTime = Get-Date
+            Version   = $Config.AppVersion
+        }
+        'building...' | write-color darkgreen | Write-Information
+        if ([string]::IsNullOrWhiteSpace($BaseDirectory)) {
+            $BaseDirectory = Join-Path $PSScriptRoot '../source'
+        }
+        $Path = Get-Item -ea stop $BaseDirectory
+        $ExportPath = Join-Path $PSScriptRoot '../.output/PowerQueryLib.pq' # | Get-Item -ea stop
 
-    Write-Host 'building...' -ForegroundColor darkgreen
-    if ([string]::IsNullOrWhiteSpace($BaseDirectory)) {
-        $BaseDirectory = Join-Path $PSScriptRoot '../source'
-    }
-    $Path = Get-Item -ea stop $BaseDirectory
-    $ExportPath = Join-Path $PSScriptRoot '../.output/PowerQueryLib.pq' # | Get-Item -ea stop
+        $Files = Get-ChildItem -Path $Path -Filter '*.pq' -Recurse
+        $Now = Get-Date
 
-    $Files = Get-ChildItem -Path $Path -Filter '*.pq' -Recurse
-    $Now = Get-Date
+        $BuildMeta += @{
+            BaseDirectory = $BaseDirectory
+            Path          = $Path
+            ExportPath    = $ExportPath
+            Files         = $Files
+            Now           = $Now
+        }
 
-    "abc$bdsf"
-
-    $TemplateHeader = @"
-/* PowerQueryLib
+        $TemplateHeader = @"
+/* PowerQueryLib : v $($Config.AppVersion)
     Generated on: $($Now.ToShortDateString()) $($Now.ToShortTimeString())
     Source:
         https://github.com/ninmonkey/Ninmonkey.PowerQueryLib
-        J. Bolton ninmonkeys@gmail.com
+        Jake Bolton ninmonkeys@gmail.com
 */
 "@
 
-    <#
+        <#
     target:
     let
 
@@ -68,54 +80,63 @@ function Invoke-BuildPowerQueryLib {
     in
         Source
 
+    SB ref:
+        Append | Adds text,
+        AppendLine | Same plus newline
+        AppendFormat | includes format string
+
+
+
     #>
-    $slist = [System.Text.StringBuilder]::new()
-    $TemplateQueryPrefix = "`n`n## start ->"
-    $TemplateQuerySuffix = "`n`n## <-- end"
-    $LinePrefix = "`n`t"
-    $TemplateFooter = "`n`n`t`t`t<footer here>"
+        $ExportPath = Get-Item -ea 'Stop' $ExportPath
 
-    $QueryContents = $TemplateHeader
-    $QueryContents += $TemplateQueryPrefix
-    $slist.Append( $QueryContents )
+        $querySb = [System.Text.StringBuilder]::new()
+        [void]$querySb.Append( $TemplateHeader )
+        $Template = @{}
 
-    $QueryContents += $Files | ForEach-Object {
-        $curFile = $_
-        $Contents = Get-Content -Path $curFile -Encoding Utf8
-        $Name = $curFile
-        # 'let {0} =' -f $curFile.BaseName
-        $TemplateQueryPrefix
-        $Contents | ForEach-Object {
-            $curLine = $_
-            "${LinePrefix}${curLine}"
-        }
-        $Contents
-        $Contents | Set-Content -Path temp:\dump.pq # debug
+        $Template.RootBody = @'
+let
+    Metadata = [
+        LastExecution = DateTime.FixedLocalNow(),
+        PQLib = 0.1
+    ],
 
-        Get-Content temp:\dump.pq
-        $TemplateQuerySuffix
+    FinalRecord = [
+        {0}
+    ]
+in
+    FinalRecord
+'@
 
-        # "`nin`n`t{0}," -f $curFile.BaseName
-        # "`n`t,"
+        # $querySB.AppendFormat(
+        #     $Template.RootBody,
+        # )
+        #     'dfs'
+
+        [string[]]$qArgs = @(
+            # 0 equals list
+            'Nin = 10'
+        )
+        [void]$querysb.AppendFormat( $Template.RootBody, $qArgs )
+        # $querysb.AppendFormat( $Template.RootBody, $kwargs )
+
+
+
+        "Saved: $($ExportPath)" | write-color green | Write-Information
+        $QuerySb | Set-Content -Path $ExportPath -Encoding 'utf8'
+        'Done.' | write-color darkgreen | Write-Information
+        # $QuerySb | Set-Content -Path temp:\dump.pq # debug
+        $buildMeta
     }
-    $QueryContents += $TemplateQuerySuffix
-    $QueryContents += $TemplateFooter
+    end {
 
-
-    # $Files
-    $QueryContents | Set-Content -Path temp:\dump.pq # debug
-    $QueryContents
-    | Set-Content -Path $ExportPath -Encoding 'utf8'
-
-    $ExportPath = Get-Item -ea 'Stop' $ExportPath
-    Write-Host "Saved: $($ExportPath)" -ForegroundColor green
-
-    if ($Config.AutoOpenEditor) {
-        code $ExportPath
     }
 
-    Write-Host 'Done.' -ForegroundColor darkgreen
 }
 
+'start'
 $LibRoot = Join-Path $PSScriptRoot 'source' | Get-Item -ea ignore
-Invoke-BuildPowerQueryLib -BaseDirectory $LibRoot
+$results = Invoke-BuildPowerQueryLib -BaseDirectory $LibRoot -Infa Continue
+$Results | format-dict
+
+'done'
