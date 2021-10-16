@@ -2,7 +2,7 @@
     "folders": [
         {
             "path": ".",
-            "name": "[Lib] 📌"
+            "name": "pqlib"
         },
         {
             "path": "..\\PowerQuery-ExampleReports",
@@ -41,6 +41,12 @@
             "editor.defaultFormatter": "shd101wyy.markdown-preview-enhanced"
             // "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
             // "editor.defaultFormatter": "vscode.markdown-language-features",
+        },
+        "markdownlint.config": {
+            "MD028": false,
+            "MD025": {
+                "front_matter_title": ""
+            }
         }
     },
     "launch": {
@@ -50,8 +56,8 @@
                 "name": "Invoke-BuildPowerQueryLib.ps1",
                 "type": "PowerShell",
                 "request": "launch",
-                "script": "${workspaceFolder}/util/Invoke-BuildPowerQueryLib.ps1",
-                "cwd": "${workspaceFolder}"
+                "script": "${workspaceFolder:pqlib}/util/Invoke-BuildPowerQueryLib.ps1",
+                "cwd": "${workspaceFolder:pqlib}"
             },
             {
                 "name": "cur.ps1 ",

@@ -7,14 +7,10 @@ options:
     Separator   type: text    default: {
 
 Note:
-    The original serializes **everything**
-    This only shows type names as text
-
-    this is not a round-trip serialization
 
 */
 let
-    Serialize.List =  (
+    List.Summarize = (
         values as list,
         optional options as nullable record
     ) as text => let
@@ -28,9 +24,7 @@ let
                 else seed & Separator & Text.From(item)),
 
         output = Prefix & joined & Suffix
-
-        
     in
         output
 in
-    Serialize.List
+    List.Summarize

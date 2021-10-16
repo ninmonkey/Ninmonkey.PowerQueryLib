@@ -12,7 +12,7 @@ Originally based on: <https://github.com/microsoft/DataConnectors/blob/460babf2f
 let
 
     /* Optional parameter: Is this being used as part of a function signature? */
-    Type.AsText =  (x, optional funtype as logical) =>
+    Type.ToText =  (x, optional funtype as logical) =>
         let
             isFunctionType = (x as type) => try if Type.FunctionReturn(x) is type then true else false otherwise false,
             isTableType = (x as type) =>  try if Type.TableSchema(x) is table then true else false otherwise false,
@@ -47,4 +47,4 @@ let
                 if base = type list then "list"
                 else "any /*Actually unknown type*/")
 in
-    Type.AsText
+    Type.ToText

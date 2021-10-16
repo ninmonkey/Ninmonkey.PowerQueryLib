@@ -102,7 +102,7 @@ function Invoke-BuildPowerQueryLib {
             FilesSelectedCount = $filesSelected.Count
             FilesFiltered      = $FilesFiltered
             FilesFilteredCount = $FilesFiltered.Count
-            FilesNames         = $FilesFiltered | Join-String -sep ', ' -prop 'BaseName' -SingleQuote
+            FilesName          = $FilesFiltered | Join-String -sep ', ' -prop 'BaseName' -SingleQuote
         }
 
 
@@ -162,7 +162,9 @@ let
         LastExecution = DateTime.FixedLocalNow(),
         PQLib = "{0}",
         GeneratedOn = "{1}",
-        Commit = "{2}"
+        Commit = "{2}",
+        BuildArgIncludes = "{3}",
+        BuildArgExcludes = "{4}"
     ],
 
 '@
@@ -170,6 +172,8 @@ let
             $Config.AppVersion
             $Now.ToString('o')
             (Get-GitCommitHash ) -replace '\r?\n', ''
+            $IncludeRegex | Join-String -sep ', ' -SingleQuote
+            $ExcludeRegex | Join-String -sep ', ' -SingleQuote
         )
         [void]$querysb.AppendFormat( $Template.Header, $queryInfo)
 
@@ -199,17 +203,18 @@ in
             $curFileBase = '#"{0}"' -f @(
                 $curFile.BaseName
             )
-            $curSrc = Get-Content -Path $curFile
+            $curSrc = Get-Content -Path $curFile -Raw
 
             '{0} = {1}' -f @(
                 $curFileBase
-                $curSrc
+                $curSrc -join "`n"
             )
         }
         | Join-String -sep ",`n"
         # | Format-IndentText -Depth 3
 
         $buildMeta.FinalText = $joinedQueries
+
 
         # $curSrc = 'let Nin = 90 in Nin'
         # $curFileBase = 'Bar'
@@ -220,16 +225,15 @@ in
 
         [void]$querysb.AppendFormat( $Template.RootBody, $joinedQueries )
         # $querysb.AppendFormat( $Template.RootBody, $kwargs )
-
-
-
-        "Saved: $($ExportPath)" | write-color green | Write-Information
         $QuerySb | Set-Content -Path $ExportPath -Encoding 'utf8'
-        'Done.' | write-color darkgreen | Write-Information
+        "Wrote: $($ExportPath)" | write-color green | Write-Information
+
         # $QuerySb | Set-Content -Path temp:\dump.pq # debug
         $buildMeta
     }
     end {
+        $BuildMeta | Format-Dict | Write-Information
+        'done' | write-color darkgreen | Write-Information
 
     }
 
@@ -237,8 +241,17 @@ in
 
 $RegexIncludeList = @(
     'web'
+    'text'
+    # 'date'
+    # 'summarize'
+    # 'ToText'
 )
 $RegexExcludeList = @(
+    '$test_'
+    'wordwrap'
+    'regex'
+    'shared -'
+    'WebRequest'
     '\.old\.pq$'
 )
 
@@ -250,14 +263,20 @@ $splat_build = @{
 'start'
 $LibRoot = Join-Path $PSScriptRoot 'source' | Get-Item -ea ignore
 $results = Invoke-BuildPowerQueryLib @splat_build -IncludeRegex $RegexIncludeList -ExcludeRegex $RegexExcludeList
-$Results | format-dict
-'done'
+# $Results | format-dict
+
 # $ColorNames = @{
 #     SubtleEmphasis = @{ fg = gray75; bg = gray20; }
 # }
 $fileNameColor = @(
     $results.FilesFiltered | Join-String -sep ', ' -SingleQuote:$false {
         $_.BaseName | write-color gray75 -bg gray20 }
+    | ForEach-Object tostring
 )
+$FilenameColor | Join-String -os ' ...'
 
-$fileNameColor | Join-String -op 'Wrote: '
+
+write-color 'orange' -t 'Files filtered out: '
+$results.Files | Where-Object { $_ -notin $results.FilesFiltered }
+| Join-String -sep ', ' -SingleQuote:$false {
+    $_.BaseName | write-color gray75 -bg gray20 }
