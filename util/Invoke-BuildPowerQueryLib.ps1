@@ -201,6 +201,7 @@ let
 
             $Template.RootBody = @'
     FinalRecord = [
+        Lib = Metadata,
 {0}
     ]
 in

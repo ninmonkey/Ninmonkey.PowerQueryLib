@@ -9,7 +9,7 @@ let
     colTypeNameText = Table.AddColumn(
         t2,
         "TypeNameText",
-        each TypeAsText( Value.Type([Value]) ),
+        each Type.ToText( Value.Type([Value]) ),
         type text)
 in
     colTypeNameText

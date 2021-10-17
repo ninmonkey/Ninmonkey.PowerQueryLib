@@ -4,7 +4,7 @@ let
             recordList = List.Transform(
                 items,
                 (item as any) as record => [
-                    Type = TypeAsText( Value.Type(item) ),
+                    Type = Type.ToText( Value.Type(item) ),
                     Value = item
                 ]
             ),
