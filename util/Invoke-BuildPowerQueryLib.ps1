@@ -86,6 +86,7 @@ function Invoke-BuildPowerQueryLib {
                 Now           = $Now
                 Regex         = $IncludeRegex
                 ExcludeRegex  = $ExcludeRegex
+                PSBoundParameters = $PSBoundParameters
             }
 
 
@@ -172,7 +173,8 @@ function Invoke-BuildPowerQueryLib {
 
 
     #>
-            $ExportPath = Get-Item -ea 'Stop' $ExportPath
+            $ExportPath = $ExportPath
+            | Get-Item -ea 'continue'
 
             $querySb = [System.Text.StringBuilder]::new()
             [void]$querySb.Append( $TemplateHeader )
@@ -186,7 +188,8 @@ let
         GeneratedOn = "{1}",
         Commit = "{2}",
         BuildArgIncludes = "{3}",
-        BuildArgExcludes = "{4}"
+        BuildArgExcludes = "{4}",
+        BuildArgFileList = "{5}"
     ],
 
 '@
@@ -196,6 +199,7 @@ let
             (Get-GitCommitHash ) -replace '\r?\n', ''
                 $IncludeRegex | Join-String -sep ', ' -SingleQuote
                 $ExcludeRegex | Join-String -sep ', ' -SingleQuote
+                $Options.IncludeFile | Join-String -sep ', ' -SingleQuote
             )
             [void]$querysb.AppendFormat( $Template.Header, $queryInfo)
 

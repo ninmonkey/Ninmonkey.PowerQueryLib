@@ -7,7 +7,8 @@ $RegexIncludeList = @(
     # 'summarize'
     'ToText'
     'Text'
-    'list'
+    # 'date'
+    # 'list'
     # 'inspect'
 )
 $RegexExcludeList = @(
@@ -55,6 +56,7 @@ $Options = @{
         # 'Text.IsNullOrWhitespace.pq'
         # 'Text.ToUnorderedList.pq'
         'Type.ToText.pq'
+        'Table.SelectRemovedColumns.pq'
         # 'validate_record_for_function_calls.pq'
         # 'Value.ToPowerQuery.pq'
         # 'waitForResult.pq'
@@ -72,9 +74,9 @@ $invokeBuildPowerQueryLibSplat = @{
     Options       = $Options
     BaseDirectory = $LibRoot
     Infa          = 'Continue'
-    ExportPath    = 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\Buffer\2021-10\sketch for blog - 2021-10\import\blog_sketch.pqlib.pq'
+    ExportPath    = 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\Buffer\2021-10\sketch for blog - 2021-10\import\blog_sketch2.pqlib.pq'
 }
 $invokeBuildPowerQueryLibSplat | format-dict
-$results = Invoke-BuildPowerQueryLib @invokeBuildPowerQueryLibSplat
+$results = Invoke-BuildPowerQueryLib @invokeBuildPowerQueryLibSplat -ea break
 
 # $Results | format-dict
