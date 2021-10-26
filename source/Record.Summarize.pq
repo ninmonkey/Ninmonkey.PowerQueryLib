@@ -1,4 +1,4 @@
-// Summarize_Record
+// Record.Summarize
 let
     /*
     converts records into a string
@@ -6,7 +6,7 @@ let
         let
             source =
         in
-            Summarize_Record(source)
+            Record.Summarize(source)
 
     Example: Basic
         input:
@@ -54,7 +54,7 @@ let
 
     */
 
-    fn_Summarize_Record = (
+    fn_Record.Summarize = (
         source as record,
         optional options as nullable record
     ) as text =>
@@ -84,25 +84,16 @@ let
                     let
                         value = Record.Field( source, key ),
                         valueIsRecord = Type.Is( Value.Type(value), type record),
-                        /*
-                        flatValue =
-                            if valueIsRecord then @fn_Summarize_Record( value, options )
-                            else value,
-                        pair = [
-                            Key = key,
-                            Value = flatValue
-                        ]
-                        */
 
                         // do not throw by default
                         maybeFlatValue =
                             try
-                                if valueIsRecord then @fn_Summarize_Record( value, options )
+                                if valueIsRecord then @fn_Record.Summarize( value, options )
                                 else value,
 
                         flatValue =
                             if maybeFlatValue[HasError]
-                            then "< " & Type_ToText(Value.Type(value)) & " >"
+                            then "< " & Type.ToText(Value.Type(value)) & " >"
                             else maybeFlatValue[Value],
 
                         pair = [
@@ -133,7 +124,7 @@ let
                 //     if isRecord then
                 //         //"[nested]"
                 //         "<<" &
-                //         @fn_Summarize_Record( field[Value] )
+                //         @fn_Record.Summarize( field[Value] )
                 //         & ">>"
                 //     else
 
@@ -149,4 +140,4 @@ let
         in
             x3
 in
-    fn_Summarize_Record
+    fn_Record.Summarize

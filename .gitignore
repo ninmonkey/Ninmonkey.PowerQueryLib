@@ -1,4 +1,4 @@
 todo.snippets.md
 **/*.lnk
 source/test/old-iterations/*
-.output/PowerQueryLib.pq
+.output/*

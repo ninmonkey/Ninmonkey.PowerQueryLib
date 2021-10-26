@@ -52,6 +52,7 @@
     "launch": {
         "version": "0.2.0",
         "configurations": [
+
             {
                 "name": "Build ➔ blog_sketch.pq",
                 "type": "PowerShell",
@@ -60,6 +61,23 @@
                 "cwd": "${workspaceFolder:pqlib}"
             },
             {
+                // "presentation": {
+                //     "hidden": false,
+                //     "group": "build",
+                //     "order": 1
+                // },
+                "name": "Build ➔ common_profile.pq",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder:pqlib}/util/common_profile.ps1",
+                "cwd": "${workspaceFolder:pqlib}"
+            },
+            {
+                // "presentation": {
+                //     "hidden": false,
+                //     "group": "build",
+                //     "order": 2
+                // },
                 "name": "Invoke-BuildPowerQueryLib.ps1",
                 "type": "PowerShell",
                 "request": "launch",
@@ -67,6 +85,11 @@
                 "cwd": "${workspaceFolder:pqlib}"
             },
             {
+                "presentation": {
+                    "hidden": false,
+                    "group": "powershell",
+                    "order": 1
+                },
                 "name": "cur.ps1 ",
                 "type": "PowerShell",
                 "request": "launch",

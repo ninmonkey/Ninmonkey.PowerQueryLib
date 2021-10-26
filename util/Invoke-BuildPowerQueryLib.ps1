@@ -5,7 +5,7 @@ using namespace System.Text.StringBuilder;
 Import-Module Ninmonkey.Console, Dev.nin -wa ignore
 $Config = @{
     AutoOpenEditor = $false
-    AppVersion     = 0.1
+    AppVersion     = 0.0.1
 }
 
 function Invoke-BuildPowerQueryLib {
@@ -66,26 +66,27 @@ function Invoke-BuildPowerQueryLib {
                 StartTime = Get-Date
                 Version   = $Config.AppVersion
             }
-            '[Invoke-Build]: building...' | write-color darkgreen | Write-Information
+            '[Invoke-Build]: building...' | Write-Color darkgreen | Write-Information
             if ([string]::IsNullOrWhiteSpace($BaseDirectory)) {
                 $BaseDirectory = Join-Path $PSScriptRoot '../source'
             }
             $Path = Get-Item -ea stop $BaseDirectory
-            if(! $ExportPath ) {
+            if (! $ExportPath ) {
                 $ExportPath = Join-Path $PSScriptRoot '../.output/PowerQueryLib.pq' # | Get-Item -ea stop
             }
+
 
             $Files = Get-ChildItem -Path $Path -Filter '*.pq' -Recurse
             $Now = Get-Date
 
             $BuildMeta += @{
-                BaseDirectory = $BaseDirectory
-                Path          = $Path
-                ExportPath    = $ExportPath
-                Files         = $Files
-                Now           = $Now
-                Regex         = $IncludeRegex
-                ExcludeRegex  = $ExcludeRegex
+                BaseDirectory     = $BaseDirectory
+                Path              = $Path
+                ExportPath        = $ExportPath
+                Files             = $Files
+                Now               = $Now
+                Regex             = $IncludeRegex
+                ExcludeRegex      = $ExcludeRegex
                 PSBoundParameters = $PSBoundParameters
             }
 
@@ -173,8 +174,7 @@ function Invoke-BuildPowerQueryLib {
 
 
     #>
-            $ExportPath = $ExportPath
-            | Get-Item -ea 'continue'
+            # $ExportPath = $ExportPath | Get-Item -ea 'continue'
 
             $querySb = [System.Text.StringBuilder]::new()
             [void]$querySb.Append( $TemplateHeader )
