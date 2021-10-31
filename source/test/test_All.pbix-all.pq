@@ -1121,7 +1121,7 @@ let
         in
             resultTable,
 
-// Summarize_Record
+// Record.Summarize
 // let
     /*
     converts records into a string
@@ -1129,7 +1129,7 @@ let
         let
             source =
         in
-            Summarize_Record(source)
+            Record.Summarize(source)
 
     Example: Basic
         input:
@@ -1177,7 +1177,7 @@ let
 
     */
 
-    fn_Summarize_Record = (source as record, optional options as nullable record) as text =>
+    fn_Record.Summarize = (source as record, optional options as nullable record) as text =>
         let
             // supports nested records
             // next: simplify parameter handling w/ Validate_OptionalArgRecord
@@ -1206,7 +1206,7 @@ let
 
                         valueIsRecord = Type.Is( Value.Type(value), type record),
                         maybeFlatValue =
-                            try if valueIsRecord then @fn_Summarize_Record( value, options )
+                            try if valueIsRecord then @fn_Record.Summarize( value, options )
                             else value,
 
                         // do not throw by default
@@ -1242,7 +1242,7 @@ let
                 //     if isRecord then
                 //         //"[nested]"
                 //         "<<" &
-                //         @fn_Summarize_Record( field[Value] )
+                //         @fn_Record.Summarize( field[Value] )
                 //         & ">>"
                 //     else
 

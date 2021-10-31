@@ -1,10 +1,10 @@
 let
-    List_ContiguousDates = (source as list) as table =>
+    List.ContinuousDates = (source as list) as table =>
         /*
         Generate all dates for a date table
 
         input:
-            a list or table table column that contains [type date]
+            a list or table table column of dates
         output:
             table of continuous [Date]s., for a Date table
         future:
@@ -29,12 +29,12 @@ let
     example =
         let
             sample = { #date(2010,1,9), #date(2010,1,3), #date(2010,1,5) },
-            result = List_ContiguousDates(sample)
+            result = List.ContinuousDates(sample)
         in
             result,
 
     FinalResult =
-        if show_example then example else List_ContiguousDates
+        if show_example then example else List.ContinuousDates
 
 in
     FinalResult

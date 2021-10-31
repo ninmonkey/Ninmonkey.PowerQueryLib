@@ -18,8 +18,9 @@ let
                     else error Error.Record(
                         "InvalidArgument", "Expects a table with a column named 'Date'", source
                     ),
+                    z = list.d
 
-            base = List_ContiguousDates( source[Date] ),
+            base = List.ContinuousDates( source[Date] ),
             col_Year = Table.AddColumn(base, "Year", (_) as number => Date.Year([Date]), Int64.Type),
             col_Month = Table.AddColumn(col_Year, "Month", (_) as number => Date.Month([Date]), Int64.Type),
             col_Day = Table.AddColumn(col_Month, "Day", (_) as number => Date.Day([Date]), Int64.Type),
