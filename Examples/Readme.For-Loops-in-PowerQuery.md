@@ -1,17 +1,11 @@
-- [See more:](#see-more)
 - [Ways to Loop](#ways-to-loop)
   - [`Table.AddColumn` with `ExpandTableColumn`](#tableaddcolumn-with-expandtablecolumn)
     - [Cross Product / Cartesian Joins](#cross-product--cartesian-joins)
   - [`For(x = 0; x < 5; x++) { ... }`](#forx--0-x--5-x---)
   - [`Do { Expression } while { Condition }`](#do--expression--while--condition-)
   - [`List.Accumulate` : Word wrap text that's an unknown length](#listaccumulate--word-wrap-text-thats-an-unknown-length)
+- [See more: Related functions](#see-more-related-functions)
 
-
-## See more:
-
-- `List.Dates()`, `List.DateTimes()`, `List.DateTimeZones()`
-- `List.Times()`, `List.Durations()`, `List.Numbers()`
-- `List.Accumulate()`, `List.Transform()`, `List.TransformMany()`
 
 ## Ways to Loop
 
@@ -146,3 +140,9 @@ let
 in
     if toggle_example then wrapped_text else Text_WordWrap
 ```
+
+## See more: Related functions
+
+- `List.Dates()`, `List.DateTimes()`, `List.DateTimeZones()`
+- `List.Times()`, `List.Durations()`, `List.Numbers()`
+- `List.Accumulate()`, `List.Transform()`, `List.TransformMany()`
