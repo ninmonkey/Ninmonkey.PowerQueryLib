@@ -1,0 +1,35 @@
+## Examples checklist
+
+- [ ] List.TransformMany
+- [ ] List.Transform
+- [ ] List.Accumulate (word wrap)
+- [ ] List.Repeat
+- [x] List.Generate (for loop)
+- [ ] List.Generate : For looping API until paging is done
+  - [ ] or List.Accumulate
+- [ ] constructor `{0..100}` or `{x..y}` or `{"a".."b"}`
+- [ ] Value.WaitFor
+- [ ] other [List.*](https://docs.microsoft.com/en-us/powerquery-m/list-functions) ?
+- [ ] List
+  - [ ] List.Dates, List.DateTimes, List.DateTimeZones
+  - [ ] List.Times
+  - [ ] List.Durations
+  - [ ] List.Generate
+  - [ ] List.Numbers
+  - [ ] List.Random
+  - [ ] Record
+    - [ ] TransformFields
+  - [ ] [Table](https://docs.microsoft.com/en-us/powerquery-m/table-functions)
+    - [ ] Join, group, expandcols, expand rows,
+    - [ ] AlternateRows, FromPartitions, Partition, PartitionValues
+    - [ ] Range, Repeat, Table.AlternateRows,
+    - [ ] DuplicateColumn, AddColumn, Pivot,
+    - [ ] Unpivot, Pivot, UnpivotOther
+    - [ ] `AddColumn`, `AddJoinColumn`,
+    - [ ] columns to record, addjoincolumn, addkey
+    - [ ] Table.FilterWithDataTable (internal)
+    - [ ] `NestedJoin`, SplitColumn
+    - [ ] `TransformColumns`
+    - [ ] `TransformColumnTypes`
+    - [ ] `TransformRows`
+    - [ ] `Transpose`

@@ -1,5 +1,5 @@
 let
-    EnableTests = true,
+    EnableTests = false,
      // table
     ins = InspectObject,
     InspectObject = (source as any, optional options as nullable record) as any =>
