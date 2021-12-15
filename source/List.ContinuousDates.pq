@@ -2,7 +2,7 @@ let
     List.ContinuousDates = (source as list) as table =>
         /*
         Generate all dates for a date table
-
+            Source: <https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/master/source/List.ContinuousDates.pq>
         input:
             a list or table table column of dates
         output:
