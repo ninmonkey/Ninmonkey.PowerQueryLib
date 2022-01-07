@@ -8,7 +8,7 @@ let
         )
 
     */
-    Text_JsonToPowerQuery = (json as text) as text =>
+    Text.JsonToPowerQuery = (json as text) as text =>
         let
             doubleQuote = """",
             escapeQuotes = Text.Replace(
@@ -18,4 +18,4 @@ let
         in
             escapeQuotes
 in
-    Text_JsonToPowerQuery
+    Text.JsonToPowerQuery

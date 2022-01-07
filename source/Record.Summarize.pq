@@ -54,7 +54,7 @@ let
 
     */
 
-    fn_Record.Summarize = (
+    Record.Summarize = (
         source as record,
         optional options as nullable record
     ) as text =>
@@ -88,7 +88,7 @@ let
                         // do not throw by default
                         maybeFlatValue =
                             try
-                                if valueIsRecord then @fn_Record.Summarize( value, options )
+                                if valueIsRecord then @Record.Summarize( value, options )
                                 else value,
 
                         flatValue =
@@ -124,7 +124,7 @@ let
                 //     if isRecord then
                 //         //"[nested]"
                 //         "<<" &
-                //         @fn_Record.Summarize( field[Value] )
+                //         @Record.Summarize( field[Value] )
                 //         & ">>"
                 //     else
 
@@ -140,4 +140,4 @@ let
         in
             x3
 in
-    fn_Record.Summarize
+    Record.Summarize
