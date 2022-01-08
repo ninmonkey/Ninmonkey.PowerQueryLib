@@ -81,30 +81,6 @@
                 "cwd": "${workspaceFolder:pqlib}"
             },
             {
-                "presentation": {
-                    "hidden": true,
-                    "group": "build",
-                    // "order": 9
-                },
-                "name": "Build ➔ ninlib_advent.pq",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${workspaceFolder:pqlib}/util/profile/Invoke-BuildAdventCode.ps1",
-                "cwd": "${workspaceFolder:pqlib}"
-            },
-            {
-                "presentation": {
-                    "hidden": false,
-                    "group": "build",
-                    "order": 1
-                },
-                "name": "Build ➔ PQParser.pq",
-                "type": "PowerShell",
-                "request": "launch",
-                "script": "${workspaceFolder:pqlib}/util/profile/Invoke-BuildPQParser.ps1",
-                "cwd": "${workspaceFolder:pqlib}"
-            },
-            {
                 // "presentation": {
                 //     "hidden": false,
                 //     "group": "build",

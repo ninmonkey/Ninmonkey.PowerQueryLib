@@ -1,8 +1,6 @@
 
 let
-    /*
-        255 => 0xff
-    */
+    /* 255 => 0xff */
     Number_ToHexString = ( num as number, optional options as nullable record) as text =>
         let
             defaults = [
