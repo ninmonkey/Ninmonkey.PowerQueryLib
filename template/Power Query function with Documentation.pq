@@ -1,6 +1,8 @@
 let
     /*
-    ref: https://docs.microsoft.com/en-us/power-query/handlingdocumentation
+    ref:
+        - https://docs.microsoft.com/en-us/power-query/handlingdocumentation
+        - https://bengribaudo.com/blog/2021/03/17/5523/power-query-m-primer-part20-metadata#function-parameter-documentation
 
     AllowedValues may be dynamic:
         https://ssbi-blog.de/blog/technical-topics-english/writing-documentation-for-custom-m-functions-part3/

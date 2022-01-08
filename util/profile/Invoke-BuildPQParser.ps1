@@ -2,26 +2,17 @@
 . (Join-Path $PSSCriptRoot '../Invoke-BuildPowerQueryLib.ps1' | Get-Item -ea stop)
 
 $RegexIncludeList = @(
-    # 'web'
-    # 'text'
-    # 'date'
-    # 'summarize'
+    # 'web', text, date, summarize, list, inspect
     'ToText'
     'Text'
-    'Text'
-    'Text'
-    # 'date'
-    # 'list'
-    # 'inspect'
 )
 $RegexExcludeList = @(
-    # '.*'
+    # 'inspect', 'web'
     '$test_'
     'wordwrap'
     'IP\.Dot'
     'regex'
     'shared -'
-    # 'inspect'
     'WebRequest'
     '\.old\.pq$'
 )
@@ -31,31 +22,31 @@ $RegexExcludeList = @(
 $Options = @{
     IncludeFile = @(
         # 'ConvertTo-Markdown.pq'
-        # 'DateTable_FromDates.pq'
-        # 'DateTime.FromUnixTime.pq'
+        'DateTable_FromDates.pq'
+        'DateTime.FromUnixTime.pq'
         # 'Html.GenerateSelectorList.pq'
         # 'Html.GetScalar.pq'
-        # 'Inspect_Function.pq'
+        'Inspect_Function.pq'
         'Inspect.Type.pq'
         'Record.Summarize.pq'
         'Inspect.Metadata.pq'
         'Inspect.MetaOfType.pq'
         # 'List_RandomItem.pq'
         # 'List.Combine_BitFlags.pq'
-        # 'List.ContiguousDates.pq'
+        'List.ContiguousDates.pq'
         # 'List.Schema.pq'
         'List.Summarize.pq'
-        'Summarize.Rec.pq'
+        # 'Summarize.Rec.pq'
 
         # 'Number.From_TextWithBase.pq'
         # 'Number.ToHexString.pq'
-        # 'Query_Summary.pq'
+        'Query_Summary.pq'
         # 'Random.Currency.pq'
         # 'Random.Int.pq'
-        # 'Record.Schema.pq'
-        # 'Serialize.ExtendedType.pq'
-        # 'Serialize.List.pq'
-        # 'Serialize.Text.pq'
+        'Record.Schema.pq'
+        'Serialize.ExtendedType.pq'
+        'Serialize.List.pq'
+        'Serialize.Text.pq'
         # 'Summarize_Record.recursion.tests.pq'
         'Summarize.Record.pq'
         'Record.Summarize.pq'
@@ -75,7 +66,7 @@ $Options = @{
         # 'waitForResult.pq'
         # 'WebRequest_Simple.pq'
         # 'WebRequest.ToRecord.pq'
-    )
+    ) | Sort-Object -Unique
 }
 # $Options['IncludeFile'] = Get-ChildItem ../.. -Recurse *.pq | ForEach-Object name
 
@@ -87,8 +78,10 @@ $invokeBuildPowerQueryLibSplat = @{
     Options       = $Options
     BaseDirectory = $LibRoot
     Infa          = 'Continue'
-    ExportPath    = 'C:\Users\cppmo_000\SkyDrive\Documents\2021\My_Github\AdventOfCode\utils\ninlib_adventOfCode.pq'
+    ExportPath    = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\My_Forks\powerquery-parser-report\ninlib.pq'
+    # 'C:\Users\cppmo_000\SkyDrive\Documents\2021\My_Github\AdventOfCode\utils\ninlib_adventOfCode.pq'
 }
+# Copy-Item $invokeBuildPowerQueryLibSplat.ExportPath -Destination
 $invokeBuildPowerQueryLibSplat | format-dict
 $results = Invoke-BuildPowerQueryLib @invokeBuildPowerQueryLibSplat -ea break
 

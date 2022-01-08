@@ -5,7 +5,11 @@ using namespace System.Text.StringBuilder;
 Import-Module Ninmonkey.Console, Dev.nin -wa ignore
 $Config = @{
     AutoOpenEditor = $false
-    AppVersion     = 0.0.1
+    AppVersion     = [string]'0.0.2'
+    AutoRoot       = Get-Item -ea stop (Join-Path $PSScriptRoot '..')
+}
+$Config += @{
+    AutoExportRoot = Join-Path $Config.AutoRoot '.output'
 }
 
 function Invoke-BuildPowerQueryLib {
@@ -90,6 +94,13 @@ function Invoke-BuildPowerQueryLib {
                 PSBoundParameters = $PSBoundParameters
             }
 
+            $Config['BaseDirectory'] = $BaseDirectory
+            $Config['ExportPath'] = $ExportPath
+            $Config['_BuildMeta'] = $BuildMeta
+            $Config['_Path'] = $Path
+            $Config['_PSScriptRoot'] = $PSScriptRoot
+
+
 
             $filesSelected = $Files | Where-Object {
                 if ( ($Options)?['IncludeFile'] -contains $_.Name ) {
@@ -128,6 +139,8 @@ function Invoke-BuildPowerQueryLib {
                 FilesName          = $FilesFiltered | Join-String -sep ', ' -prop 'BaseName' -SingleQuote
                 Options            = $Options
             }
+
+            $Config['BuildMeta'] = $buildMeta
 
 
             if ($List) {
@@ -200,6 +213,7 @@ let
                 $IncludeRegex | Join-String -sep ', ' -SingleQuote
                 $ExcludeRegex | Join-String -sep ', ' -SingleQuote
                 $Options.IncludeFile | Join-String -sep ', ' -SingleQuote
+                $_RawConfig = $Config
             )
             [void]$querysb.AppendFormat( $Template.Header, $queryInfo)
 
