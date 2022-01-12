@@ -9,18 +9,17 @@ let
         optionally add time when datetime is the source
 
     */
-    generateDateTable = (source as table) as table =>
+    Date.TableFromDates = (source as table) as table =>
         let
             // isDatetime =  ..., // if datetime, or datetimezone,
             source =
                 if Table.HasColumns( source, {"Date"} )
-                    then source
+                then source
                     else error Error.Record(
                         "InvalidArgument", "Expects a table with a column named 'Date'", source
                     ),
-                    z = list.d
 
-            base = List.ContinuousDates( source[Date] ),
+            base =List.ContinuousDates( source[Date] ),
             col_Year = Table.AddColumn(base, "Year", (_) as number => Date.Year([Date]), Int64.Type),
             col_Month = Table.AddColumn(col_Year, "Month", (_) as number => Date.Month([Date]), Int64.Type),
             col_Day = Table.AddColumn(col_Month, "Day", (_) as number => Date.Day([Date]), Int64.Type),
@@ -32,11 +31,7 @@ let
                 else error Error.Record(
                     "TableNotDistinct", "Using column 'date'", col_Index )
         in
-            Final,
+            Final
 
-    enableTest = false,
-    test_date = generateDateTable(Rations),
-    FinalResult =
-        if enableTest then test_date else generateDateTable
 in
-    FinalResult
+    Date.TableFromDates

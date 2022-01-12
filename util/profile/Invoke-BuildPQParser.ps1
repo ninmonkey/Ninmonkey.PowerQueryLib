@@ -33,7 +33,7 @@ $Options = @{
         'Inspect.MetaOfType.pq'
         # 'List_RandomItem.pq'
         # 'List.Combine_BitFlags.pq'
-        'List.ContiguousDates.pq'
+        'List.ContinuousDates.pq'
         # 'List.Schema.pq'
         'List.Summarize.pq'
         # 'Summarize.Rec.pq'
@@ -71,7 +71,7 @@ $Options = @{
 # $Options['IncludeFile'] = Get-ChildItem ../.. -Recurse *.pq | ForEach-Object name
 
 
-$LibRoot = Join-Path $PSScriptRoot 'source' | Get-Item -ea ignore
+$LibRoot = Join-Path $PSScriptRoot 'source' | Get-Item #-ea ignore
 $invokeBuildPowerQueryLibSplat = @{
     IncludeRegex  = $RegexIncludeList
     ExcludeRegex  = $RegexExcludeList

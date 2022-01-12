@@ -11,7 +11,7 @@ let
         future:
             - [ ] apply schema, to have a better expansion
     */
-    Query_Summary = (
+    Query.Summary = (
         optional ignoredKeys as nullable list
     ) as any => //table =>
         let
@@ -23,14 +23,14 @@ let
             t1 = Table.AddColumn(
                 baseTable, "Type",
                 each
-                    Value.Type( _[Value] )
-                , Type.Type
+                    Value.Type( _[Value] ),
+                Type.Type
             ),
             t2 = Table.AddColumn(
                 t1, "TypeName",
                 each
-                    Type_ToText( Value.Type( _[Value] ))
-                ,type text
+                    Type.ToText( Value.Type( _[Value] )),
+                type text
             ),
             t3 = Table.AddColumn(
                 t2, "Table Schema",
@@ -43,6 +43,6 @@ let
             finalMeta = t3
         in
             finalMeta,
-    Invoke = Query_Summary( Config[IgnoreQueries] )
+    Invoke = Query.Summary( Config[IgnoreQueries] )
 in
     Invoke
