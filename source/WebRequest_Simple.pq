@@ -4,6 +4,16 @@ let
     /*
     Wrapper for Web.Contents  returns response metadata
         for options, see: <https://docs.microsoft.com/en-us/powerquery-m/web-contents#__toc360793395>
+        
+    Details on preventing "Refresh Errors", using 'Query' and 'RelativePath':
+        - Not using Query and Relative path cause refresh errors:
+            <https://blog.crossjoin.co.uk/2016/08/23/web-contents-m-functions-and-dataset-refresh-errors-in-power-bi/>
+
+        - You can opt-in to Skip-Test:
+            <https://blog.crossjoin.co.uk/2019/04/25/skip-test-connection-power-bi-refresh-failures/>
+
+        - Debugging and tracing the HTTP requests
+            <https://blog.crossjoin.co.uk/2019/11/17/troubleshooting-web-service-refresh-problems-in-power-bi-with-the-power-query-diagnostics-feature/>        
     update:
         - MaybeErrResponse: Quick example of parsing an error result.
         - Raw text is returned, this is useful when there's an error
