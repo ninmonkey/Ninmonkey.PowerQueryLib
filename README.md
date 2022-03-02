@@ -17,6 +17,7 @@ Custom functions for Power BI
 - [Comparer](https://docs.microsoft.com/en-us/powerquery-m/comparer-functions)
 - [Function](https://docs.microsoft.com/en-us/powerquery-m/function-values)
 - [`OAuth` Authentication](https://docs.microsoft.com/en-us/power-query/handlingauthentication)
+  - first read: [blog.crossjoin Connecting To Rest APIs with OAuth2 in Power BI](https://blog.crossjoin.co.uk/2021/08/29/connecting-to-rest-apis-with-oauth2-authentication-in-power-query-power-bi/)
 - [Windows Authentication and SSO](https://docs.microsoft.com/en-us/power-query/additional-connector-functionality)
 - [Data Source Kind on SDK MS-DataConnectors](https://github.com/Microsoft/DataConnectors/blob/master/docs/m-extensions.md#data-source-kind)
 - [Implementing `OAuth` Flow](https://github.com/Microsoft/DataConnectors/blob/master/docs/m-extensions.md#implementing-an-oauth-flow)
