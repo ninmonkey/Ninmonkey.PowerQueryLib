@@ -1,0 +1,4 @@
+select
+    [Database_name] , [Dimension_Name] , [RIVIOLATION_COUNT] from $SYSTEM.DISCOVER_STORAGE_TABLES
+WHERE
+    [RIVIOLATION_COUNT] > 0
