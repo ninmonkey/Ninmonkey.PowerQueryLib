@@ -21,54 +21,50 @@ $RegexExcludeList = @(
 
 $Options = @{
     IncludeFile = @(
-        # 'ConvertTo-Markdown.pq'
         'DateTable_FromDates.pq'
         'DateTime.FromUnixTime.pq'
-        # 'Html.GenerateSelectorList.pq'
-        # 'Html.GetScalar.pq'
         'Inspect_Function.pq'
-        'Inspect.Type.pq'
-        'Record.Summarize.pq'
         'Inspect.Metadata.pq'
         'Inspect.MetaOfType.pq'
-        # 'List_RandomItem.pq'
-        # 'List.Combine_BitFlags.pq'
+        'Inspect.Type.pq'
         'List.ContinuousDates.pq'
-        # 'List.Schema.pq'
         'List.Summarize.pq'
-        # 'Summarize.Rec.pq'
-
-        # 'Number.From_TextWithBase.pq'
-        # 'Number.ToHexString.pq'
+        'List.Summarize.pq'
+        'ParameterQuery.Summary.pq'
         'Query_Summary.pq'
-        # 'Random.Currency.pq'
-        # 'Random.Int.pq'
         'Record.Schema.pq'
+        'Record.Summarize.pq'
+        'Record.Summarize.pq'
         'Serialize.ExtendedType.pq'
         'Serialize.List.pq'
         'Serialize.Text.pq'
-        # 'Summarize_Record.recursion.tests.pq'
         'Summarize.Record.pq'
-        'Record.Summarize.pq'
-        'List.Summarize.pq'
-
+        'Table.SelectRemovedColumns.pq'
+        'Type.ToText.pq'
+        'WebRequest_Simple.pq'
+        # 'ConvertTo-Markdown.pq'
+        # 'Html.GenerateSelectorList.pq'
+        # 'Html.GetScalar.pq'
+        # 'List_RandomItem.pq'
+        # 'List.Combine_BitFlags.pq'
+        # 'List.Schema.pq'
+        # 'Number.From_TextWithBase.pq'
+        # 'Number.ToHexString.pq'
+        # 'Random.Currency.pq'
+        # 'Random.Int.pq'
+        # 'Summarize_Record.recursion.tests.pq'
+        # 'Summarize.Rec.pq'
         # 'Table.FindNotDistinctRows.pq'
         # 'Table.ToJson.pq'
         # 'Text_JsonToPowerQuery.pq'
         # 'Text.AnyMatches.pq'
         # 'Text.IsNullOrWhitespace.pq'
         # 'Text.ToUnorderedList.pq'
-        'Type.ToText.pq'
-        'Table.SelectRemovedColumns.pq'
-
         # 'validate_record_for_function_calls.pq'
         # 'Value.ToPowerQuery.pq'
         # 'waitForResult.pq'
-        # 'WebRequest_Simple.pq'
         # 'WebRequest.ToRecord.pq'
-
         # newest: 2022-01
-        'ParameterQuery.Summary.pq'
 
 
     ) | Sort-Object -Unique
@@ -83,8 +79,15 @@ $invokeBuildPowerQueryLibSplat = @{
     Options       = $Options
     BaseDirectory = $LibRoot
     Infa          = 'Continue'
-    ExportPath    = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\My_Forks\powerquery-parser-report\ninlib.pq'
+    ExportPath    = Join-Path "${Env:USERPROFILE}" 'SkyDrive\Documents\2021\Ninmonkeys.com\Experiments-Of-Week\2022-02-02\.ninlib'
+    # ExportPath    = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\My_Forks\powerquery-parser-report\ninlib.pq'
     # 'C:\Users\cppmo_000\SkyDrive\Documents\2021\My_Github\AdventOfCode\utils\ninlib_adventOfCode.pq'
+}
+if (Test-Path $invokeBuildPowerQueryLibSplat['ExportPath']) {
+} else {
+    mkdir $invokeBuildPowerQueryLibSplat['ExportPath'] -Confirm
+    $invokeBuildPowerQueryLibSplat['ExportPath'] = Get-Item -ea stop $invokeBuildPowerQueryLibSplat['ExportPath']
+
 }
 # Copy-Item $invokeBuildPowerQueryLibSplat.ExportPath -Destination
 $invokeBuildPowerQueryLibSplat | format-dict

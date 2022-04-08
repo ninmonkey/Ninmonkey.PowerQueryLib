@@ -14,8 +14,9 @@ First:
 
 **IP Addresses.pbix**
 
+- 
 - convert from DecimalIP, DottetDecimalIP, and BinaryIP addresses
-- includes bitwise math
+- IP Decimal bitwise math in **DAX**
 
 **Random Sales**
 

@@ -25,7 +25,8 @@
         */
     ],
     "settings": {
-        "terminal.integrated.fontSize": 17,
+        "terminal.integrated.fontSize": 13, //17,
+        "terminal.integrated.fontSize": 15, //17,
         // "terminal.integrated.fontFamily": "'cascadia code'",
         "files.exclude": {
             "**/*.pbix": false,
@@ -54,14 +55,19 @@
                 "type": "PowerShell",
                 "request": "launch",
                 "script": "${workspaceFolder:pqlib}/util/profile_blog.ps1",
-                "cwd": "${workspaceFolder:pqlib}"
+                "cwd": "${workspaceFolder:pqlib}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Build",
+                    "order": 1
+                }
             },
             {
-                // "presentation": {
-                //     "hidden": false,
-                //     "group": "build",
-                //     "order": 1
-                // },
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Build",
+                    "order": 1
+                },
                 "name": "Build ➔ web.contents.pq",
                 "type": "PowerShell",
                 "request": "launch",
@@ -69,11 +75,11 @@
                 "cwd": "${workspaceFolder:pqlib}"
             },
             {
-                // "presentation": {
-                //     "hidden": false,
-                //     "group": "build",
-                //     "order": 1
-                // },
+                "presentation": {
+                    //     "hidden": false,
+                    "group": "Invoke-Build",
+                    //     "order": 1
+                },
                 "name": "Build ➔ common_profile.pq",
                 "type": "PowerShell",
                 "request": "launch",
@@ -83,7 +89,7 @@
             {
                 "presentation": {
                     "hidden": true,
-                    "group": "build",
+                    "group": "Invoke-Build",
                     // "order": 9
                 },
                 "name": "Build ➔ ninlib_advent.pq",
@@ -95,7 +101,7 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "build",
+                    "group": "Invoke-Build",
                     "order": 1
                 },
                 "name": "Build ➔ PQParser.pq",
@@ -105,12 +111,12 @@
                 "cwd": "${workspaceFolder:pqlib}"
             },
             {
-                // "presentation": {
-                //     "hidden": false,
-                //     "group": "build",
-                //     "order": 2
-                // },
-                "name": "Invoke-BuildPowerQueryLib.ps1",
+                "presentation": {
+                    //     "hidden": false,
+                    "group": "Invoke-Build",
+                    "order": 2
+                },
+                "name": "Build ➔ BuildPowerQueryLib.ps1",
                 "type": "PowerShell",
                 "request": "launch",
                 "script": "${workspaceFolder:pqlib}/util/Invoke-BuildPowerQueryLib.ps1",
@@ -119,10 +125,22 @@
             {
                 "presentation": {
                     "hidden": false,
-                    "group": "powershell",
+                    "group": "Invoke-Build",
                     "order": 1
                 },
-                "name": "cur.ps1 ",
+                "name": "Build ➔ BuildFull.ps1",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder:pqlib}/util/Invoke-BuildFull.ps1",
+                "cwd": "${workspaceFolder:pqlib}"
+            },
+            {
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Run",
+                    "order": 1
+                },
+                "name": "cur.ps1 🏃‍♂️",
                 "type": "PowerShell",
                 "request": "launch",
                 "script": "${file}",
