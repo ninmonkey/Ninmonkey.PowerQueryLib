@@ -1,0 +1,8 @@
+[ People  ] = DATATABLE(
+    "When", DATETIME, "Name", STRING,
+    { { dt"2020-03-03", "Bob" },
+      { dt"2020-03-03 11:45:22", "Jed" },
+      { dt"2022-12-18 00:00:00", "Bob" },
+      // { dt"2020-03-03 31:45:22", "Jed" }, // uncomment to see thrown error
+      { dt"2022-12-18", "Jen" }
+    })
