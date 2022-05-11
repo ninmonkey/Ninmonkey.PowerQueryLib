@@ -1,6 +1,7 @@
 let
     // Type.ToText = lib[Type.ToText],
 
+    // todo: next: Autodetect cyclical refs
     ParameterQuery.Summary = (environment as nullable record, ignoreQueries as list) as any =>
         let
             ignoreQueries = ignoreQueries ?? {"lib", "Readme", "SummarizeReportParams" },
