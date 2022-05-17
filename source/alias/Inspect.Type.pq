@@ -1,6 +1,8 @@
  let
         // Inspect type
-        FuncDef = (x as any) => Value.Type(x),
+        FuncDef = (x as any) => as type
+             Value.Type(x),
+
         // Inspect type
         FuncType = type function (input as any) as any
             meta [

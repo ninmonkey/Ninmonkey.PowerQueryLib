@@ -1,14 +1,23 @@
 let
     // Inspect type
     FuncDef = (x as any) as record =>
-        let
+       let
             t = Value.Type(x),
             md = Value.Metadata(x),
-            mdt = Value.Metadata( Value.Type(x) )
+            mdt = Value.Metadata( Value.Type(x) ),
+            mdt_invert = Value.Type( Value.Metadata ),
+            mergedMeta = Record.Combine({
+                (md ?? []), (mdt ?? [])
+            })
         in
             [
                 TypeName = Type.ToText( t ),
-                Type = t, Metadata = md, TypeMetadata = mdt
+                Type = t,
+                Metadata = md,
+                TypeMetadata = mdt,
+                TypeMetadata_Invert = mdt_invert,
+                MergedMetadata = mergedMeta
+
             ],
 
     // Inspect type

@@ -1,10 +1,16 @@
 {
     "folders": [
         {
-            "path": "."
+            "path": ".",
+            "name": "//core"
+        },
+        {
+            "path": "..\\..\\..\\..\\..\\..\\.dev-nin"
         }
     ],
     "settings": {
+        "editor.snippetSuggestions": "inline",
+        "editor.suggest.preview": true,
         "editor.fontFamily": "'fira code retina', 'cascadia code pl', 'cascadia code pl', 'cascadia code', Consolas, 'Courier New', monospace",
         "editor.fontFamily": "'consolas'",
         "editor.fontFamily": "'fira code'",
@@ -13,6 +19,15 @@
         "editor.fontFamily": "'cascadia code pl'",
         "editor.fontFamily": "'cascadia code'",
         "editor.fontSize": 15,
-        "editor.fontWeight": "normal"
+        "editor.fontWeight": "normal",
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 160,
+        "editor.rulers": [
+            {
+                "color": "#bfd37f7f",
+                "column": 140
+            }
+        ],
+        "search.searchEditor.defaultNumberOfContextLines": null,
     }
 }

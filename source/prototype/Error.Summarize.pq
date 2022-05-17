@@ -1,8 +1,9 @@
 let
-    // Source = Folder.Contents(#"PQLib Path"), #"pqlib pq" = Source{[Name="pqlib.pq"]},
-    bytes = File.Contents( #"PQLib Path" ),
+    fullPath = ..., // # try func to ensure naming
+    bytes = File.Contents( fullPath ),
     raw_text = Text.FromBinary( bytes, TextEncoding.Utf8 ),
     final_evaluation = try Expression.Evaluate( raw_text , #shared ),
+    z = error
 
     FormatError = (source as any) as any =>
         error "NYI: refactor the formatting logic",
@@ -45,11 +46,14 @@ let
             MissingField.Error
         ),
 
-
-
         return
-            = if not final_evaluation[HasError]
+            =
+            /* note: read error of 'try bytes' still returns HasError = False, when file does not exist, so I test for 'DataSource.Error'
+
+            */
+            if #"PQLib Version" = "" then table_listSourceFilesInDirectory
+            else if (final_evaluation[HasError] and final_evaluation[Error][Reason] = "DataSource.Error")
+                then table_listSourceFilesInDirectory
+            else if not final_evaluation[HasError]
             then final_evaluation[Value]
             else formatted_errors
-in
-    return
