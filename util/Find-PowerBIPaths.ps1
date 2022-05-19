@@ -1,4 +1,4 @@
-class PathInfo {
+class PBIPathInfo {
     <#
     future:
         Format-Wide should return property Path
@@ -42,7 +42,7 @@ class PathInfo {
 - https://github.com/m-kovalsky/Tabular
     - from: https://www.elegantbi.com/post/vertipaqintabulareditor
 
-## Best practice analyzer <https://docs.tabulareditor.com/te2/Best-Practice-Analyzer.html>
+## Best practice analyzer <https://docs.tabulareditor.com/te2/Best-Pracfindtice-Analyzer.html>
 
     Note that the rule ID's must always be unique. In case a rule within the model metadata has the same ID as a rule in the %AppData% or %ProgramData% folder, the order of precedence is:
 
@@ -54,7 +54,7 @@ class PathInfo {
 
 
 $__fileList = @(
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:UserProfile\Microsoft\Power BI Desktop Store App\Traces\Performance"
         Tags        = @(
             'PowerBI-Desktop', 'AppStore_Install',
@@ -68,7 +68,7 @@ Performance traces logs, like:
 '@
     }
 
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:UserProfile\Microsoft\Power BI Desktop Store App\Traces"
         Tags        = @(
             'PowerBI-Desktop', 'ToVerify',
@@ -83,7 +83,7 @@ logs, like:
     'PBIDesktop.21368.2022-04-06T16-03-30-979587.log',
 '@
     }
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:UserProfile\Microsoft\Power BI Desktop Store App\Traces\Diagnostics"
         Tags        = @(
             'PowerBI-Desktop', 'ToVerify',
@@ -96,28 +96,28 @@ logs, like:
 
 '@
     }
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:localAPPDATA\TabularEditor\BPARules.json"
         Tags        = @('BestPracticeAnalyzer')
         Description = @'
 Global Rules
 '@
     }
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:programdata\TabularEditor\BPARules.json"
         Tags        = @('BestPracticeAnalyzer')
         Description = @'
 Also Global rules
 '@
     }
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:LocalAppData\DaxStudio\Log"
         Tags        = @('DaxStudio', 'Log')
         Description = @'
 Dax Studio Logs
 '@
     }
-    [PathInfo]@{
+    [PBIPathInfo]@{
         Path        = "$Env:LocalAppData\DaxStudio\Log"
         Tags        = @('DaxStudio', 'Log')
         Description = @'

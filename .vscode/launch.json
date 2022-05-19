@@ -1,0 +1,115 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PowerShell Launch Script",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
+            "cwd": "${workspaceFolder}",
+            "windows": {
+                "presentation": {
+                    "hidden": false,
+                    "group": "",
+                    "order": 1
+                }
+            }
+        },
+        {
+            "name": "Build ➔ blog_sketch.pq",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/profile_blog.ps1",
+            "cwd": "${workspaceFolder:pqlib}",
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Build",
+                "order": 1
+            }
+        },
+        {
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Build",
+                "order": 1
+            },
+            "name": "Build ➔ web.contents.pq",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/common_profile_web.ps1",
+            "cwd": "${workspaceFolder:pqlib}"
+        },
+        {
+            "presentation": {
+                //     "hidden": false,
+                "group": "Invoke-Build",
+                //     "order": 1
+            },
+            "name": "Build ➔ common_profile.pq",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/common_profile.ps1",
+            "cwd": "${workspaceFolder:pqlib}"
+        },
+        {
+            "presentation": {
+                "hidden": true,
+                "group": "Invoke-Build",
+                // "order": 9
+            },
+            "name": "Build ➔ ninlib_advent.pq",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/profile/Invoke-BuildAdventCode.ps1",
+            "cwd": "${workspaceFolder:pqlib}"
+        },
+        {
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Build",
+                "order": 1
+            },
+            "name": "Build ➔ PQParser.pq",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/profile/Invoke-BuildPQParser.ps1",
+            "cwd": "${workspaceFolder:pqlib}"
+        },
+        {
+            "presentation": {
+                //     "hidden": false,
+                "group": "Invoke-Build",
+                "order": 2
+            },
+            "name": "Build ➔ BuildPowerQueryLib.ps1",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/Invoke-BuildPowerQueryLib.ps1",
+            "cwd": "${workspaceFolder:pqlib}"
+        },
+        {
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Build",
+                "order": 1
+            },
+            "name": "Build ➔ BuildFull.ps1",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder:pqlib}/util/Invoke-BuildFull.ps1",
+            "cwd": "${workspaceFolder:pqlib}"
+        },
+        {
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Run",
+                "order": 1
+            },
+            "name": "cur.ps1 🏃‍♂️",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${file}",
+            "cwd": "${file}"
+        }
+    ]
+}
