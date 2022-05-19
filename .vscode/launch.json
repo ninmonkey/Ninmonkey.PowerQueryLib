@@ -19,8 +19,8 @@
             "name": "Build ➔ blog_sketch.pq",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/profile_blog.ps1",
-            "cwd": "${workspaceFolder:pqlib}",
+            "script": "${workspaceFolder}/util/profile_blog.ps1",
+            "cwd": "${workspaceFolder}",
             "presentation": {
                 "hidden": false,
                 "group": "Invoke-Build",
@@ -36,8 +36,8 @@
             "name": "Build ➔ web.contents.pq",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/common_profile_web.ps1",
-            "cwd": "${workspaceFolder:pqlib}"
+            "script": "${workspaceFolder}/util/common_profile_web.ps1",
+            "cwd": "${workspaceFolder}"
         },
         {
             "presentation": {
@@ -48,8 +48,8 @@
             "name": "Build ➔ common_profile.pq",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/common_profile.ps1",
-            "cwd": "${workspaceFolder:pqlib}"
+            "script": "${workspaceFolder}/util/common_profile.ps1",
+            "cwd": "${workspaceFolder}"
         },
         {
             "presentation": {
@@ -60,8 +60,8 @@
             "name": "Build ➔ ninlib_advent.pq",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/profile/Invoke-BuildAdventCode.ps1",
-            "cwd": "${workspaceFolder:pqlib}"
+            "script": "${workspaceFolder}/util/profile/Invoke-BuildAdventCode.ps1",
+            "cwd": "${workspaceFolder}"
         },
         {
             "presentation": {
@@ -72,8 +72,8 @@
             "name": "Build ➔ PQParser.pq",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/profile/Invoke-BuildPQParser.ps1",
-            "cwd": "${workspaceFolder:pqlib}"
+            "script": "${workspaceFolder}/util/profile/Invoke-BuildPQParser.ps1",
+            "cwd": "${workspaceFolder}"
         },
         {
             "presentation": {
@@ -84,8 +84,8 @@
             "name": "Build ➔ BuildPowerQueryLib.ps1",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/Invoke-BuildPowerQueryLib.ps1",
-            "cwd": "${workspaceFolder:pqlib}"
+            "script": "${workspaceFolder}/util/Invoke-BuildPowerQueryLib.ps1",
+            "cwd": "${workspaceFolder}"
         },
         {
             "presentation": {
@@ -96,8 +96,8 @@
             "name": "Build ➔ BuildFull.ps1",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder:pqlib}/util/Invoke-BuildFull.ps1",
-            "cwd": "${workspaceFolder:pqlib}"
+            "script": "${workspaceFolder}/util/Invoke-BuildFull.ps1",
+            "cwd": "${workspaceFolder}"
         },
         {
             "presentation": {
@@ -110,6 +110,18 @@
             "request": "launch",
             "script": "${file}",
             "cwd": "${file}"
+        },
+        {
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Build",
+                "order": 1
+            },
+            "name": "Parse PQ.log 🐛",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/util/logs/parse-vscode_pq.ps1",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
