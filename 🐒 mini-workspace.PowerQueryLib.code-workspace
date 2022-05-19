@@ -2,23 +2,26 @@
     "folders": [
         {
             "path": ".",
-            "name": "//core"
+            "name": "//PowerQueryLib🐒"
         },
         {
-            "path": "..\\..\\..\\..\\..\\..\\.dev-nin"
+            "name": "vscode-pq-parser",
+            "path": "..\\..\\..\\..\\..\\2022-fam-share\\logs\\vscode-pq-parser"
         }
     ],
     "settings": {
         "editor.snippetSuggestions": "inline",
         "editor.suggest.preview": true,
-        "editor.fontFamily": "'fira code retina', 'cascadia code pl', 'cascadia code pl', 'cascadia code', Consolas, 'Courier New', monospace",
         "editor.fontFamily": "'consolas'",
         "editor.fontFamily": "'fira code'",
         "editor.fontFamily": "'calibri'",
-        "editor.fontFamily": "'fira code retina'",
-        "editor.fontFamily": "'cascadia code pl'",
         "editor.fontFamily": "'cascadia code'",
-        "editor.fontSize": 15,
+        "editor.fontFamily": "'fira code retina'",
+        "editor.fontFamily": "'cascadia code'",
+        "editor.fontFamily": "'fira code retina', 'cascadia code pl', 'cascadia code pl', 'cascadia code', Consolas, 'Courier New', monospace",
+        "editor.fontFamily": "'fira code', 'Consolas, 'Courier New', monospace",
+        "editor.fontFamily": "'cascadia code pl'",
+        "editor.fontSize": 14,
         "editor.fontWeight": "normal",
         "editor.wordWrap": "wordWrapColumn",
         "editor.wordWrapColumn": 160,
