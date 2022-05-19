@@ -20,6 +20,16 @@ $target = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\2022-fam-share\logs\vsc
 $Content = Get-Content -Path $target -Raw
 
 
+class PQRecord {
+    [string]$Header
+    [object]$Json
+    [string]$RawJson
+    [boolean]$FailedParsing = $false
+}
+
+
+
+
 $Regex = @{}
 $Regex['SplitLogPhase1_iter0'] = @'
 (?xm)
@@ -89,6 +99,41 @@ function _exportPhase1 {
     return $files
 }
 
+function _parseRecord {
+    <#
+    .synopsis
+        convert a single, multi-line record
+    #>
+    [OutputType('PSCustomObject')]
+    param(
+        # [object]$InputObject
+        [Text.RegularExpressions.Match]$InputObject
+    )
+    process {
+        # ignore unnamed
+        $hash = @{}
+        $InputObject.Groups | Where-Object { $_.Name -notmatch '\A\d+\Z' }
+        | ForEach-Object { $hash[ $_.Name, $_.Value ] }
+
+        $Hash['RawJson'] = $Hash.Json
+        try {
+            $Hash['Json'] = $Hash['Json'] | ConvertFrom-Json
+        } catch {
+            Write-Warning "Failed Parsing Json: '$($Hash.RawJson)'"
+            $Hash['Json'] = $Null
+            $Hash['FailedParsing'] = $true
+        }
+        return [PQRecord]@{
+            Header        = $Hash.Header
+            Json          = $hash['Json']
+            RawJson       = $Hash['RawJson']
+            FailedParsing = $Hash['FailedParsing']
+        }
+
+    }
+}
+
+
 $Target_segments = _exportPhase1 -TargetPath $target -Verbose
 $Target_segments
 $phase1.count | Label 'split on <-->'
@@ -97,14 +142,24 @@ $phase2_target = Get-Item $Target_segments[0]
 $curContent = Get-Content -Raw $phase2_target
 $listMatches = [regex]::Matches($curContent, $Regex.PQRecord)
 $listMatches[0..2] | Format-Table
-$listMatches[0].Groups | s name, value
+
+
+
+$listPQRecords = $listMatches | _parseRecord
+
+$processed = $listMatches[0].Groups | s name, value
 # drop un-named
 | Where-Object Name -NotMatch '\A\d+\Z'
 # as object
 | ForEach-Object -Begin { $hash = @{} } {
     $hash.Add( $_.Name, $_.Value )
 } -End {
+    # $Hash['Json_Original'] = $Hash['Json']
     [pscustomobject]$hash
+}
+
+function a {
+
 }
 # drop-unnamed
 <#
