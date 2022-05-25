@@ -1,0 +1,41 @@
+
+define
+    // U+2400 aka 9216 aka '␀' is the safe symbol to display null U+0 values
+	var StrNullSymbol = 9216 // 0x2400 '␀' is the safe symbol for null 0x0
+
+    // this is the old one, new one has more ideomatic fallback
+
+	measure Named_Codepoints[Step1] =
+		var cur = SELECTEDVALUE( Named_Codepoints[Codepoint], StrNullSymbol)
+		var render = "'" & UNICHAR(106) & "' should be 'j'"
+		return render
+
+	/*
+	should render using the column codepoint
+		error:
+			argument of UNICHAR is wrong type, or out of bound
+	*/
+
+	measure Named_Codepoints[RenderDax] =
+		var cur = SELECTEDVALUE( Named_Codepoints[Codepoint], StrNullSymbol)
+		var render = UNICHAR( cur )
+		return render
+
+	measure Named_Codepoints[RenderDax_works] =
+		var cur = SELECTEDVALUE( Named_Codepoints[Codepoint], StrNullSymbol)
+		var render = UNICHAR( 9332 )
+		return render
+
+EVALUATE
+	SUMMARIZECOLUMNS(
+	   Named_Codepoints[Codepoint],
+	   Named_Codepoints[Render],
+	   "max", Max( Named_Codepoints[Codepoint] ),
+	   "step1", [Step1]
+	   //, "actual", [RenderDax]     // commenting this, removes all errors
+	   , "Working", [RenderDax_works]
+
+	)
+	ORDER BY
+	    Named_Codepoints[Codepoint] ASC,
+	    Named_Codepoints[Render] ASC

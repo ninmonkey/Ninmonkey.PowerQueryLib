@@ -20,14 +20,6 @@ $target = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\2022-fam-share\logs\vsc
 $Content = Get-Content -Path $target -Raw
 
 
-class PQRecord {
-    [string]$Header
-    [object]$Json
-    [string]$RawJson
-    [boolean]$FailedParsing = $false
-}
-
-
 
 
 $Regex = @{}
@@ -99,32 +91,60 @@ function _exportPhase1 {
     return $files
 }
 
-function _parseRecord {
+
+class PQRecord {
+    [string]$Header
+    [object]$Json
+    [string]$RawJson
+    [boolean]$FailedParsing = $false
+
+    PQRecord([string]$Record) {
+        # $Header = 'header'
+    }
+}
+
+
+
+
+function _parseRecord_iter0 {
     <#
     .synopsis
         convert a single, multi-line record
     #>
-    [OutputType('PSCustomObject')]
+    # [OutputType('PSCustomObject')]
+    [CmdletBinding()]
     param(
         # [object]$InputObject
+        [Parameter(Mandatory, ValueFromPipeline)]
         [Text.RegularExpressions.Match]$InputObject
     )
     process {
         # ignore unnamed
         $hash = @{}
-        $InputObject.Groups | Where-Object { $_.Name -notmatch '\A\d+\Z' }
-        | ForEach-Object { $hash[ $_.Name, $_.Value ] }
+        $InputObject.Groups | Where-Object {
+            $_.Name -notmatch '\A\d+\Z' -and $_.Name -ne '0' }
+        | ForEach-Object {
+            # $name = $_.Name -eq 'Json' ? 'RawJson' : $_.Name
+            $Name = $_.Name
 
-        $Hash['RawJson'] = $Hash.Json
+            if ($_.Name -eq 'Json') {
+                $Name = 'RawJson'
+            }
+            if ($_.Name -eq '0') {
+                $Name = 'RawRecord'
+            }
+            $hash[ $Name, $_.Value ]
+        }
+
         try {
-            $Hash['Json'] = $Hash['Json'] | ConvertFrom-Json
+            $Hash['Json'] = $Hash['RawJson'] | ConvertFrom-Json -ea ignore
         } catch {
-            Write-Warning "Failed Parsing Json: '$($Hash.RawJson)'"
+            Write-Warning "Failed Parsing Json: '$($Hash.RawRecord)'"
             $Hash['Json'] = $Null
             $Hash['FailedParsing'] = $true
         }
         return [PQRecord]@{
-            Header        = $Hash.Header
+            Header        = $Hash['Header']
             Json          = $hash['Json']
             RawJson       = $Hash['RawJson']
             FailedParsing = $Hash['FailedParsing']
@@ -132,12 +152,13 @@ function _parseRecord {
 
     }
 }
+# Wait-Debugger
 
+$ErrorActionPreference = 'stop'
 
 $Target_segments = _exportPhase1 -TargetPath $target -Verbose
 $Target_segments
 $phase1.count | Label 'split on <-->'
-
 $phase2_target = Get-Item $Target_segments[0]
 $curContent = Get-Content -Raw $phase2_target
 $listMatches = [regex]::Matches($curContent, $Regex.PQRecord)
@@ -145,8 +166,7 @@ $listMatches[0..2] | Format-Table
 
 
 
-$listPQRecords = $listMatches | _parseRecord
-
+$listPQRecords = $listMatches | _parseRecord #-ea break
 $processed = $listMatches[0].Groups | s name, value
 # drop un-named
 | Where-Object Name -NotMatch '\A\d+\Z'
@@ -158,9 +178,6 @@ $processed = $listMatches[0].Groups | s name, value
     [pscustomobject]$hash
 }
 
-function a {
-
-}
 # drop-unnamed
 <#
 new-doir $AppConf.ExportRooot
