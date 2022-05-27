@@ -5,7 +5,7 @@ using namespace System.Text.StringBuilder;
 Import-Module Ninmonkey.Console, Dev.nin -wa ignore
 $Config = @{
     AutoOpenEditor = $false
-    AppVersion     = [string]'0.0.2'
+    AppVersion     = [string]'0.0.3'
     AutoRoot       = Get-Item -ea stop (Join-Path $PSScriptRoot '..')
 }
 $Config += @{
@@ -63,7 +63,8 @@ function Invoke-BuildPowerQueryLib {
 
 
     )
-    begin {}
+    begin {
+    }
     process {
         try {
             $buildMeta = [ordered]@{
@@ -268,15 +269,14 @@ in
             # $querysb.AppendFormat( $Template.RootBody, $kwargs )
             $QuerySb | Set-Content -Path $ExportPath -Encoding 'utf8'
             $buildMeta
-        }
-        catch {
+        } catch {
             Write-Error -ErrorRecord $_ 'Build {} failed'
         }
     }
     end {
 
         @(
-            hr
+            Hr
             $clist = @{
                 H1             = @{
                     Fg = 'orange'
@@ -303,12 +303,12 @@ in
             }
             # | Write-Information
 
-            hr
+            Hr
             # | Write-Information
             $BuildMeta | Format-Dict
             # | Write-Information
             # | Write-Information
-            hr
+            Hr
 
             # $ColorNames = @{
             #     SubtleEmphasis = @{ fg = gray75; bg = gray20; }
@@ -327,8 +327,7 @@ in
                     }
                 )
                 | Join-String
-            }
-            else {
+            } else {
                 write-color $clist.H1.Fg -t 'Files Exported: '
                 $splat_backtick = $clist.SubtleEmphasis
                 @(
@@ -344,7 +343,7 @@ in
                 )
                 | Join-String
             }
-            $ExportPath | write-color green | join-string -op (write-color yellow -t 'Wrote: ')
+            $ExportPath | write-color green | Join-String -op (write-color yellow -t 'Wrote: ')
 
             '[Invoke-Build]: done' | write-color darkgreen
         ) | Write-Information
