@@ -1,6 +1,6 @@
 using namespace System.Text.StringBuilder;
-#Requires -Version 7.0.0
-#Requires -Module Dev.Nin, Ninmonkey.console
+#Requires -Version 7.0
+#Requires -Module Dev.Nin, Ninmonkey.Console
 
 Import-Module Ninmonkey.Console, Dev.nin -wa ignore
 $Config = @{
@@ -77,7 +77,7 @@ function Invoke-BuildPowerQueryLib {
             }
             $Path = Get-Item -ea stop $BaseDirectory
             if (! $ExportPath ) {
-                $ExportPath = Join-Path $PSScriptRoot '../.output/PowerQueryLib.pq' # | Get-Item -ea stop
+                $ExportPath = Join-Path $PSScriptRoot '../.output/ninlib.pq' # | Get-Item -ea stop
             }
 
 

@@ -79,7 +79,11 @@ $invokeBuildPowerQueryLibSplat = @{
     Options       = $Options
     BaseDirectory = $LibRoot
     Infa          = 'Continue'
-    ExportPath    = Join-Path "${Env:USERPROFILE}" 'SkyDrive\Documents\2021\Ninmonkeys.com\Experiments-Of-Week\2022-02-02\.ninlib'
+    # ExportPath    = Join-Path "${Env:UserProfile}" 'SkyDrive\Documents\2021\Ninmonkeys.com\Experiments-Of-Week\2022-02-02\.ninlib'
+    #                   'SkyDrive\Documents\2021\Ninmonkeys.com\Experiments-Of-Week\2022-02-02\.ninlib'
+    # 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\My_Github\Ninmonkey.PowerQueryLib\.output\ninlib.pq'
+    # 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\My_Github\Ninmonkey.PowerQueryLib\util\profile\Invoke-BuildFull.ps1'
+    # ExportPath    = Join-Path "${Env:UserProfile}" 'SkyDrive\Documents\2021\Ninmonkeys.com\Experiments-Of-Week\2022-02-02\.ninlib'
     # ExportPath    = Get-Item -ea stop 'C:\Users\cppmo_000\SkyDrive\Documents\2021\Power BI\My_Forks\powerquery-parser-report\ninlib.pq'
     # 'C:\Users\cppmo_000\SkyDrive\Documents\2021\My_Github\AdventOfCode\utils\ninlib_adventOfCode.pq'
 }

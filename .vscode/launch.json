@@ -16,6 +16,18 @@
             }
         },
         {
+            "presentation": {
+                "hidden": false,
+                "group": "Invoke-Build",
+                "order": 1
+            },
+            "name": "Build ➔ BuildFull.ps1 🚀",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/util/profile/Invoke-BuildFull.ps1",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "Build ➔ blog_sketch.pq",
             "type": "PowerShell",
             "request": "launch",
@@ -85,18 +97,6 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${workspaceFolder}/util/Invoke-BuildPowerQueryLib.ps1",
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "presentation": {
-                "hidden": false,
-                "group": "Invoke-Build",
-                "order": 1
-            },
-            "name": "Build ➔ BuildFull.ps1",
-            "type": "PowerShell",
-            "request": "launch",
-            "script": "${workspaceFolder}/util/Invoke-BuildFull.ps1",
             "cwd": "${workspaceFolder}"
         },
         {

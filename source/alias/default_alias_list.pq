@@ -12,9 +12,7 @@ let
         fmt_Hex = Number_ToHexString
 
 
-    ]
-in
-    mapping meta [
+    ] meta [
         pqLibAlias = "Inspect.MetaOfType",
         IsAlias = true
     ]
