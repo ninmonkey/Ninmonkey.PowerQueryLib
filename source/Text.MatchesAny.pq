@@ -7,7 +7,7 @@ let
     // does source contain any of these substrings? True when at least one does
     // see also: List.MatchesAny: https://docs.microsoft.com/en-us/powerquery-m/list-matchesany
     // example using List.Transform() instead, because it's used often
-    Text.MatchesAnyType = type function (
+    Text.MatchesAny_Type = type function (
         message as (
             type text meta [
                 Documentation.FieldCaption = "source",
@@ -51,13 +51,13 @@ let
             }
         ]
     ),
-    Text.MatchesAnyImpl = (source as text, searchStrings as list, optional options as nullable record) as logical =>
+    Text.MatchesAny_Impl = (source as text, searchStrings as list, optional options as nullable record) as logical =>
         let
             options = Record.Combine({defaults, options ?? []}),
             defaults = [Comparer = Comparer.OrdinalIgnoreCase, Culture = "en-us"],
             matchingList = List.Transform(searchStrings, (string) => Text.Contains(source, string, options[Comparer]))
         in
             List.AnyTrue(matchingList),
-    Text.MatchesAny = Value.ReplaceType(Text.MatchesAnyImpl, Text.MatchesAnyType)
+    Text.MatchesAny = Value.ReplaceType(Text.MatchesAny_Impl, Text.MatchesAny_Type)
 in
     Text.MatchesAny
