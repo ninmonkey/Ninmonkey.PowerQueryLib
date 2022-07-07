@@ -1,4 +1,3 @@
-// WebRequest New
 let
     /*
 
@@ -46,54 +45,28 @@ let
                 bytes = Web.Contents( baseUrl, merged_options),
                 response = Binary.Buffer( bytes ) ,
                 response_metadata = Value.Metadata( bytes ),
-                response_text = Text.Combine( Lines.FromBinary( response,null,null, encoding ), "" ),
-                json = Json.Document(response, encoding),
+                response_text = Text.Combine( Lines.FromBinary(
+                    response,null,null, encoding ), "" ),
+                    // depends on if I want to consume the errors from Json, usually it's
+                    // content, but, sometimes it may be useful.
+                // Json = try Json.Document(response, encoding) catch (e) => null,
+                // Json = Json.Document(response, encoding),
                 // this part is new, not sure if it's 100% logically equivalent to the prev test
-                IsJson = try false <> json catch (e) => false,
+                Json = try Json catch (e) => null meta [Exception = e],
+                IsJson = Json <> null, //try false <> Json catch (e) => false,
+                IsJson2 = try false <> Json catch (e) => false,
                 Final = [
                     RequestUrl = response_metadata[Content.Uri](),
                     ResponseText = response_text,
                     StatusCode = response_metadata[Response.Status]?,
                     MetaData = response_metadata,
-                    IsJson = IsJson,
+                    IsJson = Json <> null,
+                    IsJson2 = IsJson,
                     Response = response,
-                    Json = try json catch (e) => null meta [Exception = e]
+                    Json = try Json catch (e) => null meta [Exception = e]
 
                     // json = if IsJson then json else null
                 ]
             in
                 Final
     in Web.SimpleRequest
-
-// invoke_newtest
-let
-    Web.SimpleRequest = #"WebRequest New",
-
-    FinalResults = Table.FromRecords(tests,
-        type table[
-            StatusCode = Int64.Type, RequestUrl = text,
-            MetaData = record,
-            ResponseText = text,
-            IsJson = logical, json = any,
-            Response = binary
-        ],
-        MissingField.Error
-    ),
-    tests = { // todo: remove
-        Web.SimpleRequest("https://httpbin.org", "json"), // expect: json
-        Web.SimpleRequest("https://www.google.com"),       // expect: html
-        Web.SimpleRequest("https://main.ddrv8e4fbmhdv.amplifyapp.com", "/api/timezonemap"),       // expect: html
-        Web.SimpleRequest("https://main.ddrv8e4fbmhdv.amplifyapp.com", "/api/timezonemap",
-            [ManualStatusHandling = {404..406} & {500}]),       // expect: html
-        Web.SimpleRequest("https://httpbin.org", "/headers"),
-        Web.SimpleRequest("https://httpbin.org", "/status/codes/406"), // exect 404
-        Web.SimpleRequest("https://httpbin.org", "/status/406"), // exect 406
-        Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "Hello World"])
-    },
-    Summary = [
-        FinalResults = FinalResults,
-        tests = tests
-    ],
-    FinalResults1 = Summary[FinalResults]
-in
-    FinalResults1
