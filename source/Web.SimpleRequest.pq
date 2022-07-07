@@ -53,17 +53,17 @@ let
                 // Json = Json.Document(response, encoding),
                 // this part is new, not sure if it's 100% logically equivalent to the prev test
                 Json = try Json catch (e) => null meta [Exception = e],
-                IsJson = Json <> null, //try false <> Json catch (e) => false,
-                IsJson2 = try false <> Json catch (e) => false,
+                // IsJson = Json <> null, //try false <> Json catch (e) => false,
+                // IsJson2 = try false <> Json catch (e) => false,
                 Final = [
                     RequestUrl = response_metadata[Content.Uri](),
                     ResponseText = response_text,
                     StatusCode = response_metadata[Response.Status]?,
                     MetaData = response_metadata,
                     IsJson = Json <> null,
-                    IsJson2 = IsJson,
+                    // IsJson2 = IsJson,
                     Response = response,
-                    Json = try Json catch (e) => null meta [Exception = e]
+                    Json = Json
 
                     // json = if IsJson then json else null
                 ]
