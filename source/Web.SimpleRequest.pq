@@ -52,7 +52,11 @@ let
                 // Json = try Json.Document(response, encoding) catch (e) => null,
                 // Json = Json.Document(response, encoding),
                 // this part is new, not sure if it's 100% logically equivalent to the prev test
-                Json = try Json catch (e) => null meta [Exception = e],
+                Json =
+                    try
+                        Json.Document( response, encoding)
+                    catch (e) =>
+                        null meta [Exception = e], // null for simple usability, but preserve info
                 // IsJson = Json <> null, //try false <> Json catch (e) => false,
                 // IsJson2 = try false <> Json catch (e) => false,
                 Final = [
