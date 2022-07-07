@@ -56,7 +56,7 @@ let
                     try
                         Json.Document( response, encoding)
                     catch (e) =>
-                        null meta [Exception = e], // null for simple usability, but preserve info
+                        null meta [Exception = e], // null for simple usability, but preserve
                 // IsJson = Json <> null, //try false <> Json catch (e) => false,
                 // IsJson2 = try false <> Json catch (e) => false,
                 Final = [

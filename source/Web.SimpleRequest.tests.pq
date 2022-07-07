@@ -2,10 +2,12 @@ let
     Web.SimpleRequest = #"WebRequest New",
     FinalTable = Table.FromRecords(tests,
         type table[
-            StatusCode = Int64.Type, RequestUrl = text,
+            StatusCode = Int64.Type,
+            RequestUrl = text,
             MetaData = record,
             ResponseText = text,
-            IsJson = logical, Json = any,
+            IsJson = logical,
+            Json = any,
             Response = binary
         ],
         MissingField.Error
@@ -20,13 +22,13 @@ let
         Web.SimpleRequest("https://httpbin.org", "/status/406"), // exect 406
         Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "Hello World"])
     },
-    Final = FinalResults,
+    #"Include Metadata" = Table.AddColumn(FinalTable, "JsonDecodeMessage", each Value.Metadata( [Json] ), type record),
+    #"Include ErrorMessage" = Table.AddColumn(#"Include Metadata", "JsonDecodeMessage", each Value.Metadata( [Json] ), type record),
     Summary = [
         tests = tests,
-        Final = Final,
-        FinalResults = FinalResults
+        FinalTable = FinalTable,
+        RealFinal = #"Include ErrorMessage"
     ],
-    tests1 = Summary[tests],
-    tests2 = tests1{4}
+    RealFinal = Summary[RealFinal]
 in
-    tests2
+    RealFinal
