@@ -1,4 +1,5 @@
 let
+
     Web.SimpleRequest = #"WebRequest New",
     FinalTable = Table.FromRecords(tests,
         type table[
@@ -7,7 +8,7 @@ let
             MetaData = record,
             ResponseText = text,
             IsJson = logical,
-            Json = any,
+            Json = nullable record,
             Response = binary
         ],
         MissingField.Error
@@ -22,12 +23,11 @@ let
         Web.SimpleRequest("https://httpbin.org", "/status/406"), // exect 406
         Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "Hello World"])
     },
-    #"Include Metadata" = Table.AddColumn(FinalTable, "JsonDecodeMessage", each Value.Metadata( [Json] ), type record),
-    #"Include ErrorMessage" = Table.AddColumn(#"Include Metadata", "JsonDecodeMessage", each Value.Metadata( [Json] ), type record),
+    #"Include Metadata" = Table.AddColumn(FinalTable, "Custom", each Value.Metadata( [Json] ), type record),
     Summary = [
         tests = tests,
         FinalTable = FinalTable,
-        RealFinal = #"Include ErrorMessage"
+        RealFinal = #"Include Metadata"
     ],
     RealFinal = Summary[RealFinal]
 in
