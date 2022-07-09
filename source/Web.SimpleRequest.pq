@@ -21,17 +21,74 @@ let
         - Raw text is returned, this is useful when there's an error
         - now response[json] does not throw, when the data isn't json to begin with (false errors)
 
+for this url
+
+    https://httpbin.org/get?Text=hi-world
+
+the way you split args is the same as Web.Contents, other than the 2nd parameter being
+the [RelativePath] value. you would use:
+
+Web.SimpleRequest( "https://httpbin.org", "/get", [
+    Query = [
+        Text = "hi-world"
+    ]
+)
+
+
+    todo:
+
+
+
+
+
+
+
+
+
+
+
+- embed M expression -> to comments like
+    add final [Documentation.Examples] file
+
+            for this url#(cr,lf)#(cr,lf)    https://httpbin.org/get?Text=hi-world#(cr,lf)#(cr,lf)the way you split args is the same as Web.Contents, other than the 2nd parameter being#(cr,lf)the [RelativePath] value. you would use:#(cr,lf)#(cr,lf)Web.SimpleRequest( ""https://httpbin.org"", ""/get"", [#(cr,lf)    Query = [#(cr,lf)        Text = ""hi-world""#(cr,lf)    ]#(cr,lf))
+
     */
-    //Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "hi-world"] )
     Web.SimpleRequest.Type = type function (
         baseUrl as ( // future: maybe use url type?
             type text meta [
                 Documentation.FieldCaption = "Minimum Base Url",
-                Documentation.FieldDescription = "This includes the url up until the first slash after a domain. The rest goes into queyr string",
-                Documentation.SampleValues = {"", "Bat"}
+                Documentation.FieldDescription = "This includes the url up until the first slash after a domain. The rest goes into query string",
+                Documentation.SampleValues = {"https://httpbin.org", "www.google.com"}
+            ]
+        ),
+        optional relative_path as (
+            type nullable text meta [
+                Documentation.FieldCaption = "Url relative path",
+                Documentation.FieldDescription = "everything after the "".com"" up to the ""?"" " ,
+                Documentation.SampleValues = {"<wip>/someAPI/Employee/GetStats", null, ""}
+            ]
+        ),
+        optional options as (
+            type nullable record meta [
+                Documentation.FieldCaption = "All Web.Contents options",
+                Documentation.FieldDescription = "See <https://docs.microsoft.com/en-us/powerquery-m/web-contents> for details, or the examples below",
+                Documentation.SampleValues = {"<wip>/someAPI/Employee/GetStats", null, ""}
             ]
         )
+    ) as (
+        type record meta [
+            Documentation.Name = "Web - SimpleRequest",
+            Documentation.LongDescription = "Web.Contents - Makes repeated requests easier.",
+            Documentation.Examples = {
+                [
+                    Description = "<wip>",
+                    Code = "<wip>",
+                    Result = "<wip>"
+                ]
+            }
+        ]
     ),
+
     Web.SimpleRequest = // WebRequest_Simple
         (   baseUrl as text,
             optional relative_path as nullable text,
@@ -85,4 +142,5 @@ let
                 ]
             in
                 Final
-    in Web.SimpleRequest
+    in
+        Value.ReplaceType( Web.SimpleRequest, Web.SimpleRequest.Type )

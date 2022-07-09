@@ -22,14 +22,32 @@ let
         Web.SimpleRequest("https://httpbin.org", "/headers"),
         Web.SimpleRequest("https://httpbin.org", "/status/codes/406"),  // expected: 404
         Web.SimpleRequest("https://httpbin.org", "/status/406"),        // expected: 406
-        Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "Hello World"])
+        Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "hi-world"] )
     },
-    #"Include Metadata" = Table.AddColumn(FinalTable, "Custom", each Value.Metadata( [Json] ), type record),
+    // record.c
+    #"Include Metadata" = Table.AddColumn(FinalTable, "JsonErrorMetadata",
+        (row) =>
+            let
+                maybeMeta = Value.Metadata( row[Json] ),
+                metaCount = Record.FieldCount( maybeMeta )
+            in
+                if metaCount = 0 then null
+                else maybeMeta,
+        type record),
+
+    singleMeta = RealFinal{7}[MetaData]? ?? "meta",
+    superVerbose = true,
+    VerboseFinal = #"Changed Type",
+    #"Expanded MetaData" = Table.ExpandRecordColumn(RealFinal, "MetaData", {"Content.Type", "Content.Uri", "Content.Name", "Headers", "Request.Options", "Response.Status"}, {"MetaData.Content.Type", "MetaData.Content.Uri", "MetaData.Content.Name", "MetaData.Headers", "MetaData.Request.Options", "MetaData.Response.Status"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Expanded MetaData",{{"StatusCode", Int64.Type}}),
+    RealFinal = #"Include Metadata",
+
+
     Summary = [
         tests = tests,
         FinalTable = FinalTable,
-        RealFinal = #"Include Metadata"
-    ],
-    RealFinal = Summary[RealFinal]
+        RealFinal = RealFinal,
+        singleMeta = #"Include Metadata"
+    ]
 in
-    RealFinal
+    Summary
