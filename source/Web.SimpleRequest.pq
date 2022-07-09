@@ -4,8 +4,7 @@ let
     see also:
         WebRequest_simple.pq
 
-
-    Wrapper for Web.Contents  returns response metadata
+    Wrapper for Web.Contents, exposes  returns response metadata
         for options, see: <https://docs.microsoft.com/en-us/powerquery-m/web-contents#__toc360793395>
 
     Details on preventing "Refresh Errors", using 'Query' and 'RelativePath':
@@ -23,6 +22,16 @@ let
         - now response[json] does not throw, when the data isn't json to begin with (false errors)
 
     */
+    //Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "hi-world"] )
+    Web.SimpleRequest.Type = type function (
+        baseUrl as ( // future: maybe use url type?
+            type text meta [
+                Documentation.FieldCaption = "Minimum Base Url",
+                Documentation.FieldDescription = "This includes the url up until the first slash after a domain. The rest goes into queyr string",
+                Documentation.SampleValues = {"", "Bat"}
+            ]
+        )
+    ),
     Web.SimpleRequest = // WebRequest_Simple
         (   baseUrl as text,
             optional relative_path as nullable text,
@@ -42,7 +51,7 @@ let
                     Headers = headers
                 ],
 
-                bytes = Web.Contents( baseUrl, merged_options),
+                bytes = Web.Contents( baseUrl, merged_options ),
                 response = Binary.Buffer( bytes ) ,
                 response_metadata = Value.Metadata( bytes ),
                 response_text = Text.Combine( Lines.FromBinary(
@@ -62,6 +71,9 @@ let
                 Final = [
                     RequestUrl = response_metadata[Content.Uri](),
                     ResponseText = response_text,
+                    RequestHeaders = response_text[Headers]? ?? null,
+                    RequestOptions = response_text[Request.Options]? ?? [], // []
+
                     StatusCode = response_metadata[Response.Status]?,
                     MetaData = response_metadata,
                     IsJson = Json <> null,

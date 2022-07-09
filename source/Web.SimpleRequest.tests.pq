@@ -14,13 +14,14 @@ let
         MissingField.Error
     ),
     tests = { // todo: remove
-        Web.SimpleRequest("https://httpbin.org", "json"), // expect: json
-        Web.SimpleRequest("https://www.google.com"),       // expect: html
-        Web.SimpleRequest("https://main.ddrv8e4fbmhdv.amplifyapp.com", "/api/timezonemap"),       // expect: html
-        Web.SimpleRequest("https://main.ddrv8e4fbmhdv.amplifyapp.com", "/api/timezonemap", [ManualStatusHandling = {404..406, 500}]),       // expect: html
+        Web.SimpleRequest("https://httpbin.org", "json"),   // expected: json
+        Web.SimpleRequest("https://www.google.com"),        // expected: html
+        Web.SimpleRequest("https://main.ddrv8e4fbmhdv.amplifyapp.com", "/api/timezonemap"),
+        Web.SimpleRequest("https://main.ddrv8e4fbmhdv.amplifyapp.com", "/api/timezonemap",
+             [ManualStatusHandling = {404..406, 500}]),
         Web.SimpleRequest("https://httpbin.org", "/headers"),
-        Web.SimpleRequest("https://httpbin.org", "/status/codes/406"), // exect 404
-        Web.SimpleRequest("https://httpbin.org", "/status/406"), // exect 406
+        Web.SimpleRequest("https://httpbin.org", "/status/codes/406"),  // expected: 404
+        Web.SimpleRequest("https://httpbin.org", "/status/406"),        // expected: 406
         Web.SimpleRequest("https://httpbin.org", "/get", [ Text = "Hello World"])
     },
     #"Include Metadata" = Table.AddColumn(FinalTable, "Custom", each Value.Metadata( [Json] ), type record),
