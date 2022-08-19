@@ -9,7 +9,9 @@ let
         optionally add time when datetime is the source
 
     */
-    Date.TableFromDates = (source as table) as table =>
+    DateTable.FromDates_Impl = () =>
+        error Error.Record("NYI", "First write ListAll.Dates.pq"),
+    old_version_Date.TableFromDates = (source as table) as table =>
         let
             // isDatetime =  ..., // if datetime, or datetimezone,
             source =
@@ -34,4 +36,5 @@ let
             Final
 
 in
-    Date.TableFromDates
+    Value.ReplaceType( DateTable.FromDates_Impl, DateTable.FromDates_Type1 )
+
