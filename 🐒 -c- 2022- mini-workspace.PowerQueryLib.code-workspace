@@ -2,12 +2,16 @@
     "folders": [
         {
             "path": ".",
-            "name": "//PowerQueryLib🐒"
+            "name": "c : 2022 : //PowerQueryLib🐒"
         },
         {
             "name": "vscode-pq-parser",
             "path": "..\\..\\..\\..\\..\\2022-fam-share\\logs\\vscode-pq-parser"
-        }
+        },
+        {
+            "path": "C:/Users/cppmo_000/SkyDrive/Documents/2022/Power-BI/My_Github/ninMonkQuery-examples",
+            "name": "c : 2022 : //ninMonkQuery-examples🐒"
+        },
     ],
     "settings": {
         "explorer.fileNesting.enabled": true,
@@ -66,5 +70,6 @@
             }
         ],
         "search.searchEditor.defaultNumberOfContextLines": null,
+        "powershell.cwd": "c:\\Users\\cppmo_000\\SkyDrive\\Documents\\2022\\Power-BI\\My_Github\\Ninmonkey.PowerQueryLib",
     }
 }

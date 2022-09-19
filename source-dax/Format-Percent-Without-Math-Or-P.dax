@@ -1,0 +1,23 @@
+[ Percent Message ] =
+    /*
+    Render percentage, because the normal "p" format string
+    is missing. Instead you can use "%",
+    which sort of is the culture-invariant version of "p"
+
+    (no multiplication needed) to render percentagel, because the normal "p" format string is missing
+        explained here: https://docs.microsoft.com/en-us/dax/format-function-dax
+
+    Example
+        Input       Output
+            0.0     0.0%
+            0.5     50.0%
+            1.0     100.0%
+
+    related docs about culture invariants:
+        https://docs.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-6.0#invariant-neutral-and-specific-cultures
+        https://docs.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.invariantculture?view=net-6.0
+    */
+    var something = SELECTEDVALUE( Range[Value] )
+    var render = FORMAT( something, "##0.0%" )
+return
+    "Hit Rate: " & render
