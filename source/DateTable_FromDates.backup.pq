@@ -38,3 +38,4 @@ let
 in
     Value.ReplaceType( DateTable.FromDates_Impl, DateTable.FromDates_Type1 )
 
+a
