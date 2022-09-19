@@ -1,5 +1,11 @@
 # How to document Power Query functions
 
+first:
+
+- <https://bengribaudo.com/blog/2021/03/17/5523/power-query-m-primer-part20-metadata>
+- <https://docs.microsoft.com/en-us/power-query/handlingdocumentation>
+
+
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
@@ -66,3 +72,16 @@ docs:
 - [Handling Documentation](https://docs.microsoft.com/en-us/power-query/handlingdocumentation)
 - [Value Functions and Metadata](https://docs.microsoft.com/en-us/powerquery-m/value-functions#__toc360789751)
 - [Function-Value Functions](https://docs.microsoft.com/en-us/powerquery-m/function-values)
+
+
+```
+doc tips:
+
+documentation on the types uses for documentation
+    https://docs.microsoft.com/en-us/power-query/handlingdocumentation
+
+from:
+    https://bengribaudo.com/blog/2021/03/17/5523/power-query-m-primer-part20-metadata
+> A note about Documentation.Name: This value should probably match the name of the identifier you assign your function when you define it. For example, if you call your function SomeFunction, then when you set Documentation.Name, you should probably set its value to “SomeFunction”, as well.
+
+```

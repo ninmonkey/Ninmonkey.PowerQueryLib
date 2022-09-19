@@ -23,7 +23,7 @@ let
             ]
         ),
         // optional
-        options as (
+        optional options as (
             type nullable record meta [
                 Documentation.FieldCaption = "Additional arguments",
                 Documentation.FieldDescription = "Toggle Case-Sensitive Comparer",
