@@ -25,6 +25,7 @@ Custom functions for Power BI
 - [Implementing `Nav table`](https://github.com/microsoft/DataConnectors/blob/master/docs/nav-tables.md)
 - [Extending the `ODBC` connector](https://github.com/microsoft/DataConnectors/blob/master/docs/odbc.md)
 - example: [Swagger and two Auth types](https://github.com/microsoft/DataConnectors/blob/master/samples/DataWorldSwagger/DataWorldSwagger.pq)
+- [Implementing `Table.Schema` : Custom Connectors :bengribaudo](https://bengribaudo.com/blog/2022/06/16/6797/custom-connectors-populating-table-schema)
 
 ## Other links
 
