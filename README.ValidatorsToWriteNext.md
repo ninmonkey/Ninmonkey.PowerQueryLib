@@ -1,3 +1,14 @@
+# About: Wishlist / or Ideas of PowerQuery Validation Scripts
+
+Potential future rules/parsers.
+
+## Implementation 
+
+Either:
+- [ ] PQ on the CLI, and/or PQ Parser
+- [ ] Tabular editor C# rules using Tabular2/3 ( or even by itself )
+
+
 # Validate Parameters in functions
 
 - [ ] Inspect existing connector's code for patterns
