@@ -8,6 +8,14 @@ Either:
 - [ ] PQ on the CLI, and/or PQ Parser
 - [ ] Tabular editor C# rules using Tabular2/3 ( or even by itself )
 
+## Fatal/Mandatory
+
+- [ ] ScriptIsSynacticallyValid / no parse errors
+
+## Special warnings, not always fatal
+
+- [ ] like the linter message: You used `stuff` did you mean `Stuff`
+- [ ] Identifier references are missing ( ie: 2nd query in the advanced editor )
 
 # Validate Parameters in functions
 
