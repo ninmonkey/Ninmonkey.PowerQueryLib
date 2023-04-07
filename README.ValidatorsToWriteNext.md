@@ -21,6 +21,10 @@ Either:
 
 - [ ] Inspect existing connector's code for patterns
 
+## Text
+
+- [ ] WarnOnInvisibleCharacters: invisible control chars should give a warning
+
 # Wanted
 
 - [ ] Assert `t` is one of union `Union([int, text, Currency.Type])`
