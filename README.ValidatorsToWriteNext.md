@@ -12,10 +12,17 @@ Either:
 
 - [ ] ScriptIsSynacticallyValid / no parse errors
 
+## Quality / Preference
+
+- [ ] either `some_table` or `someTable` or `SomeTable` or `Some.Table` or `#"Some Table"
+    - [ ] pick one, and be consistant
+
 ## Special warnings, not always fatal
 
+- [ ] nested `each function`, warn may be missing
 - [ ] like the linter message: You used `stuff` did you mean `Stuff`
 - [ ] Identifier references are missing ( ie: 2nd query in the advanced editor )
+- [ ] Invisible Datetime Intelligence Tables found
 
 # Validate Parameters in functions
 
@@ -31,6 +38,7 @@ Either:
 
 ## Numerical
 
+- [ ] DisallowDefaultValueAsAggregate : Undo any non-numerical 
 - [ ] ValidateRange(min,max) numerical ranges
 - [ ] Assert List has N count items
 - [ ] Assert List is all of the same type
