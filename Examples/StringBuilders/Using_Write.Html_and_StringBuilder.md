@@ -1,0 +1,51 @@
+## About
+
+- [About](#about)
+  - [The Original, Raw Html](#the-original-raw-html)
+  - [Using `Write.Html.pq`](#using-writehtmlpq)
+
+
+This is an example builds the **HTML** for function documentation. I'm using [OscarValerock/OpenAI.pq](https://github.com/OscarValerock/PowerQueryFunctions/blob/a5e32fbbae2c067f07e90a75e5db987976d1e449/Functions/OpenAI/MCopilot.pq#L24-L42) for my example.
+
+### The Original, Raw Html
+
+```html
+<p><b>MCopilot</b></p>
+<li><b>Creator: </b>Oscar Martinez.</li>
+<li><b>LinkedIn:</b> https://www.linkedin.com/in/oscarmartinezv/.</li>
+<li><b>Web: </b>bibb.pro</li>
+
+<p>This function, interacts with the OpenAI API to provide responses based on given prompts. It serves as a tool for generating meaningful explanations and full code related to Power Query.</p>
+<p>The function takes three parameters:</p>
+<ul>
+    <li><b>apiKey:</b> This is the Open API Key required for authentication.</li>
+    <li><b>model:</b> This is the GPT chosen model.</li>
+    <li><b>prompt:</b> This is the prompt provided to the function, requesting information or code related to Power Query.</li>
+</ul>
+<p>The function,  constructs a request to the OpenAI API endpoint <code>https://api.openai.com/v1/chat/completions</code>.</p>
+<p>The request body includes a system message indicating the role of the responder, as well as the user's prompt. The API key is included in the request headers for authentication.</p>
+<p>Upon receiving the response from the API, the function extracts the content of the response message and returns it as the output.</p>
+```
+
+### Using `Write.Html.pq`
+
+```pq
+StringBuilder.JoinParagraph({
+    "MCopilot",
+    UL({
+        Write.Key( "Creator", "Oscar Martinez." ),
+        Write.Key( "LinkedIn", "https://www.linkedin.com/in/oscarmartinezv/." ),
+        Write.Key( "Web", "bibb.pro" )
+    }),
+    "This function, interacts with the OpenAI API to provide responses based on given prompts. It serves as a tool for generating meaningful explanations and full code related to Power Query.",
+    "The function takes three parameters:",
+    UL({
+        Write.Key( "apiKey", "This is the Open API Key required for authentication." ),
+        Write.Key( "model", "This is the GPT chosen model." ),
+        Write.Key( "prompt", "This is the prompt provided to the function, requesting information or code related to Power Query." )
+    }),
+    "The function,  constructs a request to the OpenAI API endpoint https://api.openai.com/v1/chat/completions.",
+    "The request body includes a system message indicating the role of the responder, as well as the user's prompt. The API key is included in the request headers for authentication.",
+    "Upon receiving the response from the API, the function extracts the content of the response message and returns it as the output."
+})
+```

@@ -23,43 +23,74 @@
                 value = value
             ]
         ),
+
     StringBuilder.Join          = (items as list, optional options as nullable record) as text => [
-            return = Text.Combine( items, Str[LineEnding] )
-        ][return],
+        return = Text.Combine( items, Str[LineEnding] )
+    ][return],
 
-    StringBuilder.JoinParagraph  = (items as list, optional options as nullable record) as text => [
-            paraList = List.Transform( items, (para) => Write.Html.Paragraph( para ) ),
-            return =   StringBuilder.Join( paraList )
-        ][return],
 
-        /*
+    /*
+        like StringBuilder.JoinFormat, but for a single value. not a list.
+    */
+    String.Write.Format = (content as text, optional options as nullable record) as text => [
+        return = StringBuilder.JoinFormat( {content}, options )
+        // renderLines = List.Transform( items,
+        //     (line) => Text.Format( formatStr, line )
+        // ),
+        // return = Text.Combine(
+        //     renderLines,
+        //     options[Separator]? ?? Str[LineEnding]
+        // )
+    ][return],
+
+
+    /*
         Valid options are any combination of these:
         - Prefix,
         - Suffix
         - Separator
     */
     StringBuilder.JoinFormat          = (items as list, optional options as nullable record) as text => [
-            formatStr = "#[prefix]#[content]#[suffix]",
-            renderLines = List.Transform( items,
-                (line) => Text.Format( formatStr, [
-                    prefix = options[Prefix]? ?? "",
-                    content = line,
-                    suffix = options[Suffix]? ?? ""
-                ])
-            ),
-                // (line) => Text.Format( formatStr, [ prefix = options[prefix], content = line, suffix = options[suffix] ] ) ),
-            return = Text.Combine(
-                renderLines,
-                options[Separator]? ?? Str[LineEnding]
-            )
-        ][return],
+        formatStr = "#[prefix]#[content]#[suffix]",
+        renderLines = List.Transform( items,
+            (line) => Text.Format( formatStr, [
+                prefix  = options[Prefix]? ?? "",
+                content = line,
+                suffix  = options[Suffix]? ?? ""
+            ])
+        ),
+            // (line) => Text.Format( formatStr, [ prefix = options[prefix], content = line, suffix = options[suffix] ] ) ),
+        return = Text.Combine(
+            renderLines,
+            options[Separator]? ?? Str[LineEnding]
+        )
+    ][return],
+
+
+    StringBuilder.JoinParagraph  = (items as list, optional options as nullable record) as text => [
+        paraList = List.Transform( items, (para) => Write.Html.Paragraph( para ) ),
+        return   = StringBuilder.Join( paraList )
+    ][return],
 
     Write.Html.UnorderedList = (items as list) as text => [
-        itemsList = List.Transform( items, (cur) => Write.Html.Element( "li", cur ) ),
-        return    = Write.Html.Element( "ul", Text.Combine( itemsList, Str[LineEnding] ) )
+        itemsList = StringBuilder.JoinFormat(
+            List.Transform( items,
+                (cur) => Write.Html.Element ( "li", cur  ) ),
+            [
+                Prefix    = "#(cr,lf,tab)",
+                Suffix    = "", // #(cr,lf)", // Str[LineEnding],
+                Separator = ""  // Str[LineEnding]
+            ]
+        ),
+        return    = String.Write.Format(
+            Write.Html.Element( "ul", itemsList ),
+            [
+                Prefix = Str[LineEnding],
+                Suffix = Str[LineEnding] ] )
     ][return],
 
     // optional aliases
+    Write.Format  = String.Write.Format,
     Write.Element = Write.Html.Element,
     Write.Key     = Write.Html.KeyValue,
     Tag           = Write.Html.Element,
