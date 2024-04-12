@@ -32,6 +32,28 @@
             return =   StringBuilder.Join( paraList )
         ][return],
 
+        /*
+        Valid options are any combination of these:
+        - Prefix,
+        - Suffix
+        - Separator
+    */
+    StringBuilder.JoinFormat          = (items as list, optional options as nullable record) as text => [
+            formatStr = "#[prefix]#[content]#[suffix]",
+            renderLines = List.Transform( items,
+                (line) => Text.Format( formatStr, [
+                    prefix = options[Prefix]? ?? "",
+                    content = line,
+                    suffix = options[Suffix]? ?? ""
+                ])
+            ),
+                // (line) => Text.Format( formatStr, [ prefix = options[prefix], content = line, suffix = options[suffix] ] ) ),
+            return = Text.Combine(
+                renderLines,
+                options[Separator]? ?? Str[LineEnding]
+            )
+        ][return],
+
     Write.Html.UnorderedList = (items as list) as text => [
         itemsList = List.Transform( items, (cur) => Write.Html.Element( "li", cur ) ),
         return    = Write.Html.Element( "ul", Text.Combine( itemsList, Str[LineEnding] ) )
