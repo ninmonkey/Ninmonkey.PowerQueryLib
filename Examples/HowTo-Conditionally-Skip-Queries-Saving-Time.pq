@@ -3,16 +3,20 @@ let
     See more: 
     
     - [Dynamic, Lazy Records](https://bengribaudo.com/blog/2021/08/09/5941/dynamic-lazy-records)
+    - [For fun, a deeper dive](https://bengribaudo.com/blog/2023/03/03/7292/lazy-streamed-immutable-try-building-a-table]
 
+    About:
+        this example shows that the api call can be skipped if it's not referenced. 
+        Set SkipLoad to true or false, and refresh.
     */
-    // example showing that Api1() isn't always called
-    // if they are called, it will delay for 3 seconds to simulate a query or web request
-    // skip load ends up skipping the query, and the 3 second delay
-    delay   = #duration(0,0,0, 3),
 
+    delay   = #duration(0,0,0, 3),
     SkipLoad = true,
 
-    
+    // if they are called, it will delay for 3 seconds to simulate a query or web request
+    // skip load ends up skipping the query, and the 3 second delay    
+
+
     // sleep for delay Seconds and return a string
     Api1 = () => Function.InvokeAfter( 
         () => "Api1 finished", delay ),
