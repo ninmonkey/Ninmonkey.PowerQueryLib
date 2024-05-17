@@ -100,7 +100,6 @@ let
         hasKeys = Record.FieldCount( target ) > 0,
         ret     = if hasKeys then source else null
     ][target],
-    // #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow(row), Record.Type )
-    #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow( row[Value] ), type any)
+    #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow( row[Value] ), type record)
 in
     #"Added Custom"
