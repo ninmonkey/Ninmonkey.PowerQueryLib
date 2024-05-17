@@ -4,6 +4,7 @@
 - [Ninmonkey.PowerQueryLib](#ninmonkeypowerquerylib)
   - [New Usage](#new-usage)
   - [Importing External `.pq` files](#importing-external-pq-files)
+  - [Other projects](#other-projects)
   - [Special functions](#special-functions)
   - [Other links](#other-links)
   - [Usage ( Old version )](#usage--old-version-)
@@ -37,6 +38,10 @@ Context:
         Format.Csv = Csv,
         23
 ```
+
+## Other projects
+
+- [OscarValerock/PowerQueryFunctions](https://github.com/OscarValerock/PowerQueryFunctions)
 
 ## Special functions
 
