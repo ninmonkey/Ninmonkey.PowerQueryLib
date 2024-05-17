@@ -71,5 +71,6 @@
         ],
         "search.searchEditor.defaultNumberOfContextLines": null,
         "powershell.cwd": "c:\\Users\\cppmo_000\\SkyDrive\\Documents\\2022\\Power-BI\\My_Github\\Ninmonkey.PowerQueryLib",
+        "powerquery.sdk.defaultExtension": "${workspaceFolder}\\bin\\AnyCPU\\Debug\\${workspaceFolderBasename}.mez",
     }
 }

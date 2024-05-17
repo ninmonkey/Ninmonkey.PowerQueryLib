@@ -13,7 +13,7 @@ Custom functions for Power BI
 
 ## New Usage
 
-- This is a template to load any file: [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix)
+- This template loads any external `pq` file [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix) or [Template-Import-ninlib.pq](./Template-Import-ninlib.pq)
 - You can use it to load libraries like [Ninmonkey.PowerQueryLib.pq](./build/2024-04.ninlib.pq) or [Write.Html.pq](./source/Html/Write.Html.pq)
 
 ## Importing External `.pq` files
