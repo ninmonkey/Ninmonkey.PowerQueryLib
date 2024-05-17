@@ -2,12 +2,19 @@
 
 
 - [Ninmonkey.PowerQueryLib](#ninmonkeypowerquerylib)
+  - [Importing External `.pq` files](#importing-external-pq-files)
   - [Special functions](#special-functions)
   - [Other links](#other-links)
   - [Usage](#usage)
   - [Language data](#language-data)
 
 Custom functions for Power BI
+
+## Importing External `.pq` files
+
+If you want to load your own `.pq` files, check out this function: [Import.PowerQueryLib.pq](./source/Import.PowerQueryLib.pq)
+
+If the script you load has any parsing errors it will show you extra information about the error. Which line, which error kind, uses `xray` to view nested Error Details fields, and more. 
 
 ## Special functions
 
