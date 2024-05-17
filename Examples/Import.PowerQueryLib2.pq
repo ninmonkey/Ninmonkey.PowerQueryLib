@@ -38,6 +38,11 @@ let
                 Reason            = err[Reason],
                 Message           = err[Message],
                 ErrorRecord       = err,
+                ErrorDetailsJson  = [
+                    target = ErrorRecord[Detail]?,
+                    json   = Json.FromValue( target, TextEncoding.Utf8 ),
+                    string = try Text.FromBinary( json, TextEncoding.Utf8 ) catch (e) => null
+                ][string],
                 RawText           = err[Message]
             ]
         ][ret],
@@ -51,14 +56,23 @@ let
             LinesCount     = extent[EndLineNumber] - extent[StartLineNumber],
             SelectedLines  = List.Range( Contents, extent[StartLineNumber] - LinesOfContext, LinesCount + LinesOfContext ),
             Prefix         = {
-                "Reason:  #[Reason]#",
-                "Message: #[Message]#",
-                "..."
+                "Reason: #[Reason]",
+                "Path: #[LineNumber], #[FullPath]",
+                "Message: #[Message]",
+                "...",
+                "RemainingMessage: #[RemainingMessage]",
+                "DetailsJson: #[ErrorDetailsJson]",
+                "...",
+                "Context: "
             },
             MergedTemplate = Text.Combine( Prefix & SelectedLines, "#(cr,lf)" ),
             ret = Text.Format( MergedTemplate, [
-                Reason  = extent[Reason],
-                Message = extent[Message]
+                Reason           = extent[Reason],
+                Message          = extent[Message],
+                LineNumber       = extent[StartLineNumber]?,
+                RemainingMessage = extent[RemainingMessage]?,
+                ErrorDetailsJson = extent[ErrorDetailsJson]?,
+                FullPath         = path
             ] )
         // ][ret],
         ],
