@@ -15,6 +15,21 @@ Custom functions for Power BI
 If you want to load your own `.pq` files, check out this function: [Import.PowerQueryLib.pq](./source/Import.PowerQueryLib.pq)
 
 If the script you load has any parsing errors it will show you extra information about the error. Which line, which error kind, uses `xray` to view nested Error Details fields, and more. 
+Example error:
+```yml
+Reason: Expression.Error
+Path: 75, H:\2024\tabular\2024.pq-lib.pq
+Message: [75,9-75,11] Invalid identifier.
+...
+RemainingMessage:  Invalid identifier.
+DetailsJson: 
+    [{"Location":{"Kind":"Language.TextSourceLocation","Text":"","Range":
+     {"Start":{"Line":74,"Column":8},"End":{"Line":74,"Column":10}}},"Text":"Invalid identifier."}]
+...
+Context: 
+        Format.Csv = Csv,
+        23
+```
 
 ## Special functions
 
