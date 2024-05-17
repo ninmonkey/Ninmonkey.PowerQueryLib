@@ -10,6 +10,9 @@ let
     ][return]
 in
     EvalQueryFunc
+
+    <file:///H:\data\2023\BI\git\ninMonkQuery-examples\Dynamic_Logic\pq.lib\2024.pq-lib.pq>
+
 */
 
 // with extra
@@ -39,26 +42,32 @@ let
             ]
         ][ret],
 
-        File.ShowError = ( path as text, extent as record) => [
-            LinesOfContext = 2,
-            contents      = Lines.FromBinary( File.Contents( path ), QuoteStyle.None, false, TextEncoding.Utf8 ),
-            linesCount    = extent[EndLineNumber] - extent[StartLineNumber],
-            selectedLines = List.Range( contents, extent[StartLineNumber] - LinesOfContext, linesCount + LinesOfContext ),
-            prefix        = {
-                "Reason: #[Reason]#",
-                "#Message: #[Message]#",
+        File.ShowError = ( path as text, extent as record, optional options as nullable record) => [
+            LinesOfContext = options[LinesOfContext]? ?? 2,
+            Extent = extent,
+            Bytes          = File.Contents( path ),
+            SourceMeta     = Value.Metadata( Bytes ),
+            Contents       = Lines.FromBinary( Bytes, QuoteStyle.None, false, TextEncoding.Utf8 ),
+            LinesCount     = extent[EndLineNumber] - extent[StartLineNumber],
+            SelectedLines  = List.Range( Contents, extent[StartLineNumber] - LinesOfContext, LinesCount + LinesOfContext ),
+            Prefix         = {
+                "Reason:  #[Reason]#",
+                "Message: #[Message]#",
                 "..."
             },
-            merged = Text.Combine( prefix & selectedLines, "#(cr,lf)" ),
-            ret = Text.Format( merged, [
-                Reason = extent[Reason],
+            MergedTemplate = Text.Combine( Prefix & SelectedLines, "#(cr,lf)" ),
+            ret = Text.Format( MergedTemplate, [
+                Reason  = extent[Reason],
                 Message = extent[Message]
             ] )
-        ][ret],
+        // ][ret],
+        ],
 
     FinalEval =
         try EvalQuery( SharedUtils_Path )
         catch (e) =>
-            File.ShowError( SharedUtils_Path, Convert.ScriptExtent.FromError( e ) )
+            File.ShowError( SharedUtils_Path, Convert.ScriptExtent.FromError( e ), [
+                LinesOfContext = 10
+            ] )
 in
     FinalEval
