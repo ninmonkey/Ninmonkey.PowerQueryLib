@@ -1,7 +1,5 @@
-// This is the source for <https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/main/Template-Import-ninlib.pbix>
-
 // PQ_Library_Path
-"H:\data\2024\tabular\Ninmonkey.PowerQueryLib\.output\2024-04.ninlib.pq" meta [IsParameterQuery=true, List={"H:\data\2024\tabular\Ninmonkey.PowerQueryLib\.output\2024-04.ninlib.pq", "c:\pq\lib.pq", "H:\data\2023\BI\git\ninMonkQuery-examples\Dynamic_Logic\pq.lib\2024.pq-lib.pq"}, DefaultValue="H:\data\2024\tabular\Ninmonkey.PowerQueryLib\.output\2024-04.ninlib.pq", Type="Text", IsParameterQueryRequired=true]
+"H:\data\2024\tabular\Ninmonkey.PowerQueryLib\build\2024-04.ninlib.pq" meta [IsParameterQuery=true, List={"H:\data\2024\tabular\Ninmonkey.PowerQueryLib\build\2024-04.ninlib.pq", "H:\data\2024\tabular\Ninmonkey.PowerQueryLib\build\2022-01.ninlib.pq", "c:\pq\your-lib.pq", "H:\data\2023\BI\git\ninMonkQuery-examples\Dynamic_Logic\pq.lib\2024.pq-lib.pq"}, DefaultValue="H:\data\2024\tabular\Ninmonkey.PowerQueryLib\build\2024-04.ninlib.pq", Type="Text", IsParameterQueryRequired=true]
 
 // lib
 /* a fancier version of the import function for Import.PowerQueryLib.pq, or other scripts
@@ -94,7 +92,6 @@ in
 
 // lib_meta
 let
-    // this query is a quick summary
     Source = lib,
     top_items = Table.Buffer( Table.FromValue( lib ) ),
     Custom1 = top_items,
@@ -103,6 +100,7 @@ let
         hasKeys = Record.FieldCount( target ) > 0,
         ret     = if hasKeys then source else null
     ][target],
+    // #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow(row), Record.Type )
     #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow( row[Value] ), type any)
 in
     #"Added Custom"

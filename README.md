@@ -2,13 +2,19 @@
 
 
 - [Ninmonkey.PowerQueryLib](#ninmonkeypowerquerylib)
+  - [New Usage](#new-usage)
   - [Importing External `.pq` files](#importing-external-pq-files)
   - [Special functions](#special-functions)
   - [Other links](#other-links)
-  - [Usage](#usage)
+  - [Usage ( Old version )](#usage--old-version-)
   - [Language data](#language-data)
 
 Custom functions for Power BI
+
+## New Usage
+
+- This is a template to load any file: [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix)
+- You can use it to load libraries like [Ninmonkey.PowerQueryLib.pq](./build/2024-04.ninlib.pq) or [Write.Html.pq](./source/Html/Write.Html.pq)
 
 ## Importing External `.pq` files
 
@@ -59,7 +65,7 @@ Context:
 - [Helper Functions](https://github.com/microsoft/DataConnectors/blob/master/docs/helper-functions.md) @microsoft/DataConnector
 - [Main Trippin tutorial](https://github.com/microsoft/DataConnectors/tree/master/samples/TripPin)
 
-## Usage
+## Usage ( Old version )
 
 1. Open your report and open [test_All.pbix](source\test\test_All.pbix)
 2. Select the functions you want (Any dependencies will be included for you)
