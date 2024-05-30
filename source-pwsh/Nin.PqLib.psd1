@@ -12,25 +12,25 @@
     RootModule        = 'Nin.PqLib.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.1.0'
+    ModuleVersion     = '0.1.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
 
     # ID used to uniquely identify this module
-    GUID              = '2b89d25f-edca-46c2-aa26-3b3e77698066'
+    GUID              = 'b7be4891-5473-419d-9943-e4735736edc2'
 
     # Author of this module
-    Author            = 'Jake Bolton ( ninmonkeys@gmail.com )'
+    Author            = 'Jake Bolton ( jake.bolton.314@gmail.com, ninmonkeys@gmail.com )'
 
     # Company or vendor of this module
     CompanyName       = 'Jake Bolton'
 
     # Copyright statement for this module
-    Copyright         = 'Jake Bolton 2021-2022'
+    Copyright         = 'Jake Bolton 2021-2024'
 
     # Description of the functionality provided by this module
-    Description       = 'Build Process to Merge Library'
+    Description       = 'Module that combines Power Query files as one library like.pq . It also contains Power BI helper functions'
 
     # Minimum version of the PowerShell engine required by this module
     # PowerShellVersion = '' 7?
@@ -52,7 +52,7 @@
 
     # Modules that must be imported into the global environment prior to importing this module
     RequiredModules   = @(
-        'Ninmonkey.Console'
+        # 'Ninmonkey.Console'
         # 'Dev.Nin' # ?
         # 'Pansies'
         # 'ClassExplorer'
@@ -67,7 +67,7 @@
     # ScriptsToProcess = @()
 
     # Type files (.ps1xml) to be loaded when importing this module
-    TypesToProcess    = 'Nin.PqLib.psd1'
+    # TypesToProcess    = 'Nin.PqLib.psd1'
 
     # Format files (.ps1xml) to be loaded when importing this module
     # FormatsToProcess = @()
@@ -76,16 +76,24 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @()
+    FunctionsToExport = @(
+        '*-Pq*'
+        '*-PqLib*'
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
 
     # Variables to export from this module
-    VariablesToExport = @()
+    VariablesToExport = @(
+
+    )
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    AliasesToExport   = @()
+    AliasesToExport   = @(
+        '*-Pq*'
+        '*-PqLib*'
+    )
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
@@ -102,7 +110,7 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags       = @('PowerQuery', 'PowerBI', 'Generation')
+            Tags       = @('PowerQuery', 'PowerBI', 'Generation', 'Table', 'Tabular', 'Source Generator')
 
             # A URL to the license for this module.
             # LicenseUri = ''
@@ -136,4 +144,3 @@
     # DefaultCommandPrefix = ''
 
 }
-
