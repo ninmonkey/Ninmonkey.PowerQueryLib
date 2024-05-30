@@ -54,7 +54,7 @@
     RequiredModules   = @(
         # 'Ninmonkey.Console'
         # 'Dev.Nin' # ?
-        # 'Pansies'
+        'Pansies'
         # 'ClassExplorer'
         # 'Utility'           # hard dependency for now
         # 'functional'

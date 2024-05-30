@@ -10,18 +10,39 @@ $Config = @{
     ImportRoot = Join-Path $AppRoot '../source'
 }
 $Color = @{
-    Green = '#47c589'
     Fg    = '#47c589'
+    Green = '#47c589'
+    H1    = '#fea9aa'
+    Red   = '#fea9aa'
 }
 
 function FindPowerQuerySources {
+    <#
+    .SYNOPSIS
+        Tiny sugar to find files and summarize the counts. move to module or is a 1-off?
+    #>
+    [OutputType( [System.IO.FileInfo[]] )]
     param( [string]$RootDir )
-    Get-ChildItem -path *.pq -Recurse
+    $Root  = Get-Item -ea 'stop' $RootDir
+    $query = Get-ChildItem -path $Root *.pq -Recurse
+
+    'Found {0} .pq files under the root path: "{1}"' -f @(
+        $query.count
+        $RootDir | Get-Item
+    ) | Write-host -fg $Color.Fg
+    $query
 }
 $all_pq_files = FindPowerQuerySources -RootDir $Config.ImportRoot
+$Patterns = @(
+    'Write.Html'
+)
 
+$select_pq = $all_pq_files | ?{
+    $Patterns.Where({ $_.Name -match $_  }, 'first', 1)
+    $_.name -match $Patterns
+}
 $Config | Ft -auto
-'Found {0} .pq files under the root path: "{1}"' -f @(
-    $all_pq_files.count
-    $Config.ImportRoot | Get-Item
-) | Write-host -fg $Color.Fg
+
+'Filtered Files' | write-host -fg $Color.H1
+
+$select_pq -join "`n"
