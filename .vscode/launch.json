@@ -21,7 +21,7 @@
                 "group": "Invoke-Build",
                 "order": 1
             },
-            "name": "Build ➔ BuildFull.ps1 🚀",
+            "name": "Build ➔ 2023 BuildFull.ps1 🚀",
             "type": "PowerShell",
             "request": "launch",
             "script": "${workspaceFolder}/util/profile/Invoke-BuildFull.ps1",

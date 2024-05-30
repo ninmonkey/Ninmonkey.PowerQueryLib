@@ -1,25 +1,10 @@
 { //2024-05-30
     "folders": [
         {
-            "path": ".",
-            "name": "pqlib"
+            "path": "."
+            // "name": "pqlib"
         },
-        {
-            "path": "..\\PowerQuery-ExampleReports",
-            "name": "⚓[ref: ExampleReports] 📌"
-        },
-        {
-            "path": "G:/2021-github-downloads/Power-BI/section  ┐ PowerQueryScripts/itsnotaboutthecell/powerquerym",
-            "name": "📕[git: itsnotaboutthecell📱] 📌"
-        },
-        {
-            "path": "G:/2021-github-downloads/Power-BI/section  ┐ PowerQueryScripts/alazyworkaholic/M-Libraries",
-            "name": "📕[git: alazyworkaholic] 📌"
-        },
-        {
-            "path": "C:/Users/cppmo_000/SkyDrive/Documents/2021/Power BI/Buffer",
-            "name": "📕[git: alazyworkaholic] 📌"
-        },
+
         /*
         */
     ],
@@ -44,18 +29,19 @@
             "MD025": {
                 "front_matter_title": ""
             }
-        }
+        },
+        "powerquery.sdk.defaultExtension": "${workspaceFolder}\\bin\\AnyCPU\\Debug\\${workspaceFolderBasename}.mez"
     },
     "launch": {
         "version": "0.2.0",
         "configurations": [
             {
                 // "name": "Build 2024 rewrite ➔ Merge PqLib.ps1 🚀",
-                "name": "Build ➔ PqLib 2024 Rewrite.ps1🚀",
+                "name": "🦍Build ➔ PqLib 2024 Rewrite.ps1🚀",
                 "type": "PowerShell",
                 "request": "launch",
-                "script": "${workspaceFolder:pqlib}/Examples/Merging Queries as One Library.ps1",
-                "cwd": "${workspaceFolder:pqlib}",
+                "script": "${workspaceFolder}/Examples/Merging Queries as One Library.ps1",
+                "cwd": "${workspaceFolder}",
                 "presentation": {
                     "hidden": false,
                     "group": "Invoke-Build",

@@ -72,5 +72,25 @@
         "search.searchEditor.defaultNumberOfContextLines": null,
         "powershell.cwd": "c:\\Users\\cppmo_000\\SkyDrive\\Documents\\2022\\Power-BI\\My_Github\\Ninmonkey.PowerQueryLib",
         "powerquery.sdk.defaultExtension": "${workspaceFolder}\\bin\\AnyCPU\\Debug\\${workspaceFolderBasename}.mez",
+    },
+    "launch": {
+        "version": "0.2.0",
+                "configurations": [
+            {
+                // "name": "Build 2024 rewrite ➔ Merge PqLib.ps1 🚀",
+                "name": "Build ➔ PqLib 2024 Rewrite.ps1🚀",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/Examples/Merging Queries as One Library.ps1",
+                "cwd": "${workspaceFolder}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Build",
+                    "order": 0
+                },
+            }
+
+        ],
+        "compounds": []
     }
 }
