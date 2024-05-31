@@ -10,9 +10,6 @@ let
     ][return]
 in
     EvalQueryFunc
-
-    <file:///H:\data\2023\BI\git\ninMonkQuery-examples\Dynamic_Logic\pq.lib\2024.pq-lib.pq>
-
 */
 
 // with extra
