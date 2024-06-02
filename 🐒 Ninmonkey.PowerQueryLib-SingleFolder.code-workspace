@@ -36,6 +36,20 @@
         "configurations": [
             {
                 // "name": "Build 2024 rewrite ➔ Merge PqLib.ps1 🚀",
+                "name"   : "🦍Test ➔ Write Pq Sourcecode ",
+                "type"   : "PowerShell",
+                "request": "launch",
+                "script" : "${workspaceFolder}/Examples/Write Power Query Source Code.ps1",
+                "cwd"    : "${workspaceFolder}",
+
+                "presentation": {
+                    "hidden": false,
+                    "group" : "Invoke-Build",
+                    "order" : 0
+                },
+            },
+            {
+                // "name": "Build 2024 rewrite ➔ Merge PqLib.ps1 🚀",
                 "name"   : "🦍Build ➔ PqLib 2024 Rewrite.ps1🚀",
                 "type"   : "PowerShell",
                 "request": "launch",
