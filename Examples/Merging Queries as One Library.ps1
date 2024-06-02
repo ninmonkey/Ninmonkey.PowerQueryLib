@@ -29,11 +29,13 @@ $select_pq = Find-PqLibSources -RootDir $Config.ImportRoot -Regex $RegexMustMatc
 $select_pq -join "`n"
 
 $dynamicName = Join-String -f '{0}.ninlib.pq' -In (get-date).tostring('yyyy-MM-dd')
-$newExport = Join-path $Config.AutoExportRoot $DynamicName
+$newExport   = Join-path $Config.AutoExportRoot $DynamicName
 hr
 gc ($select_pq | select -First 1) | sc -Path $newExport
 $newExport = $newExport | Get-Item
 'wrote: {0}' -f $NewExport | write-host -fg $Color.Red
+
+Get-PqLibManifestInfo|ft -AutoSize
 
 return
 

@@ -308,10 +308,12 @@ function Internal.Invoke-Git {
     [OutputType( [string[]] )]
     [CmdletBinding()]
     param(
+        # args directly passed to command
         [Alias('ArgList', 'Params', 'Args')]
         [Parameter(Mandatory)]
         [object[]]$ArgumentList,
 
+        # To run with a path other than the current one
         [Alias('WorkingDirectory','FromPath')]
         [string]$FromWorkingDir
     )
@@ -337,8 +339,6 @@ function Internal.Invoke-Git {
         return
     }
 
-    # test: [1] verify this works for relative and absolute filepaths
-    #       [2] if it's passing that path to the native command without using Start-Process
     pushd -StackName 'Invoke.Git' -Path $FromWorkingDir
     & $binGit @ArgumentList
     popd -StackName 'Invoke.Git'
@@ -350,19 +350,24 @@ function Get-PqLibManifestInfo {
     .DESCRIPTION
         Optionally includes info using git commands on the repo
     .EXAMPLE
-    .EXAMPLE
     Pwsh> Get-PqLibManifestInfo -AsObject
-        # ...
+    .EXAMPLE
     Pwsh> Get-PqLibManifestInfo -NoGit
         Name          Value
         ----          -----
         BuildDateTime 2024-06-02T14:36:56.7801630-05:00
-
+    .EXAMPLE
     Pwsh> Get-PqLibManifestInfo
         Name          Value
         ----          -----
         BuildDateTime 2024-06-02T14:37:29.3628295-05:00
         GitCommitHash 54ef997de2d69bfee52854029d0668d35e49a2dc
+    .example
+    Pwsh> Get-PqLibManifestInfo -SuperVerbose -AsObject
+            | ConvertTo-Json | jq '{ PwshLib: .PwshPqLib }'
+
+        # outputs:
+            {"PwshLib":{"ModuleVersion":"0.1.2"}}
     #>
     [OutputType( 'PSCustomObject', '' )]
     param(
@@ -389,7 +394,7 @@ function Get-PqLibManifestInfo {
         $BinArgs = @('rev-parse', 'HEAD')
 
         # $Info['GitCommitHash'] = & $binGit @binArgs
-        $Info['GitCommitHash'] = Internal.Invoke-Git -Args $BinArgs -Verbose
+        $Info['GitCommitHash'] = Internal.Invoke-Git -Args $BinArgs -Verbose # -FromWorkingDir 'g:\temp'
     }
     if( $SuperVerbose ) {
         $Info['PwshPqLib'] = @{
