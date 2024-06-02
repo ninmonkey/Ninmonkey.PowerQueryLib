@@ -1,4 +1,4 @@
-{ //2024-05-30 43d61a89-04f4-463e-85ba-2f001f6079e3
+{ //2024-06-02 43d61a89-04f4-463e-85ba-2f001f6079e3
     "folders": [
         {
             "path": "."
@@ -9,8 +9,7 @@
         */
     ],
     "settings": {
-        "terminal.integrated.fontSize": 13, //17,
-        "terminal.integrated.fontSize": 15, //17,
+        "terminal.integrated.fontSize": 15, //13,15,17
         // "terminal.integrated.fontFamily": "'cascadia code'",
         "files.exclude": {
             "**/*.pbix": false,
@@ -37,27 +36,50 @@
         "configurations": [
             {
                 // "name": "Build 2024 rewrite ➔ Merge PqLib.ps1 🚀",
-                "name": "🦍Build ➔ PqLib 2024 Rewrite.ps1🚀",
-                "type": "PowerShell",
+                "name"   : "🦍Build ➔ PqLib 2024 Rewrite.ps1🚀",
+                "type"   : "PowerShell",
                 "request": "launch",
-                "script": "${workspaceFolder}/Examples/Merging Queries as One Library.ps1",
-                "cwd": "${workspaceFolder}",
+                "script" : "${workspaceFolder}/Examples/Merging Queries as One Library.ps1",
+                "cwd"    : "${workspaceFolder}",
+
                 "presentation": {
                     "hidden": false,
-                    "group": "Invoke-Build",
-                    "order": 0
+                    "group" : "Invoke-Build",
+                    "order" : 0
                 },
             },
             {
-                "name": "🦍Pester ➔ Main Tests",
-                "type": "PowerShell",
+                /*
+                created: 2024-06-02
+                about: run all tests under the workspace, using preferred output mode. Runs in the current debug terminal, instead of the external temp session
+                 */
+                "name"   : "🦍Invoke-Pester ➔ Workspace",
+                "type"   : "PowerShell",
                 "request": "launch",
-                "script": "${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
-                "cwd": "${workspaceFolder}",
+                "script" : "Invoke-Pester -Output Detailed",   //  -Path ${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                "cwd"    : "${workspaceFolder}",               // "${workspaceFolder}/source-pwsh/tests",
+
                 "presentation": {
                     "hidden": false,
-                    "group": "Invoke-Build",
-                    "order": 0
+                    "group" : "Invoke-Build",
+                    "order" : 0
+                },
+            },
+            {
+                /*
+                created: 2024-06-02
+                about: hardcoded test name. Runs in the current debug terminal, instead of the external temp session
+                 */
+                "name"   : "🦍Invoke-Pester ➔ runs tests/Get-NativeCommand.tests",
+                "type"   : "PowerShell",
+                "request": "launch",
+                "script" : "Invoke-Pester -Output Detailed -Path ${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                "cwd"    : "${workspaceFolder}/source-pwsh/tests",
+
+                "presentation": {
+                    "hidden": false,
+                    "group" : "Invoke-Build",
+                    "order" : 0
                 },
             },
             {
@@ -66,12 +88,12 @@
                     "group": "Invoke-Build",
                     "order": 0
                 },
-                "name": "🦍Pester ➔ fromExtension",
-                "type": "PowerShell",
+                "name"   : "🦍Pester ➔ fromExtension",
+                "type"   : "PowerShell",
                 "request": "launch",
-                "script": "Invoke-Pester",
+                "script" : "Invoke-Pester",
+                "attachDotnetDebugger": true,
                 "createTemporaryIntegratedConsole": true,
-                "attachDotnetDebugger": true
             }
 
 

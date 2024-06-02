@@ -26,7 +26,20 @@ Describe 'Nin.PqLib NativeCommands' {
         it 'Finds git' {
             (Get-PqLibNativeCommandFast -CommandName 'git').count -gt 0
                 | Should -Be $true -Because 'Expect at least one result'
-
+        }
+        Context 'TestsIfExists' {
+            it 'Return IsA bool' {
+                Get-PqLibNativeCommandFast -TestIfExists -CommandName 'TestIfExists'
+                    | Should -BeOfType ([bool]) -Because 'Should always be bool'
+                Get-PqLibNativeCommandFast -TestIfExists -CommandName 'TestIfExists'
+                    | Should -BeOfType ([bool]) -Because 'Should always be bool'
+            }
+            it 'Never Throws' {
+                { Get-PqLibNativeCommandFast -TestIfExists -CommandName 'git' }
+                    | Should -not -throw -because 'Should Never Throw when using Fast Test if Exists'
+                { Get-PqLibNativeCommandFast -TestIfExists -CommandName 'TestIfExists' }
+                    | Should -not -throw -because 'Should Never Throw when using Fast Test if Exists'
+            }
         }
     }
 }
