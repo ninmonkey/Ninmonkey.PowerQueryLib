@@ -9,6 +9,9 @@ $script:Color = @{
     H1    = '#fea9aa'
     Red   = '#fea9aa'
 }
+$script:_cacheNativeCommand = [ordered]@{ # cache 'git.exe' lookups
+
+}
 
 
 function Find-PqLibSources {
@@ -215,42 +218,63 @@ Sources:
     throw 'wip: Use WhatIf to confirm writing to AppData'
 }
 
-function GetNativeCommand {
+function Get-PqLibNativeCommand {
     <#
     .SYNOPSIS
-      slow lookup using Get-Command. See also: FastGetNativeCommand
+      slow lookup using Get-Command. defaults to Assertion. See also: FastGetNativeCommand
     #>
-    [OutputType('String')]
-    param(
-        [string]$CommandName,
-        [Alias('TestExists')]
-        [switch]$TestIfExists)
-
-    # was:
-    if( -not ( FastGetNativeCommand -Name $CommandName -TestIfExists)) {
-
-        Join-String -in $CommandName -f 'FastGetNativeCommand did not find command: {0}'
-            | write-error
-    }
-
-    $query = $ExecutionContext.InvokeCommand.
-        GetCommandName( $CommandName, $false, $true ).Where({$_},'first')
-
-    if($TestIfExists) { return $query.count -gt 0 }
-    $query
-}
-function FastGetNativeCommand {
-    <#
-    .SYNOPSIS
-        Returns the first path, or, null if no commands are found. ( false is super fast compared to Get-Command -Commandtype Application ) . see also: GetNativeCommand
-    #>
-    [OutputType('String')]
+    [Alias( 'GetNativeCommand' )]
+    [OutputType(
+        [System.Management.Automation.ApplicationInfo],
+        # [System.Management.Automation.CommandInfo],
+        [bool]
+    )]
     param(
         # full paths are allowed
         [ArgumentCompletions(
             "'git'", "'pwsh'",
             "''C:\Program Files\Git\cmd\git.exe'" )]
-        [Alias('FullName')]
+        [Alias('Name', 'FullName')]
+        [string]$CommandName
+
+        # # test without throwing or returning?
+        # [Alias('TestExists', 'AsBool', 'TestOnly')]
+        # [switch]$TestIfExists, # this param setname has output type [bool]
+    )
+
+    # # was:
+    # if( -not ( FastGetNativeCommand -Name $CommandName -TestIfExists)) {
+    #     Join-String -in $CommandName -f 'FastGetNativeCommand did not find command: {0}'
+    #         | write-error
+    # }
+    # $query = $ExecutionContext.InvokeCommand.
+    #     GetCommandName( $CommandName, $false, $true ).Where({$_},'first')
+
+    # shorthand to reuse throw assertions. ExecutionContext is fast, DRY doesn't matter
+    $null = FastGetNativeCommand -CommandName $CommandName -TestIfExists -ThrowIfMissing
+    $getCommandSplat = @{
+        CommandType = 'Application'
+        # ErrorAction = 'continue'
+        Name        = $CommandName
+        TotalCount  = 1
+    }
+    $binCmd = Get-Command @getCommandSplat
+    return $binCmd
+}
+function Get-PqLibNativeCommandFast {
+    <#
+    .SYNOPSIS
+        Returns the first path, or, null if no commands are found. ( false is super fast compared to Get-Command -Commandtype Application ) . see also: GetNativeCommand
+    #>
+    [Alias(
+        'FastGetNativeCommand')]
+    [OutputType( [String], [bool] )]
+    param(
+        # full paths are allowed
+        [ArgumentCompletions(
+            "'git'", "'pwsh'",
+            "''C:\Program Files\Git\cmd\git.exe'" )]
+        [Alias('Name', 'FullName')]
         [string]$CommandName,
 
         [Alias('TestExists', 'AsBool', 'TestOnly')]
@@ -264,25 +288,115 @@ function FastGetNativeCommand {
     $Query = $ExecutionContext.InvokeCommand.
         GetCommandName( $CommandName, $false, $true ).Where({$_},'first')
 
-    [bool] $HasNoResults = $query.count -eq 0
+    [bool] $HasZeroResults = $query.count -eq 0
 
-    if( $ThrowIfMissing -and $HasNoResults ) {
+    if( $ThrowIfMissing -and $HasZeroResults ) {
         throw (
             Join-String -in $CommandName -f 'FastGetNativeCommand did not find command: {0}' )
     }
-    if( $TestIfExists ) { return -not $HasNoresults }
+    if( $TestIfExists ) { return -not $HasZeroResults }
     $query
 }
-function _Test-UserHasGit {
-    $userHasGit = FastGetNativeCommand -Name 'git' -TestIfExists
-    if($UserHasGit)
+function Internal.Test-UserHasGit { #sugar
+    [bool] (FastGetNativeCommand -CommandName 'git' -TestIfExists)
+}
+function Internal.Invoke-Git {
+    <#
+    .SYNOPSIS
+        internal sugar for cached lookup, invoke, and log params.
+    #>
+    [OutputType( [string[]] )]
+    [CmdletBinding()]
+    param(
+        [Alias('ArgList', 'Params', 'Args')]
+        [Parameter(Mandatory)]
+        [object[]]$ArgumentList,
+
+        [Alias('WorkingDirectory','FromPath')]
+        [string]$FromWorkingDir
+    )
+    if( [string]::IsNullOrEmpty( $ArgumentList )) {
+        throw 'Internal.Invoke-Git: Missing parameter: ArgumentList' }
+
+    $state = $script:_cacheNativeCommand
+    if( -not $State.Contains('git' )) {
+        $BinGit = GetNativeCommand -CommandName 'git'
+        $state['git'] = $BinGit
+    }
+
+    $binGit = $state['git']
+    'Internal.Invoke-Git: invoking "{0}"{2} :> {1}' -f @(
+        $BinGit
+        $ArgumentList | Join-String -sep ' '
+        ( $FromWorkingDir.length -eq 0 ) ? '' : (
+            ' workingDir: "{0}"' -f $FromWorkingDir )
+    ) | write-verbose # -verbose
+
+    if( [string]::IsNullOrWhiteSpace( $FromWorkingDir ) ) {
+        & $binGit @ArgumentList
+        return
+    }
+
+    # test: [1] verify this works for relative and absolute filepaths
+    #       [2] if it's passing that path to the native command without using Start-Process
+    pushd -StackName 'Invoke.Git' -Path $FromWorkingDir
+    & $binGit @ArgumentList
+    popd -StackName 'Invoke.Git'
 }
 function Get-PqLibManifestInfo {
+    <#
+    .synopsis
+        Create metadata about this specific build
+    .DESCRIPTION
+        Optionally includes info using git commands on the repo
+    .EXAMPLE
+    .EXAMPLE
+    Pwsh> Get-PqLibManifestInfo -AsObject
+        # ...
+    Pwsh> Get-PqLibManifestInfo -NoGit
+        Name          Value
+        ----          -----
+        BuildDateTime 2024-06-02T14:36:56.7801630-05:00
+
+    Pwsh> Get-PqLibManifestInfo
+        Name          Value
+        ----          -----
+        BuildDateTime 2024-06-02T14:37:29.3628295-05:00
+        GitCommitHash 54ef997de2d69bfee52854029d0668d35e49a2dc
+    #>
+    [OutputType( 'PSCustomObject', '' )]
     param(
 
         # Skip/Ignore metadata that uses git commands on the repository
-        [Alias('SkipGit')]
-        [switch]$NoGit
+        [Alias('SkipGit', 'WithoutGit')]
+        [switch]$NoGit,
+
+        # default returns hashtable
+        [switch]$AsObject,
+
+        # output record is extra verbose, includes extra details most uesrs don't care about
+        [Alias('IncludeDebugInfo')]
+        [switch]$SuperVerbose
     )
-    (gcm git)
+    $UserHasGit = Internal.Test-UserHasGit # [bool] (FastGetNativeCommand -CommandName 'git' -TestIfExists)
+    [List[Object]]$BinArgs = @()
+
+    $Info = [ordered]@{
+        BuildDateTime = (Get-Date).ToString('o')
+    }
+    if( -not $NoGit -and $UserHasGit ) {
+        $BinGit  = GetNativeCommand -CommandName 'git'
+        $BinArgs = @('rev-parse', 'HEAD')
+
+        # $Info['GitCommitHash'] = & $binGit @binArgs
+        $Info['GitCommitHash'] = Internal.Invoke-Git -Args $BinArgs -Verbose
+    }
+    if( $SuperVerbose ) {
+        $Info['PwshPqLib'] = @{
+            ModuleVersion = (get-module 'Nin.PqLib').Version?.ToString()
+        }
+    }
+
+    if( $AsObject ) { return [pscustomobject]$Info }
+    $Info
 }
