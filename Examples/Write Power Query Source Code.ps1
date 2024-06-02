@@ -19,7 +19,24 @@ $Color = @{
     Red   = '#fea9aa'
 }
 
+Get-PqLibManifestInfo|ft -AutoSize
 $Config | Ft -auto
+
+h1 'write'
+$origPq =
+@'
+let
+    stuff = "1232",
+    other = [ name = "bob" ]
+in
+    other
+'@
+
+Write-PqWrapLetExpression -KeyName 'what' -OutputType Let -RawContent $origPq
+
+return
+
+
 $RegexMustMatch = @(
     # 'Html'
     'Random'
@@ -36,7 +53,6 @@ gc ($select_pq | select -First 1) | sc -Path $newExport
 $newExport = $newExport | Get-Item
 'wrote: {0}' -f $NewExport | write-host -fg $Color.Red
 
-Get-PqLibManifestInfo|ft -AutoSize
 
 return
 

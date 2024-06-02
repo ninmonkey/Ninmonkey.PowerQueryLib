@@ -428,3 +428,157 @@ function Get-PqLibManifestInfo {
     if( $AsObject ) { return [pscustomobject]$Info }
     $Info
 }
+
+# function  # Internal.Write-PredentText {
+function Format-PqLibPredentText {
+    <#
+    .synopsis
+        minimalism predenting text, emits as array of strings. Sugar.
+    .NOTES
+        future version will use [StringBuilder]. This is fast enough currently.
+    .EXAMPLE
+        # indent code to paste
+        Get-Clipboard | Fmt-Predent
+    .EXAMPLE
+        0..3 | %{  $_ ;'a'..'c' | Fmt-Predent 2 } | Fmt-Predent 2
+        # same as
+        0..3 | %{
+            $_
+            'a'..'b'
+            | Fmt-Predent 2
+        }   | Fmt-Predent 2
+        # Out
+            0
+                a
+                b
+            1
+                a
+                b
+            # ...
+    #>
+    [Alias(
+        'Fmt-PqPredentText',
+        'Fmt-Predent', 'Internal.Write-PredentText' # to be removed
+    )]
+    [CmdletBinding()]
+    [OutputType( [System.String[]] )]
+    param(
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [object[]] $InputObject,
+
+        # default depth
+        [ArgumentCompletions(2, 3, 4)]
+        [Parameter(Mandatory, Position=0)]
+        [uint] $Depth = 2,
+
+        [Parameter(Position = 1)]
+        [ArgumentCompletions(1, 2, 3, 4, 6, 8)]
+        [uint] $CharsPerDepth = 1,
+
+        [Parameter()]
+        [ArgumentCompletions("' '","'  '","'␠'",'"`t"','> ')]
+        [string] $Text = ' ',
+
+        # if the auto split on newlines could affect the execution
+        # you can toggle that step off
+        [switch]$NoSplitLineEndings,
+
+        # output a single string. Default version allows you to output an array of strings.
+        [Alias('AsString')]
+        [switch]$OutputAsString
+    )
+    begin {
+        [string] $prefix = $Text * ( $Depth * $CharsPerDepth ) -join ''
+        [List[Object]]$Lines = @()
+    }
+    process {
+        if( $NoSplitLineEndings ) {
+            $lines.AddRange(@( $InputObject ))
+            return
+        }
+
+        $lines.AddRange(@(
+            $InputObject -split '\r?\n' ))
+    }
+    end {
+        if( $OutputAsString ) {
+            $lines | %{
+                $_ | Join-String -f "${prefix}{0}"
+            } | Join-String -sep "`n"
+            return
+        }
+        # else allow many
+        $lines | %{
+            $_ | Join-String -f "${prefix}{0}"
+        }
+    }
+}
+
+
+function Write-PqLibWrapAsLetExpression {
+    <#
+    .SYNOPSIS
+        write raw powerquery records
+    .example
+
+    .NOTES
+        for examples see: /source-pwsh/tests/Get-NativeCommand.tests.ps1
+    .LINK
+    #>
+    [Alias(
+        'Write-PqWrapExpression')]
+    [OutputType( [string] )]
+    param(
+        [Parameter(Mandatory)]
+        [string]$KeyName,
+
+        [Alias('Content', 'Text', 'Str')]
+        [Parameter(Mandatory)]
+        [string[]]$RawContent,
+
+        [Alias('Template', 'Format')]
+        [ValidateSet('Let', 'Record' )]
+        [string]$OutputType = 'record',
+
+        # nest using easier to read records instead
+        [ValidateScript({throw 'nyi'})]
+        [switch]$AsRecordExpression,
+
+        # format style with or without semi
+        [ValidateScript({throw 'nyi'})]
+        [switch]$WithTrailingSemilcolon
+
+        # [ValidateScript({throw 'nyi'})]
+        # [switch]$WithTrailingCommaSemilcolon
+    )
+
+    $Merged = $RawContent -join "`n"
+    $render_InnerRecord = $merged
+    $render_KeyName_AsLiteral = Join-String -op '#"' -os '"' -Inp $KeyName # to export: writeIdentifier
+        # future: don't wrap #"" if not required?
+
+    # skipped using format strings, to prevent complications with operators
+    switch($OutputType) {
+        'Let' {
+            # $Prefix = 'let '
+            $render_Document = @(
+                'let ' # $Prefix
+                $render_KeyName_AsLiteral, ' '
+                ' = '
+                $render_InnerRecord
+                ' in '
+                $render_KeyName_AsLiteral, ' '
+            ) -join ''
+        }
+        'Record' {
+            $render_Document = '[ x = orig ]'
+            throw 'nyi'
+        }
+        default { throw "ShouldNeverReachException: Unhandled OutputType: '${OutputType}'"}
+    }
+
+    return $render_Document
+}
