@@ -1,4 +1,5 @@
-﻿$impo_Splat = @{ ErrorAction = 'stop' ; PassThru = $true }
+﻿'Running: {0}' -f $PSCommandPath | Write-verbose -verbose
+$impo_Splat = @{ ErrorAction = 'stop' ; PassThru = $true }
 $ModulePath = Get-Item 'H:\data\2024\tabular\Ninmonkey.PowerQueryLib\source-pwsh\Nin.PqLib.psd1'
 $AppRoot    = Get-Item -ea 'stop' $PSScriptRoot
 @(

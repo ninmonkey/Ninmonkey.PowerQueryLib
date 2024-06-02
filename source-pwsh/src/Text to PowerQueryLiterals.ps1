@@ -1,19 +1,21 @@
 class RuneToPqLiteral {
-    [string]$Source
-    [int]$Codepoint
-    [string]$Hex
+    [string] $Source
+    [int] $Codepoint
+    [string] $Hex
 
-    hidden [string]$displayStringCodepoint
+    # hidden $First
 
-    RuneToPqLiteral ( [string]$Rune ) {
+    hidden [string] $DisplayCodepoint
+
+    RuneToPqLiteral ( [string] $Rune ) {
         $first, $rest = $Rune.EnumerateRunes()
         if ($rest.count -gt 0) { throw 'nyi IEnumerable list of runes' }
 
-        $This.Source = $Rune
-        $This.First = $first
-        $This.Codepoint = $first.Value
-        $This.Hex = '{0:x}' -f @($This.Codepoint)
-        $This.DisplayCodeoint = '0x' + $this.Hex
+        $This.Source          = $Rune
+        # $This.First           = $first
+        $This.Codepoint       = $first.Value
+        $This.Hex             = '{0:x}' -f @($This.Codepoint)
+        $This.DisplayCodepoint = '0x' + $this.Hex
         # just do 1 for now
         # foreach($Rune in $InputText.EnumerateRunes()) {
 
@@ -39,11 +41,11 @@ function StringToPqLiteral {
     )
 
     process {
-        $ErrorActionPreference = 'break'
+        # $ErrorActionPreference = 'break'
         $InputText.EnumerateRunes() | ForEach-Object {
             [RuneToPqLiteral]::new($_)
         }
-        $ErrorActionPreference = 'continue'
+        # $ErrorActionPreference = 'continue'
     }
 }
 
