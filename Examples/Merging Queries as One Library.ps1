@@ -16,33 +16,25 @@ $Color = @{
     Red   = '#fea9aa'
 }
 
-function FindPowerQuerySources {
-    <#
-    .SYNOPSIS
-        Tiny sugar to find files and summarize the counts. move to module or is a 1-off?
-    #>
-    [OutputType( [System.IO.FileInfo[]] )]
-    param( [string]$RootDir )
-    $Root  = Get-Item -ea 'stop' $RootDir
-    $query = Get-ChildItem -path $Root *.pq -Recurse
+$Config | Ft -auto
+$RegexMustMatch = @(
+    'Html'
+)
+$select_pq = Find-PqLibSources -RootDir $Config.ImportRoot -Regex $RegexMustMatch
 
-    'Found {0} .pq files under the root path: "{1}"' -f @(
-        $query.count
-        $RootDir | Get-Item
-    ) | Write-host -fg $Color.Fg
-    $query
-}
+'Final Files' | write-host -fg $Color.H1
+$select_pq -join "`n"
+
+
+return
+
 $all_pq_files = FindPowerQuerySources -RootDir $Config.ImportRoot
 $Patterns = @(
-    'Write.Html'
+    'Html.Write'
 )
 
 $select_pq = $all_pq_files | ?{
     $Patterns.Where({ $_.Name -match $_  }, 'first', 1)
     $_.name -match $Patterns
 }
-$Config | Ft -auto
-
-'Filtered Files' | write-host -fg $Color.H1
-
 $select_pq -join "`n"
