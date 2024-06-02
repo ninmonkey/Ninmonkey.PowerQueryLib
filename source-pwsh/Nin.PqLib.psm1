@@ -214,3 +214,75 @@ Sources:
 
     throw 'wip: Use WhatIf to confirm writing to AppData'
 }
+
+function GetNativeCommand {
+    <#
+    .SYNOPSIS
+      slow lookup using Get-Command. See also: FastGetNativeCommand
+    #>
+    [OutputType('String')]
+    param(
+        [string]$CommandName,
+        [Alias('TestExists')]
+        [switch]$TestIfExists)
+
+    # was:
+    if( -not ( FastGetNativeCommand -Name $CommandName -TestIfExists)) {
+
+        Join-String -in $CommandName -f 'FastGetNativeCommand did not find command: {0}'
+            | write-error
+    }
+
+    $query = $ExecutionContext.InvokeCommand.
+        GetCommandName( $CommandName, $false, $true ).Where({$_},'first')
+
+    if($TestIfExists) { return $query.count -gt 0 }
+    $query
+}
+function FastGetNativeCommand {
+    <#
+    .SYNOPSIS
+        Returns the first path, or, null if no commands are found. ( false is super fast compared to Get-Command -Commandtype Application ) . see also: GetNativeCommand
+    #>
+    [OutputType('String')]
+    param(
+        # full paths are allowed
+        [ArgumentCompletions(
+            "'git'", "'pwsh'",
+            "''C:\Program Files\Git\cmd\git.exe'" )]
+        [Alias('FullName')]
+        [string]$CommandName,
+
+        [Alias('TestExists', 'AsBool', 'TestOnly')]
+        [switch]$TestIfExists, # this param setname has output type [bool]
+
+        # normally allow silent failures that emit nothing. this forces a throw.
+        [Alias('AssertExists')]
+        [switch]$ThrowIfMissing
+    )
+
+    $Query = $ExecutionContext.InvokeCommand.
+        GetCommandName( $CommandName, $false, $true ).Where({$_},'first')
+
+    [bool] $HasNoResults = $query.count -eq 0
+
+    if( $ThrowIfMissing -and $HasNoResults ) {
+        throw (
+            Join-String -in $CommandName -f 'FastGetNativeCommand did not find command: {0}' )
+    }
+    if( $TestIfExists ) { return -not $HasNoresults }
+    $query
+}
+function _Test-UserHasGit {
+    $userHasGit = FastGetNativeCommand -Name 'git' -TestIfExists
+    if($UserHasGit)
+}
+function Get-PqLibManifestInfo {
+    param(
+
+        # Skip/Ignore metadata that uses git commands on the repository
+        [Alias('SkipGit')]
+        [switch]$NoGit
+    )
+    (gcm git)
+}
