@@ -1,4 +1,5 @@
 let
+    // 2023-08-27
     // maybe this should be one function, that returns the correct variant
     // essentially an enum -> switch
     Summary = [
