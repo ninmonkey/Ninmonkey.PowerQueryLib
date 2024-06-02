@@ -10,6 +10,7 @@ $script:Color = @{
     Red   = '#fea9aa'
 }
 $script:_cacheNativeCommand = [ordered]@{ # cache 'git.exe' lookups
+    # used by Internal.Invoke-Git
 
 }
 
@@ -222,6 +223,14 @@ function Get-PqLibNativeCommand {
     <#
     .SYNOPSIS
       slow lookup using Get-Command. defaults to Assertion. See also: FastGetNativeCommand
+    .NOTES
+        for examples see: /source-pwsh/tests/Get-NativeCommand.tests.ps1
+    .LINK
+        Get-PqLibNativeCommandFast
+    .LINK
+        Get-PqLibNativeCommand
+    .LINK
+        Internal.Invoke-Git
     #>
     [Alias( 'GetNativeCommand' )]
     [OutputType(
@@ -233,7 +242,7 @@ function Get-PqLibNativeCommand {
         # full paths are allowed
         [ArgumentCompletions(
             "'git'", "'pwsh'",
-            "''C:\Program Files\Git\cmd\git.exe'" )]
+            "'C:\Program Files\Git\cmd\git.exe'" )]
         [Alias('Name', 'FullName')]
         [string]$CommandName
 
@@ -241,6 +250,7 @@ function Get-PqLibNativeCommand {
         # [Alias('TestExists', 'AsBool', 'TestOnly')]
         # [switch]$TestIfExists, # this param setname has output type [bool]
     )
+
 
     # # was:
     # if( -not ( FastGetNativeCommand -Name $CommandName -TestIfExists)) {
@@ -250,6 +260,7 @@ function Get-PqLibNativeCommand {
     # $query = $ExecutionContext.InvokeCommand.
     #     GetCommandName( $CommandName, $false, $true ).Where({$_},'first')
 
+    # could optimize to use module-level cached value
     # shorthand to reuse throw assertions. ExecutionContext is fast, DRY doesn't matter
     $null = FastGetNativeCommand -CommandName $CommandName -TestIfExists -ThrowIfMissing
     $getCommandSplat = @{
@@ -264,7 +275,22 @@ function Get-PqLibNativeCommand {
 function Get-PqLibNativeCommandFast {
     <#
     .SYNOPSIS
-        Returns the first path, or, null if no commands are found. ( false is super fast compared to Get-Command -Commandtype Application ) . see also: GetNativeCommand
+        sort of redundant. Returns the first path, or, null if no commands are found. ( false is super fast compared to Get-Command -Commandtype Application ) . see also: GetNativeCommand
+    .example
+        Get-PqLibNativeCommandFast -TestIfExists -CommandName 'TestIfExists' ? 'yes' : 'no'
+        Get-PqLibNativeCommandFast -TestIfExists -CommandName 'git'          ? 'yes' : 'no'
+        # outputs: False, True
+    .example
+        Get-PqLibNativeCommandFast -CommandName 'git'     # out: "c:\Program Files\Git\cmd\git.exe"
+        Get-PqLibNativeCommandFast -CommandName 'missing' # out: null
+    .NOTES
+        for examples see: /source-pwsh/tests/Get-NativeCommand.tests.ps1
+    .LINK
+        Get-PqLibNativeCommandFast
+    .LINK
+        Get-PqLibNativeCommand
+    .LINK
+        Internal.Invoke-Git
     #>
     [Alias(
         'FastGetNativeCommand')]
@@ -273,7 +299,7 @@ function Get-PqLibNativeCommandFast {
         # full paths are allowed
         [ArgumentCompletions(
             "'git'", "'pwsh'",
-            "''C:\Program Files\Git\cmd\git.exe'" )]
+            "'C:\Program Files\Git\cmd\git.exe'" )]
         [Alias('Name', 'FullName')]
         [string]$CommandName,
 
@@ -390,10 +416,7 @@ function Get-PqLibManifestInfo {
         BuildDateTime = (Get-Date).ToString('o')
     }
     if( -not $NoGit -and $UserHasGit ) {
-        $BinGit  = GetNativeCommand -CommandName 'git'
         $BinArgs = @('rev-parse', 'HEAD')
-
-        # $Info['GitCommitHash'] = & $binGit @binArgs
         $Info['GitCommitHash'] = Internal.Invoke-Git -Args $BinArgs -Verbose # -FromWorkingDir 'g:\temp'
     }
     if( $SuperVerbose ) {

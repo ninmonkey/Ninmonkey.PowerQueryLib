@@ -47,7 +47,33 @@
                     "group": "Invoke-Build",
                     "order": 0
                 },
+            },
+            {
+                "name": "🦍Pester ➔ Main Tests",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "${workspaceFolder}/source-pwsh/tests/Get-NativeCommand.tests.ps1",
+                "cwd": "${workspaceFolder}",
+                "presentation": {
+                    "hidden": false,
+                    "group": "Invoke-Build",
+                    "order": 0
+                },
+            },
+            {
+                "presentation": {
+                    "hidden": true,
+                    "group": "Invoke-Build",
+                    "order": 0
+                },
+                "name": "🦍Pester ➔ fromExtension",
+                "type": "PowerShell",
+                "request": "launch",
+                "script": "Invoke-Pester",
+                "createTemporaryIntegratedConsole": true,
+                "attachDotnetDebugger": true
             }
+
 
         ],
         "compounds": []
