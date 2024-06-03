@@ -429,7 +429,129 @@ function Get-PqLibManifestInfo {
     $Info
 }
 
-# function  # Internal.Write-PredentText {
+function Internal.Convert-DateToString {
+    <#
+    .SYNOPSIS
+        internal. macro for converting a single unit
+    .link
+        Format-PqLibDate
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+    #>
+    [OutputType( [string] )]
+    param(
+        [Parameter( Mandatory )]
+            [Alias('InObj', 'Date', 'Obj')]
+            [datetime] $InputDate,
+
+        [Parameter(Mandatory)]
+            [ValidateNotNullOrWhiteSpace()]
+            [ArgumentCompletions( # future, make a nice arg completions validateSet/with tooltips
+                "'d'", "'ShortDate'", "'ShortTime'",
+                "'o'", "'u'", "'yyyy-MM-dd'")]
+            [string] $FormatString,
+
+        [Parameter( Mandatory )]
+            [Alias('Culture')]
+            [ValidateNotNullOrWhiteSpace()]
+            [ArgumentCompletions("'en-us'", "'de'", "'fr'", "'en-gb'", "'es'" )]
+            [string] $CultureName
+    )
+    $CultInfo = Get-Culture -Name $CultureName -ea 'stop'
+    $InputDate.ToString( $FormatString, $CultInfo )
+}
+
+function Format-PqLibDate {
+    <#
+    .SYNOPSIS
+        Convert dates to text with different cultures and format strings
+    .EXAMPLE
+        Pwsh> Get-Date
+            | Format-PqLibdate -Format ShortDate -Culture 'en-us', 'de', 'fr', 'en-gb', 'es'
+    .NOTES
+        see more under: $cultInfo.NumberFormat and $cultInfo.DateTimeFormat
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+    .link
+        https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-8.0
+    #>
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory, Position = 0)]
+            [Alias('Template', 'FStr', 'FormatList', 'Formats', 'FormatName')]
+            [ValidateSet( 'ShortDate', 'ShortTime', 'ShortDatePattern', 'ShortTimePattern' )]
+            [ValidateNotNullOrWhiteSpace()]
+            [string[]] $FormatString,
+
+        [Parameter(ValueFromPipeline, Mandatory)]
+            [ValidateNotNullorEmpty()]
+            [object] $DateObject,
+
+        # which cultures to use
+        [Parameter(Mandatory)]
+            [ArgumentCompletions( "'en-us'", "'de'", "'fr'", "'en-gb'", "'es'" )]
+            [string[]] $CultureList
+    )
+    begin {
+
+    }
+    process {
+        foreach($cultName in $CultureList ) {
+
+            $cultInfo = Get-Culture -Name $cultName
+            if(-not $cultInfo ) { continue } # // should never reach
+
+            foreach( $curFStr in $FormatString) {
+
+                $cultFStr = switch( $FormatString ) {
+                    'ShortDatePattern' { $cultInfo.DateTimeFormat.ShortDatePattern }
+                    'ShortTimePattern' { $cultInfo.DateTimeFormat.ShortTimePattern }
+                    'ShortDate' { 'd' } # or $cultInfo.DateTimeFormat.ShortDatePattern'
+                    # 'ShortTime' { 'HH:mm:ss' }
+                    default {
+                        "ShouldNeverReachException: Unhandled Format '$FormatName'"
+                        | write-error }
+
+                }
+                # might require try, at least not in hashtable ctor literal
+                $renderDate = $DateObject.ToString( $cultFStr, $cultInfo )
+
+                $record = [ordered]@{
+                    CultureName     = $cultName
+                    Text            = $renderDate
+                    DateInput       = $DateObject
+                    CultureInstance = $cultInfo
+                }
+                [pscustomobject]$record
+            }
+        }
+    }
+}
+
+
+    # # $d = [datetime]'2024-03-13'
+    # $cults = Get-culture -ListAvailable
+    # 'en-us', 'de', 'fr', 'en-gb', 'es' | %{
+    #     $cultInfo = Get-culture $_
+    #     [pscustomobject]@{
+    #     CultureName  = $_
+    #     ShortDate    = $d.ToString('d', $cultInfo )
+    #     DateInstance = $d
+    #     CultureInstance =  $CultInfo
+    # }}
+
+    #     $d = [datetime]'2024-03-13'
+    #     $cults = Get-culture -ListAvailable
+    #     $cults | %{
+    #         $d.ToString( $_.DateTimeFormat.ShortDatePattern,(get-culture 'de' ))
+    #         #  .DateTimeFormat.ShortDatePattern
+    #         #   $d.ToShortDateString() } )
+    #     }
+    # }
 function Format-PqLibPredentText {
     <#
     .synopsis
@@ -458,29 +580,30 @@ function Format-PqLibPredentText {
     #>
     [Alias(
         'Fmt-PqPredentText',
+        'Fmt-PqPredent',
         'Fmt-Predent', 'Internal.Write-PredentText' # to be removed
     )]
     [CmdletBinding()]
     [OutputType( [System.String[]] )]
     param(
-        [AllowNull()]
-        [AllowEmptyCollection()]
-        [AllowEmptyString()]
         [Parameter(Mandatory, ValueFromPipeline)]
-        [object[]] $InputObject,
+            [AllowNull()]
+            [AllowEmptyCollection()]
+            [AllowEmptyString()]
+            [object[]] $InputObject,
 
         # default depth
-        [ArgumentCompletions(2, 3, 4)]
-        [Parameter(Mandatory, Position=0)]
-        [uint] $Depth = 2,
+        [Parameter( Position = 0 )]
+            [ArgumentCompletions(2, 3, 4, 6, 8)]
+            [uint] $Depth = 4,
 
         [Parameter(Position = 1)]
-        [ArgumentCompletions(1, 2, 3, 4, 6, 8)]
-        [uint] $CharsPerDepth = 1,
+            [ArgumentCompletions(1, 2, 3, 4, 6, 8)]
+            [uint] $CharsPerDepth = 1,
 
         [Parameter()]
-        [ArgumentCompletions("' '","'  '","'␠'",'"`t"','> ')]
-        [string] $Text = ' ',
+            [ArgumentCompletions("' '","'  '","'␠'",'"`t"','> ')]
+            [string] $Text = ' ',
 
         # if the auto split on newlines could affect the execution
         # you can toggle that step off
@@ -529,7 +652,10 @@ function Write-PqLibWrapAsLetExpression {
     .LINK
     #>
     [Alias(
-        'Write-PqWrapExpression')]
+        'Write-PqWrapExpression',
+        'Write-PqWrapLetExpression',
+        'Fmt-PqWrapExpression'
+    )]
     [OutputType( [string] )]
     param(
         [Parameter(Mandatory)]
@@ -556,7 +682,10 @@ function Write-PqLibWrapAsLetExpression {
     )
 
     $Merged = $RawContent -join "`n"
-    $render_InnerRecord = $merged
+        | Join-String -op "`n" -os "`n"
+    $render_InnerRecord =
+        $Merged | Format-PqLibPredentText -OutputAsString
+        # $merged |
     $render_KeyName_AsLiteral = Join-String -op '#"' -os '"' -Inp $KeyName # to export: writeIdentifier
         # future: don't wrap #"" if not required?
 
@@ -569,13 +698,23 @@ function Write-PqLibWrapAsLetExpression {
                 $render_KeyName_AsLiteral, ' '
                 ' = '
                 $render_InnerRecord
+                "`n"
                 ' in '
                 $render_KeyName_AsLiteral, ' '
             ) -join ''
         }
         'Record' {
-            $render_Document = '[ x = orig ]'
-            throw 'nyi'
+            # $render_Document = '[ x = orig ]'
+            $render_Document = @(
+                ' [ '
+                $render_KeyName_AsLiteral, ' '
+                ' = '
+                $render_InnerRecord
+                ' ] '
+
+            ) -join ''
+            # '[ 'x = orig ]'
+            # throw 'nyi'
         }
         default { throw "ShouldNeverReachException: Unhandled OutputType: '${OutputType}'"}
     }
