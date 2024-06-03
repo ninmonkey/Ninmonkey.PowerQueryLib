@@ -495,14 +495,24 @@ function Get-PqLibNamedDateFormatStrings {
         $curCult.DateTimeFormat.PSObject.Properties
             | ? Name -match 'Pattern'
             | % {
-            $prop  = $_
-                [pscustomobject]@{
+                $prop  = $_
+                $record = [ordered]@{
                     Name               = $prop.Name
                     FormatString       = $Prop.Value
-                    CultureName        = $curCult.Name
+                    CultureName        = -not [string]::IsNullOrWhiteSpace( $curCult.Name ) ? $CurCult.Name : $CurCult.DisplayName
                     CultureInstance    = $curCult
                     DateTimeFormatInfo = $curCult.DateTimeFormat # is [DateTimeFormatInfo]
                 }
+                # invariant is the only blank one blank
+                # if( [string]::IsNullOrWhiteSpace( $record.Name ) ) {
+                #     $record.Name = $curCult.DisplayName
+                # }
+                if( [string]::IsNullOrWhiteSpace( $record.CultureName ) ) {
+                    'Name is still blank for {0}' -f $Prop
+                    | write-error
+                    $null = 0 # breakpoint on b
+                }
+                [pscustomobject]$record
         }
         | Sort-Object CultureName, Name
     }
