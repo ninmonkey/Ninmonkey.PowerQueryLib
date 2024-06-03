@@ -458,18 +458,77 @@ function Internal.Convert-DateToString {
             [ValidateNotNullOrWhiteSpace()]
             [ArgumentCompletions("'en-us'", "'de'", "'fr'", "'en-gb'", "'es'" )]
             [string] $CultureName
+
     )
+    # future: include '[CultureInfo]::InvariantCulture'
+
     $CultInfo = Get-Culture -Name $CultureName -ea 'stop'
     $InputDate.ToString( $FormatString, $CultInfo )
 }
 
+function Get-PqLibDateFormatStrings {
+    <#
+    .SYNOPSIS
+        get a bunch of datetime format strings from different cultures, to enumerate variations
+    .NOTES
+        If you want drill down into the [CultureInfo]
+        Drill into the property named ".CultureObjects"
+
+        this works, I haven't decided on the final output shape
+    .DESCRIPTION
+        CultureInfo.DateTimeFormat
+    #>
+    [OutputType(
+        [System.Globalization.CultureInfo],
+        [System.Management.Automation.PSObject] )]
+    param(
+    )
+    $cultInvariant = [cultureinfo]::InvariantCulture
+    $allCults      = @(
+        $cultInvariant
+        Get-Culture -ListAvailable
+    )
+    $query = $groups | %{
+        $curGroup = $_
+        $record = [ordered]@{
+            UsedByCount         = $curGroup.Count
+            FormatString        = $curGroup.Name
+            CultureNames        = $curGroup.Group.Name
+                | Sort-Object -Unique
+            CultureObjects      = $curGroup.Group
+            CultureDisplayNames = $curGroup.Group.DisplayName
+                | Sort-Object -Unique
+
+
+            CultureNamesCsv    = $curGroup.Group.Name
+                | Sort-Object -Unique
+                | Join-String -sep ', ' -SingleQuote
+            CultureDisplayNamesCsv = $curGroup.Group.DisplayName
+                | Sort-Object -Unique
+                | Join-String -sep ', ' -SingleQuote
+        }
+        [pscustomobject]$record
+    }
+    return $Query | Sort-Object Name
+}
 function Format-PqLibDate {
     <#
     .SYNOPSIS
         Convert dates to text with different cultures and format strings
     .EXAMPLE
-        Pwsh> Get-Date
-            | Format-PqLibdate -Format ShortDate -Culture 'en-us', 'de', 'fr', 'en-gb', 'es'
+        > $cults = 'en-us', 'de', 'fr', 'en-gb', 'es'
+        > Get-Date | Format-PqLibDate -FormatString ShortDate -CultureList $cults
+        # or
+        > Format-PqLibDate -FormatString ShortDate -CultureList $cults -DateObject (get-date)
+
+        CultureName Text       DateInput             CultureInstance
+        ----------- ----       ---------             ---------------
+        en-us       2024-06-03 2024-06-03 9:52:44 AM en-US
+        de          03.06.2024 2024-06-03 9:52:44 AM de
+        fr          03/06/2024 2024-06-03 9:52:44 AM fr
+        en-gb       03/06/2024 2024-06-03 9:52:44 AM en-GB
+        es          3/6/2024   2024-06-03 9:52:44 AM es
+
     .NOTES
         see more under: $cultInfo.NumberFormat and $cultInfo.DateTimeFormat
     .LINK
@@ -478,12 +537,18 @@ function Format-PqLibDate {
         https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
     .link
         https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo?view=net-8.0
+    .LINK
+        https://learn.microsoft.com/en-us/dotnet/api/system.globalization.datetimeformatinfo?view=net-8.0
     #>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory, Position = 0)]
             [Alias('Template', 'FStr', 'FormatList', 'Formats', 'FormatName')]
-            [ValidateSet( 'ShortDate', 'ShortTime', 'ShortDatePattern', 'ShortTimePattern' )]
+            [ValidateSet(
+                'ShortDate', 'ShortTime', 'ShortDatePattern', 'ShortTimePattern',
+                'InvariantShortDate',
+                'InvariantShortTime'
+            )]
             [ValidateNotNullOrWhiteSpace()]
             [string[]] $FormatString,
 
@@ -493,27 +558,33 @@ function Format-PqLibDate {
 
         # which cultures to use
         [Parameter(Mandatory)]
-            [ArgumentCompletions( "'en-us'", "'de'", "'fr'", "'en-gb'", "'es'" )]
+            [ArgumentCompletions( "'en-us'", "'de'", "'fr'", "'en-gb'", "'es'", "'Invariant'" )]
             [string[]] $CultureList
     )
     begin {
+        $cultInvariant = [CultureInfo]::InvariantCulture
 
     }
     process {
         foreach($cultName in $CultureList ) {
 
-            $cultInfo = Get-Culture -Name $cultName
-            if(-not $cultInfo ) { continue } # // should never reach
+            if($cultName -eq 'Invariant' )  {
+                $cultInfo = [CultureInfo]::InvariantCulture
+            } else {
+                $cultInfo = Get-Culture -Name $cultName -ea 'continue'
+                if(-not $cultInfo ) { continue } # // should never reach
+            }
 
             foreach( $curFStr in $FormatString) {
 
                 $cultFStr = switch( $FormatString ) {
-                    'ShortDatePattern' { $cultInfo.DateTimeFormat.ShortDatePattern }
-                    'ShortTimePattern' { $cultInfo.DateTimeFormat.ShortTimePattern }
+                    'ShortDatePattern'   { $cultInfo.DateTimeFormat.ShortDatePattern }
+                    'ShortTimePattern'   { $cultInfo.DateTimeFormat.ShortTimePattern }
+                    'InvariantShortDate' { $cultInvariant.DateTimeFormat.ShortDatePattern } # is 'MM/dd/yyyy'
                     'ShortDate' { 'd' } # or $cultInfo.DateTimeFormat.ShortDatePattern'
                     # 'ShortTime' { 'HH:mm:ss' }
                     default {
-                        "ShouldNeverReachException: Unhandled Format '$FormatName'"
+                        "ShouldNeverReachException: Unhandled Format '$FormatString'"
                         | write-error }
 
                 }
@@ -522,7 +593,7 @@ function Format-PqLibDate {
 
                 $record = [ordered]@{
                     CultureName     = $cultName
-                    Text            = $renderDate
+                    Text            = $renderDate ?? '␀'
                     DateInput       = $DateObject
                     CultureInstance = $cultInfo
                 }
@@ -532,26 +603,6 @@ function Format-PqLibDate {
     }
 }
 
-
-    # # $d = [datetime]'2024-03-13'
-    # $cults = Get-culture -ListAvailable
-    # 'en-us', 'de', 'fr', 'en-gb', 'es' | %{
-    #     $cultInfo = Get-culture $_
-    #     [pscustomobject]@{
-    #     CultureName  = $_
-    #     ShortDate    = $d.ToString('d', $cultInfo )
-    #     DateInstance = $d
-    #     CultureInstance =  $CultInfo
-    # }}
-
-    #     $d = [datetime]'2024-03-13'
-    #     $cults = Get-culture -ListAvailable
-    #     $cults | %{
-    #         $d.ToString( $_.DateTimeFormat.ShortDatePattern,(get-culture 'de' ))
-    #         #  .DateTimeFormat.ShortDatePattern
-    #         #   $d.ToShortDateString() } )
-    #     }
-    # }
 function Format-PqLibPredentText {
     <#
     .synopsis
