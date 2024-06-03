@@ -465,7 +465,49 @@ function Internal.Convert-DateToString {
     $CultInfo = Get-Culture -Name $CultureName -ea 'stop'
     $InputDate.ToString( $FormatString, $CultInfo )
 }
+function Get-PqLibCultures {
+    [OutputType(
+        [System.Globalization.CultureInfo[]]
+    )]
+    param()
+    Get-Culture -ListAvailable
+}
+function Get-PqLibNamedDateFormatStrings {
+    <#
+    .SYNOPSIS
+        Get System Defined Format Strings that are Named
+    .notes
+        by names only?
+            compare with: Get-PqLibDateFormatStrings
+            compare with: Get-PqLibNamedDateFormatStrings
+    .EXAMPLE
+        Get-PqLibNamedDateFormatStrings|ft
+    .EXAMPLE
+        Get-PqLibNamedDateFormatStrings -CultureName (Get-Culture -ListAvailable)    #>
+    param(
+        # Try to default as the system
+        [Parameter()]
+        [string[]] $CultureName = (Get-culture)
+    )
 
+    $query = $CultureName | %{
+        $curCult = Get-Culture $_
+        $curCult.DateTimeFormat.PSObject.Properties
+            | ? Name -match 'Pattern'
+            | % {
+            $prop  = $_
+                [pscustomobject]@{
+                    Name               = $prop.Name
+                    FormatString       = $Prop.Value
+                    CultureName        = $curCult.Name
+                    CultureInstance    = $curCult
+                    DateTimeFormatInfo = $curCult.DateTimeFormat # is [DateTimeFormatInfo]
+                }
+        }
+        | Sort-Object CultureName, Name
+    }
+    $query
+}
 function Get-PqLibDateFormatStrings {
     <#
     .SYNOPSIS
@@ -475,8 +517,16 @@ function Get-PqLibDateFormatStrings {
         Drill into the property named ".CultureObjects"
 
         this works, I haven't decided on the final output shape
+
+        by names only?
+            compare with: Get-PqLibDateFormatStrings
+            compare with: Get-PqLibNamedDateFormatStrings
     .DESCRIPTION
         CultureInfo.DateTimeFormat
+    .EXAMPLE
+        $now     = Get-Date
+        $Formats = (Get-PqLibDateFormatStrings).FormatString
+        Format-PqLibDate -FormatString $Formats  -DateObject $now -CultureList 'en-us'
     #>
     [OutputType(
         [System.Globalization.CultureInfo],
@@ -516,11 +566,12 @@ function Format-PqLibDate {
     .SYNOPSIS
         Convert dates to text with different cultures and format strings
     .EXAMPLE
-        > $cults = 'en-us', 'de', 'fr', 'en-gb', 'es'
-        > Get-Date | Format-PqLibDate -FormatString ShortDate -CultureList $cults
-        # or
-        > Format-PqLibDate -FormatString ShortDate -CultureList $cults -DateObject (get-date)
+    > $cults = 'en-us', 'de', 'fr', 'en-gb', 'es'
+    > Get-Date | Format-PqLibDate -FormatString ShortDate -CultureList $cults
+    # or
+    > Format-PqLibDate -FormatString ShortDate -CultureList $cults -DateObject (get-date)
 
+    # output:
         CultureName Text       DateInput             CultureInstance
         ----------- ----       ---------             ---------------
         en-us       2024-06-03 2024-06-03 9:52:44 AM en-US
@@ -528,6 +579,29 @@ function Format-PqLibDate {
         fr          03/06/2024 2024-06-03 9:52:44 AM fr
         en-gb       03/06/2024 2024-06-03 9:52:44 AM en-GB
         es          3/6/2024   2024-06-03 9:52:44 AM es
+    .EXAMPLE
+    # use one culture, format using other culture's strings
+    > $now = Get-Date
+    > $Formats = (Get-PqLibDateFormatStrings).FormatString
+    > Format-PqLibDate -FormatString $Formats  -DateObject $now -CultureList 'en-us'
+
+    # output:
+
+        Text          FormatString   CultureInstance DateInput
+        ----          ------------   --------------- ---------
+        3-6-2024      d-M-yyyy       en-US           2024-06-03
+        2024.06.03    yyyy.MM.dd     en-US           2024-06-03
+        2024. 06. 03. yyyy. MM. dd.  en-US           2024-06-03
+        2024. 6. 3.   yyyy. M. d.    en-US           2024-06-03
+        2024-06-03    yyyy-MM-dd     en-US           2024-06-03
+        06-03-2024    MM/dd/yyyy     en-US           2024-06-03
+        6-3-2024      M/d/yyyy       en-US           2024-06-03
+        AD 2024-6-3   g yyyy/M/d     en-US           2024-06-03
+        AD 2024-06-03 g yyyy-MM-dd   en-US           2024-06-03
+        03-06-2024    dd/MM/yyyy     en-US           2024-06-03
+        03-06 2024    dd/MM yyyy     en-US           2024-06-03
+        03.06.2024    dd.MM.yyyy     en-US           2024-06-03
+        03.6.2024     dd.M.yyyy      en-US           2024-06-03
 
     .NOTES
         see more under: $cultInfo.NumberFormat and $cultInfo.DateTimeFormat
@@ -544,7 +618,7 @@ function Format-PqLibDate {
     param(
         [Parameter(Mandatory, Position = 0)]
             [Alias('Template', 'FStr', 'FormatList', 'Formats', 'FormatName')]
-            [ValidateSet(
+            [ArgumentCompletions(
                 'ShortDate', 'ShortTime', 'ShortDatePattern', 'ShortTimePattern',
                 'InvariantShortDate',
                 'InvariantShortTime'
@@ -575,17 +649,20 @@ function Format-PqLibDate {
                 if(-not $cultInfo ) { continue } # // should never reach
             }
 
-            foreach( $curFStr in $FormatString) {
+            foreach( $curTemplate in $FormatString) {
 
-                $cultFStr = switch( $FormatString ) {
+                $cultFStr = switch( $curTemplate ) {
                     'ShortDatePattern'   { $cultInfo.DateTimeFormat.ShortDatePattern }
                     'ShortTimePattern'   { $cultInfo.DateTimeFormat.ShortTimePattern }
                     'InvariantShortDate' { $cultInvariant.DateTimeFormat.ShortDatePattern } # is 'MM/dd/yyyy'
                     'ShortDate' { 'd' } # or $cultInfo.DateTimeFormat.ShortDatePattern'
                     # 'ShortTime' { 'HH:mm:ss' }
                     default {
-                        "ShouldNeverReachException: Unhandled Format '$FormatString'"
-                        | write-error }
+
+                        "Unhandled Format Template Name, interpret as literal formatstring '$curTemplate'"
+                            | write-verbose
+                        $curTemplate
+                    }
 
                 }
                 # might require try, at least not in hashtable ctor literal
@@ -594,8 +671,9 @@ function Format-PqLibDate {
                 $record = [ordered]@{
                     CultureName     = $cultName
                     Text            = $renderDate ?? '␀'
-                    DateInput       = $DateObject
+                    FormatString    = $cultFStr
                     CultureInstance = $cultInfo
+                    DateInput       = $DateObject
                 }
                 [pscustomobject]$record
             }
