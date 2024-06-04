@@ -1,20 +1,7 @@
-/* a fancier version of the import function for Import.PowerQueryLib.pq, or other scripts
-let
-    // evaluates a .pq text file that's editable outside of power bi, without pasting updates. just refresh.
-    EvalQueryFunc = (filePath as text, optional options as nullable record) as any => [
-        encoding = options[Encoding]? ?? TextEncoding.Utf8,
-        environment = options[Environment]? ?? #shared,
-        bytes = File.Contents(filePath),
-        lines = Text.FromBinary( bytes, encoding ),
-        return = Expression.Evaluate( lines, environment )
-    ][return]
-in
-    EvalQueryFunc
+/*
+about: This is a fancy version of EvalQuery using a report parameter
 */
-
-// with extra
 let
-    /* this is the entry point */
     EvalQuery = (filePath as text, optional options as nullable record) as any => [
         encoding    = options[Encoding]? ?? TextEncoding.Utf8,
         environment = options[Environment]? ?? #shared,

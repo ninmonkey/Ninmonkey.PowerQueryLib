@@ -2,7 +2,7 @@
     [
         /*
             Source: https://github.com/ninmonkey/Ninmonkey.PowerQueryLib
-            About: Randomized Int. [2021-04-22]
+            About: Randomized Integer between a range.  [2021-04-22]
             See Also: Number.Round* family of functions, and <https://docs.microsoft.com/en-us/power-query/handlingdocumentation>
         */
         fn.Type = type function (
