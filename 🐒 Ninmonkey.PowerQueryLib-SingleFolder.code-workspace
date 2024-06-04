@@ -15,6 +15,9 @@
             "**/*.pbix": false,
             "**/*.pbit": false,
         },
+        "files.associations": {
+            "*.pq.example": "powerquery"
+        },
         "[markdown]": {
             "editor.formatOnSave": true,
             "editor.wordWrap": "on",
