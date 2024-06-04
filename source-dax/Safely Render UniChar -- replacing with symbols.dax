@@ -1,0 +1,52 @@
+RenderFromInt = 
+    /*
+        a safe version of UniChar(), 
+            [1] Normally UniChar() can crash the visual if certain codepoints are used (control chars) 
+            [2] and then visualizes invisble control chars by using their symbol equivalents 
+                instead of blanks
+
+
+            0   => ␀    ( null )
+            10  => ␊    ( newline)
+
+        Normally unicode is based in hex, AFAIK you can't currently use hex literals in DAX
+        To convert codepoints to their Control Symbols, add 0x2400
+        ex:
+            null is 0 + 0x2400, newline is 10 + 0x2400
+    
+        high Surrogate pairs    (U+D800–U+DBFF)
+        Low Surrogate           (U+DC00–U+DFFF) "🐍"
+    ref:
+        del => https://www.compart.com/en/unicode/U+2421
+        https://en.wikipedia.org/wiki/C0_and_C1_control_codes
+        https://en.wikipedia.org/wiki/Plane_(Unicode)#Basic_Multilingual_Plane
+    */ 
+    var symbolOffset = 9216 // 0x2400
+    var unicodeMaxValue = 1114111 // 0x10ffff
+    var codepoint =
+        SELECTEDVALUE( main[Codepoint] )
+        
+    var isSurrogatePair = // pbi is rendering blocks, but doesn't actually error
+        codepoint >= 55296 && codepoint <= 57343 // 0xd800 .. 0xdfff
+    var isCtrl_C0 = 
+        codepoint >= 0 && codepoint <=  31 // 0x7f
+    
+    var isCtrl_C1 = 
+        codepoint >= 128 && codepoint <=  159 // 0x80 - 0x9f
+    
+    var isOutOfBounds = // not used currently, because the snake will catch it
+        codepoint < 0 || codepoint > unicodeMaxValue
+
+    var isCtrl =
+        isCtrl_C0 || isCtrl_C1
+
+    var codepointOffset = if(
+        isCtrl, 
+        codepoint + symbolOffset,
+        codepoint )
+    
+    var maybeRender = 
+        IFERROR(
+            UNICHAR( codepointOffset ) , "🐍" ) // 😭"
+
+return maybeRender
