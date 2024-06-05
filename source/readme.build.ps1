@@ -164,6 +164,7 @@ function RenderReadmeForGroup {
 
         [hashtable]$Options = @{
             TOC = $true
+            SortBy = 'RelativePath'
         }
     )
     [string]$finalDocRender = ''
@@ -175,7 +176,7 @@ function RenderReadmeForGroup {
     }
 
     if($Options.TOC) {
-        $GroupedBy.Name
+        # $GroupedBy.Name
 
         # $finalDocRender += @(
         #     "`n`n"
@@ -188,15 +189,32 @@ function RenderReadmeForGroup {
                 | Sort-Object
                 | %{
                     MdFormat-Link -Name $_ -Url (Join-String -f '#{0}' -Inp $_)
-                        |Join-String -f ' - {0}'
+                        |Join-String -f '  - {0}'
                 } | Join-String -sep "`n"
 
+        $finalDocRender += @(
+            "`n"
+            '<div><small>'
+            'Updated: {0}' -f @(
+                (Get-Date).ToShortDateString()
+            )
+            ', Groups: {0}' -f @(
+                $GroupedBy.Count
+            )
+            ', Files: {0}' -f @(
+                $GroupedBy.Group.Name.Count
+            )
+            '</small></div>'
+            # "`n"
+        ) -join ''
         $finalDocRender += @(
             "`n`n"
             "## Table of Contents"
             "`n"
-            $renderTOC
+            '- [Table of Contents](#table-of-contents)'
             "`n"
+            $renderTOC
+            # "`n"
         ) -join ''
 
     }
@@ -206,6 +224,9 @@ function RenderReadmeForGroup {
         $curGroup = $_
 
         $groupName = $curGroup.Name
+        if($GroupName -eq 'alias' ) {
+            $null = 0
+        }
         $rendStr += @(
             "`n`n"
             "### ${GroupName}"
@@ -214,7 +235,9 @@ function RenderReadmeForGroup {
             "`n"
         ) -join ''
 
-        $curGroup.Group | %{
+        $curGroup.Group
+        | Sort-Object -p $Options.SortBy
+        | %{
             $curItem     = $_
             $itemName    = $CurItem.Name
             $itemRelPath = $CurItem.RelativePath
