@@ -7,7 +7,6 @@ $Config = @{
     # ExportMd       = Join-Path $PSScriptRoot 'readme.md'
 }
 $Config | Ft -auto
-
 goto $Config.AppRoot
 
 function FormatPqSourceItem {
@@ -258,25 +257,44 @@ function RenderReadmeForGroup {
         $finalDocRender += $rendStr
     } #| Join-String -f "`n{0}`n"
 
-    $FinalDocRender | Set-Content -Path $PathOutput
+    $FinalDocRender | Set-Content -Path $PathOutput -Confirm
     'wrote: {0} of length {1}' -f @(
         $PathOutput
         $FinalDocRender.length
     )| write-host -fg 'orange'
 }
 function Build.FindForRoot {
-    $find_pq_modules = fd -e module.pq --base-directory (gi $Config.AppRoot )
+    [CmdletBinding()]
+    param(
+        [parameter(Mandatory)]
+        $AppRoot
+    )
+    'Build.FindForRoot Path: {0}' -f @( $AppRoot )
+    if( -not(Test-Path $AppRoot) ) {
+        throw "AppRootNotFound: $AppRoot"
+    }
+    $AppRoot = $AppRoot | Get-Item -ea 'stop'
+
+    pushd -StackName 'Build.FindForRoot' $AppRoot
+
+    $reModuleSuffix = '\.module\.pq$'
+
+    $find_pq_modules = fd -e module.pq --base-directory (gi $AppRoot )
         | Get-Item
+        | ?{ $_.name -match $reModuleSuffix }
         | FormatPQSourceItem
 
-    $find_pq = fd -e pq --base-directory (gi $Config.AppRoot )
+        # $ff.pq.name -notmatch '\.module\.pq$'
+
+    $find_pq = fd -e pq --base-directory (gi $AppRoot )
         | Get-Item
+        | ?{ $_.name -notmatch $reModuleSuffix }
         | FormatPQSourceItem
 
     'found: {{ modules: {0}, functions: {1}, root: {2} }}' -f @(
         $find_pq_modules.count
         $find_pq.count
-        $Config.AppRoot
+        $AppRoot
     ) | write-host -fg 'orange'
 
     [pscustomobject]@{
@@ -284,6 +302,8 @@ function Build.FindForRoot {
         pq         = $find_pq
         pq_Modules = $find_pq_modules
     }
+
+    popd -StackName 'Build.FindForRoot'
 }
 function Build.GroupForRoot {
     param(
@@ -311,8 +331,32 @@ function Build.GroupForRoot {
     }
 }
 
+function Invoke.Main {
+    param(
+        [parameter(Mandatory)]
+        [string] $AppRoot
+    )
+    'Invoke.Main: Path: {0}' -f @( $AppRoot )
+    if( -not(Test-Path $AppRoot) ) {
+        throw "AppRootNotFound: $AppRoot"
+    }
+}
+
+$main_splat = @{
+    AppRoot = 'H:\data\2024\tabular\Ninmonkey.PowerQueryLib\source-modules'
+}
+
+
+throw 'Left off
+- [x] Build.FindForRoot filters relative roots
+- [ ] Build.GroupForRoot using found groups
+- [ ] and then write "RenderReadmeForGroup" using paths
+
+'
+Invoke.Main @main_Splat
+
 if($false) {
-    $Prefix = $Config.AppRoot
+    $Prefix = $main_splat.AppRoot  # $Config.AppRoot
     # was named: 'readme.byParent.md'
     RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput (
         Join-path $Prefix 'readme.md')
@@ -330,9 +374,9 @@ if($false) {
 # RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
 # RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
 
-$find_pq | Select -First 7 # | FormatPqSourceItem
-    | ft -auto
-$find_pq | Select -First 2 # | FormatPqSourceItem
-    | fl
+# $find_pq | Select -First 7 # | FormatPqSourceItem
+#     | ft -auto
+# $find_pq | Select -First 2 # | FormatPqSourceItem
+#     | fl
 write-warning '[ ] todo: make filter test if files are untracked or not'
 write-warning '[ ] todo: make function run relative any directory'
