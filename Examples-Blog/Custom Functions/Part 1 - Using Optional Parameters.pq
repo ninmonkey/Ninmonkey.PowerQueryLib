@@ -2,6 +2,7 @@ let
     /*
     About: Compare different optional parameter types
     This is from the post: https://ninmonkeys.com/blog/2024/06/05/power-query-functions-part1-using-optional-parameters
+    source:
 
     lets call Text.Combine() to test declaring optional parameters
 
@@ -12,14 +13,14 @@ let
     - always requires you pass 2 parameters
     */
     Join_Nullable = (texts as list, separator as nullable text) =>
-        Text.Combine( texts, separator ),        
+        Text.Combine( texts, separator ),
 
     /*
     For this version:
     - you can pass a null value for a separator
     - you can skip the second parameter
     - 'optional' parameters are automatically 'nullable',
-        so you can drop the 'nullable' part 
+        so you can drop the 'nullable' part
 
     This is how library functions have multiple call signatures
     Power Query defines one function
@@ -29,7 +30,7 @@ let
     */
     Join_Optional = (texts as list, optional separator as text) =>
         Text.Combine( texts, separator ),
-        
+
     Summary = [
         chars = { "a".."h" }, // example array of strings
 
