@@ -7,7 +7,11 @@ let
         Err.ExpandErrorRecord.Verbose.pq - when you want an excessive amount of details
     */
     // when you want extra details on an exception, mainly for interactive use.
-   Err.ExpandErrorRecord.Verbose = (exception as any, optional options as nullable record) => [
+    Err.ExpandErrorRecord.Verbose = (
+        exception        as any,
+        optional options as nullable record
+    ) => [
+
         // options = Record.Combine({
         //     defaults,
         //     (options ?? [])  // does this cause the unexpectStete of object

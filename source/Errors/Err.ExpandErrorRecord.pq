@@ -7,7 +7,11 @@ let
         Err.ExpandErrorRecord.Verbose.pq - when you want an excessive amount of details
     */
     // when you want extra details on an exception, mainly for interactive use.
-    Err.ExpandErrorRecord = (exception as any, optional options as nullable record) => [
+    Err.ExpandErrorRecord = (
+        exception        as any,
+        optional options as nullable record
+    ) => [
+        Json = (source as any) as text => Text.FromBinary( Json.FromValue( source ) ),
         return = [
             // Er_Type         = Value.Type( exception ), // is alway a record?
             Err              = exception,
@@ -21,20 +25,15 @@ let
             Message.Format     = Err[Message.Format]? ?? null,
             Message.Parameters = Err[Message.Parameters]? ?? null,
 
-            Expression.Stack    = Err.Meta[Expression.Stack]? ?? null,
-            Stack_Json_Oneline  = Json( Expression.Stack ),
-            Stack_Json_List = List.Transform(
-                Expression.Stack,
-                (item) =>
-                    Json( item )
-            ),
-            Stack_Json_List_Str = Text.Combine( Stack_Json_List, "#(cr,lf)"),
-            Stack_JsonAbbr_List_Str = Text.Combine( Stack_JsonAbbr_List_Simple, "#(cr,lf)"),
-
-            Stack_JsonAbbr_List_Simple = List.Transform(
-                Stack_Json_List,
-                (item) => Json.Abbr( item )
-            ),
+            Expression.Stack       = Err.Meta[Expression.Stack]? ?? null,
+            Expression.Stack.Json       = Json( Expression.Stack ),
+            Expression.Stack.JsonLines  =
+                Text.Combine(
+                    List.Transform(
+                        Expression.Stack,
+                        (item) => Json( item )
+                    ),
+                "#(cr,lf)" ),
 
             ActivityId      = Diagnostics.ActivityId(),
             ModuleVersion = Module.Versions()
