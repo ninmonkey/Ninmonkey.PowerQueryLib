@@ -2,6 +2,7 @@
 
 
 - [Ninmonkey.PowerQueryLib](#ninmonkeypowerquerylib)
+  - [View Functions By Category](#view-functions-by-category)
   - [Exported Culture as Csv](#exported-culture-as-csv)
   - [New Usage](#new-usage)
   - [Importing External `.pq` files](#importing-external-pq-files)
@@ -12,6 +13,10 @@
   - [Language data](#language-data)
 
 Custom functions for Power BI
+
+## View Functions By Category 
+
+- List [Functions By Group.md](./source/readme.md) 📌 ( <b>Is new</b> ) 
 
 ## Exported Culture as Csv
 
