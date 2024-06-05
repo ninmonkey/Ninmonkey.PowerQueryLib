@@ -282,10 +282,19 @@ function RenderReadmeForGroup {
 $group_byParent         = $find_pq | Group DirectoryBaseName
 # $group_byRelPath        = $find_pq | Group RelativePath
 $group_byDirectory      = $find_pq | Group Directory
+$group_byFilePrefix     = $find_pq | Group -p {
+    # support several delims,
+    $_.name -split '\.|-|_' | Select -First 1
+    # $_.name -split '\.' | Select -First 1
+}
+
+RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.md' # was named: 'readme.byParent.md'
+RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.md' # was named: 'readme.byParent.md'
+RenderReadmeForGroup -GroupedBy $group_byFilePrefix -PathOutput 'readme.ByPrefix.md'
+
 
 # RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
-RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.md' # was named: 'readme.byParent.md'
-RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
+# RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
 
 $find_pq | Select -First 7 # | FormatPqSourceItem
     | ft -auto

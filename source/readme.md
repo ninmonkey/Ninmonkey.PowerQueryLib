@@ -1,5 +1,5 @@
 
-<div><small>Updated: 2024-06-05, Groups: 19, Files: 112</small></div>
+<div><small>Updated: 2024-06-05, Groups: 19, Files: 111</small></div>
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
@@ -114,7 +114,7 @@
  - [Binary.ToBase64.pq](Binary.ToBase64.pq)
  - [CoerceTo.Table.pq](CoerceTo.Table.pq)
  - [CoerceTo.Table.succinct.pq](CoerceTo.Table.succinct.pq)
- - [ConvertTo-Markdown.pq](ConvertTo-Markdown.pq)
+ - [ConvertTo.Markdown.pq](ConvertTo.Markdown.pq)
  - [DateTable_FromDates.backup.pq](DateTable_FromDates.backup.pq)
  - [DateTable_FromDates.pq](DateTable_FromDates.pq)
  - [DateTime.FromUnixTime.pq](DateTime.FromUnixTime.pq)
@@ -193,7 +193,6 @@
  - [Text.RemoveDiacritics.pq](Text/Text.RemoveDiacritics.pq)
  - [Text.ReplaceFirstOnly.pq](Text/Text.ReplaceFirstOnly.pq)
  - [Text.ReplaceMany.pq](Text/Text.ReplaceMany.pq)
- - [Text.TransformRegexReplace.pq](Text/Text.TransformRegexReplace.pq)
  - [Text.WordWrap.pq](Text/Text.WordWrap.pq)
  - [TransformTo.TextList.pq](Text/TransformTo.TextList.pq)
  - [XRay.pq](Text/XRay.pq)
