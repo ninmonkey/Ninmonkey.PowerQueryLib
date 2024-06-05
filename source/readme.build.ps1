@@ -8,6 +8,8 @@ $Config = @{
 }
 $Config | Ft -auto
 
+goto $Config.AppRoot
+
 function FormatPqSourceItem {
     <#
     .SYNOPSIS
@@ -74,7 +76,64 @@ $find_pq = fd -e pq --base-directory (gi $Config.AppRoot )
     $find_pq.count
     $Config.AppRoot
 )
+filter MdFormat-EscapePath {
+    $_ -replace ' ', '%20' -replace '\\', '/'
+}
 # drop files not commited
+$group_byParent         = $find_pq | Group DirectoryBaseName
+$group_byRelPath        = $find_pq | Group RelativePath
+$group_byDirectory      = $find_pq | Group Directory
+
+
+function RenderByGroup {
+    param(
+        [Microsoft.PowerShell.Commands.GroupInfo] $GroupedBy,
+        [string] $PathOutput
+
+    )
+
+    # if( $GroupedBy[0] -isnot [Microsoft.PowerShell.Commands.GroupInfo] ) {
+    #     throw "UnexpectedError, "
+    # }
+
+    # }
+
+    [string]$finalDocRender = ''
+
+        $GroupedBy | %{
+            [string]$rendStr = ''
+            $curGroup = $_
+
+            $groupName = $curGroup.Name
+            $rendStr += @(
+                "`n`n"
+                "### ${GroupName}"
+                "`n"
+            ) -join ''
+
+            $curGroup.Group | %{
+                $curItem     = $_
+                $itemName    = $CurItem.Name
+                $itemRelPath = $CurItem.RelativePath | MdFormat-EscapePath
+                $rendMdLink  = @(
+                    '[',
+                    $itemName,
+                    ']', '(',
+                    $itemRelPath
+                    ')'
+                ) -join ''
+
+                $rendStr += "`n${RendMdLink}"
+            } # | Join-String -f "`n{0}`n"
+
+            $finalDocRender += $rendStr
+        } | Join-String -f "`n{0}`n"
+
+    $FinalDocRender.length
+
+    $FinalDocRender | Set-Content -Path $Config.ExportMd
+    'wrote: {0}' -f $Config.ExportMd | write-host -fg 'orange'
+}
 
 
 $find_pq | Select -First 7 # | FormatPqSourceItem
