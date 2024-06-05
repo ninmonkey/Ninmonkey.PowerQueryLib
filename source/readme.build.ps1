@@ -94,9 +94,29 @@ $find_pq = fd -e pq --base-directory (gi $Config.AppRoot )
     $Config.AppRoot
 )
 filter MdFormat-EscapePath {
+    <#
+    .SYNOPSIS
+        make safe markdown style links. convert paths to work as urls and console clickable urls like: <file:///{0}>'
+    .example
+        > 'dir\some Item.md' | MdFormat-EscapePath
+
+            dir/some%20Item.md
+    #>
     $_ -replace ' ', '%20' -replace '\\', '/'
 }
 function MdFormat-Link {
+    <#
+    .SYNOPSIS
+        format a single markdown url with a name and value
+    .EXAMPLE
+        Pwsh> MdFormat-Link -Name 'go to' -Url 'some Item.md'
+
+            [go to](some Item.md)
+
+        MdFormat-Link -Name 'go to' -Url 'dir\some Item.md' -AlwaysEscapeUrlPath
+
+            [go to](dir/some%20Item.md)
+    #>
     param(
         [Parameter(Mandatory)]
         [string]$Name,
