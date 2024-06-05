@@ -14,7 +14,8 @@ let r = [
         / returns first+last merged, as one number
             Text.FindFirstLastDigits = ( source as text ) as number => [
                 first = Text.PositionOfAny( source, digits, Occurrence.First ),
-                last = Text.PositionOfAny( source, digits, Occurrence.Last ), chars = Text.ToList(source),
+                last  = Text.PositionOfAny( source, digits, Occurrence.Last ),
+                chars = Text.ToList(source),
                 textNumber = chars{first} & chars{last},
                 return = Number.FromText( textNumber, null )
             ][return],
@@ -284,6 +285,10 @@ let r = [
     ][ret],
 
 
+    Format.ControlChar = Format.ShowBlank,
+        Fcc            = Format.ShowBlank,
+        Format.Newline = Format.ShowBlank,
+        Format.Blank = Format.ShowBlank,
 
     // Input : list of all values.
     // Output: true emptyString, and nulls are replaced with control char symbols
@@ -292,11 +297,6 @@ let r = [
         in:  { "a", "b" }
         out: "a#(cr,lf)b"
     */
-    Format.ControlChar = Format.ShowBlank,
-        Fcc            = Format.ShowBlank,
-        Format.Newline = Format.ShowBlank,
-        Format.Blank = Format.ShowBlank,
-
     Format.ShowBlank = (source as list) as list => [
         ret = List.ReplaceMatchingItems( source,
             {   { "", "<EmptyStr>" },
