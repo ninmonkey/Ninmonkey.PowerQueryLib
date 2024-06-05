@@ -284,7 +284,7 @@ $group_byParent         = $find_pq | Group DirectoryBaseName
 $group_byDirectory      = $find_pq | Group Directory
 
 # RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
-RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.byParent.md'
+RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.md' # was named: 'readme.byParent.md'
 RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
 
 $find_pq | Select -First 7 # | FormatPqSourceItem
