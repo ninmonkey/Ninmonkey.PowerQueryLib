@@ -1,5 +1,10 @@
 [
-    /* a colleciton of functions to write Html Elements, or use StringBuilders
+    /*
+    About:
+        colleciton of functions to write Html Elements
+
+    See also:
+        StringBuilder.module.pq
     */
 
     // Write.Html.Bold = (source as text) as text => "<b>" & source & "</b>",

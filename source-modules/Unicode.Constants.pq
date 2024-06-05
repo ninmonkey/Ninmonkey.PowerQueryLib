@@ -1,31 +1,38 @@
 [
     /*
-    See Also: Links For Finding Unicode Characters
+    See Also:
+
+    Links For Finding Unicode Characters
+
     - https://www.compart.com/en/unicode/block
     - https://emojipedia.org/zero-width-joiner
     - https://emojipedia.org/emoji-zwj-sequence
 
-    See also: Related functions
-    - Character.ToNumber()
-    - Character.FromNumber()
+    Related Functions
+
+    - Character.ToNumber()    : Converts string to codepoint
+    - Character.FromNumber()  : Converts codepoint to string
+
     */
 
     // extra aliases
-    CrLf = LineEnding.CrLf,
-    NL   = LineEnding.Lf,
-    ZWJ  = Zero.Width.Joiner,
+    CrLf              = LineEnding.CrLf,
+    NL                = LineEnding.Lf,
+    ZWJ               = Zero.Width.Joiner,
 
     // whitespace and control chars
-    Indent               = "    ",
-    LineEnding.Cr        = "#(cr)",     // is \r
-    LineEnding.Lf        = "#(lf)",     // is \n
-    LineEnding.CrLf      = "#(cr,lf)",  // is \r\n
-    Tab                  = "#(tab)",    // is \t
-    Space                = " ",         // is " "
-    Zero.Width.Joiner    = "#(200d)", // is zwj
+    Indent            = "    ",
+    LineEnding.Cr     = "#(cr)",             // is \r
+    LineEnding.Lf     = "#(lf)",             // is \n
+    LineEnding.CrLf   = "#(cr,lf)",          // is \r\n
+    Tab               = "#(tab)",            // is \t
+    Space             = " ",                 // is " "
+    Zero.Width.Joiner = "#(200d)",           // is zwj
+    Zero.Width.Space  = "#(200b)",           // is zws
+    NullString        = "#(0000)",           // is \0
 
     // regular characters
-    Triangle.Right.Small = "#(25b8)",   // is ▸
+    Triangle.Right.Small  = "#(25b8)",   // is ▸
 
     /*
     symbols: used to replace control characters and escape sequences with safe to print symbols
@@ -42,6 +49,11 @@
     Symbol.GroupSeparator  = "#(241d)",   // is ␝
     Symbol.RecordSeparator = "#(241e)",   // is ␞
     Symbol.UnitSeparator   = "#(241f)",   // is ␟
+
+    Bullet                 = "#(2022)",   // is •
+
+    Emoji.ThumbsUp         = "#(0001f44d)", // is 👍
+    Emoji.ThumbsDown       = "#(0001f44e)", // is 👎
 
     Emoji.Monkey         = "#(0001f412)" // is 🐒
 
