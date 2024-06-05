@@ -1,10 +1,11 @@
 [
     /*
+    Created: 2024-06-04
     About:
         If you're trying to quickly experiment with queries in interactive mode
-        Then this module gives you short aliases as shorthand
+        Then this module gives you alias as shorthand for functions that are useful for debugging
 
-        this should be a self contained file
+        Should run without any external functions or dependencies
     */
 
     // aliases mainly for interactive use when debugging
@@ -29,6 +30,9 @@
         Source    = source
     ],
 
+    // get an abstract syntax tree
+    Ast = (source as any) as nullable record => Value.Expression( source ),
+
     // always case-insensitive
     Text.Contains.CI = ( source as nullable text, substring as text) as nullable logical =>
         Text.Contains( source, substring, Comparer.OrdinalIgnoreCase ),
@@ -39,6 +43,11 @@
 
     // stop folding without forcing buffer or index column enumerations
     StopFold = (source as table) as table => Table.StopFolding(source),
+
+    // see: https://blog.crossjoin.co.uk/2023/12/10/getting-different-versions-of-data-with-value-versions-in-power-query/
+    Versions       = (value as any) as table => Value.Versions( value ),
+    // see: https://blog.crossjoin.co.uk/2023/12/10/getting-different-versions-of-data-with-value-versions-in-power-query/
+    Versions.Which = (value as any) as any   => Value.VersionIdentity( value ),
 
     // IIRC this only affects evaluation when using the query editor. so if you have a lot of sketches, this may help there. YMMV
     TableDelayedBuffer = (source as table) as table =>
