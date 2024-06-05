@@ -13,10 +13,15 @@
     Buff         = BufferAny,
     BuffTable    = TableDelayedBuffer,
     Json         = ToJson,
+    xray = ToJson, XRAY = xray,
 
+    // meta of value
     Meta      = (source as any) as record => Value.Metadata( source ),
+    // type of value
     Tinfo     = (source as any) as type   => Value.Type( source ),
+    // meta of typedata
     TinfoMeta = (source as any) as record => Value.Metadata( Value.Type( source ) ),
+    // inspect type, meta, and typedata meta
     TinfoAll  = (source as any) as record => [ // not optimized, redundant expression, but it's a debug tool
         Type      = Tinfo( source ),
         Meta      = Meta( source ),
@@ -24,23 +29,20 @@
         Source    = source
     ],
 
-    xray = ToJson, XRAY = xray,
-
+    // always case-insensitive
     Text.Contains.CI = ( source as nullable text, substring as text) as nullable logical =>
         Text.Contains( source, substring, Comparer.OrdinalIgnoreCase ),
 
-    // mainly for interactive use when debugging
+    // always case-insensitive
     Text.EndsWith.CI = (source as nullable text, substring as text) as nullable logical =>
-        Text.EndsWith( source, substring, Comparer.OrdinalIgnoreCase )
+        Text.EndsWith( source, substring, Comparer.OrdinalIgnoreCase ),
 
-        StopFold = (source as table) as table =>
-        Table.StopFolding(source),
+    // stop folding without forcing buffer or index column enumerations
+    StopFold = (source as table) as table => Table.StopFolding(source),
 
     // IIRC this only affects evaluation when using the query editor. so if you have a lot of sketches, this may help there. YMMV
     TableDelayedBuffer = (source as table) as table =>
         Table.Buffer(source, [ BufferMode = BufferMode.Delayed ] ),
-
-    StopFold = (source as table) as table => Table.StopFolding(source),
 
     // auto buffer by type
     BufferAny = (source as any) as any =>
@@ -53,6 +55,7 @@
             Detail = source
         ],
 
+    // renders object as jsonified text, with some formatting
     ToJson = (source as any, optional options as nullable record ) as text => [
         defaults = [
             Encoding = TextEncoding.Utf8,
