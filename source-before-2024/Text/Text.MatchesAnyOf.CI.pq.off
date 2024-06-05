@@ -1,0 +1,25 @@
+// let
+//     // todo: double check that this isn't fully replaced by Text.MatchesAny.pq
+//     // this is a smpler case if someone wants it as a reference
+//     // see also: Text.Contains.CI, Text.PositionOf.CI, Text.MatchesAnyOf.CI
+//     // was it to show a list of list of tests, or a one final logical  ?
+//     Text.MatchesAnyOf.CI = (
+//         sourceList  as text,
+//         patternList as list
+
+//     ) as logical => [
+//         find = List.Select(
+//             sourceList,
+//             (source) => List.AnyTrue(
+//                 List.Transform(
+//                     patternList,
+//                     (pattern) =>
+//                         Text.Contains( source, pattern, Comparer.OrdinalIgnoreCase )
+//                 )
+//             )
+//         ),
+//         return = List.Count( find ) > 0
+
+//     ][return]
+// in
+//     Text.MatchesAnyOf.CI
