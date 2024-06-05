@@ -1,0 +1,69 @@
+[
+    /*
+    About:
+        If you're trying to quickly experiment with queries in interactive mode
+        Then this module gives you short aliases as shorthand
+
+        this should be a self contained file
+    */
+
+    // aliases mainly for interactive use when debugging
+    Str.Contains = Text.Contains.CI,
+    Str.EndsWith = Text.EndsWith.CI,
+    Buff         = BufferAny,
+    BuffTable    = TableDelayedBuffer,
+    Json         = ToJson,
+
+    Meta      = (source as any) as record => Value.Metadata( source ),
+    Tinfo     = (source as any) as type   => Value.Type( source ),
+    TinfoMeta = (source as any) as record => Value.Metadata( Value.Type( source ) ),
+    TinfoAll  = (source as any) as record => [ // not optimized, redundant expression, but it's a debug tool
+        Type      = Tinfo( source ),
+        Meta      = Meta( source ),
+        TypeMeta  = TinfoMeta( source ),
+        Source    = source
+    ],
+
+    xray = ToJson, XRAY = xray,
+
+    Text.Contains.CI = ( source as nullable text, substring as text) as nullable logical =>
+        Text.Contains( source, substring, Comparer.OrdinalIgnoreCase ),
+
+    // mainly for interactive use when debugging
+    Text.EndsWith.CI = (source as nullable text, substring as text) as nullable logical =>
+        Text.EndsWith( source, substring, Comparer.OrdinalIgnoreCase )
+
+        StopFold = (source as table) as table =>
+        Table.StopFolding(source),
+
+    // IIRC this only affects evaluation when using the query editor. so if you have a lot of sketches, this may help there. YMMV
+    TableDelayedBuffer = (source as table) as table =>
+        Table.Buffer(source, [ BufferMode = BufferMode.Delayed ] ),
+
+    StopFold = (source as table) as table => Table.StopFolding(source),
+
+    // auto buffer by type
+    BufferAny = (source as any) as any =>
+        if source       is table    then Table.Buffer(source, [ BufferMode = BufferMode.Delayed ])
+        else if source  is list     then List.Buffer(source)
+        else if source  is binary   then Binary.Buffer(source)
+        else error [
+            Message.Format = "Unexpected Type: parameter was not a List, Table, or Binary",
+            Message.Parameters = { Value.Type(source) },
+            Detail = source
+        ],
+
+    ToJson = (source as any, optional options as nullable record ) as text => [
+        defaults = [
+            Encoding = TextEncoding.Utf8,
+            Expand = true
+        ],
+        config = Record.Combine({
+            defaults,
+            ( options ?? [] )
+        }),
+        json = Text.FromBinary( Json.FromValue( source, config[Encoding] ) , config[Encoding] ),
+        json_expanded = Text.Replace( json, "},{", "},#(cr,lf){"),
+        return = if config[Expand] then json_expanded else json
+    ][return]
+]
