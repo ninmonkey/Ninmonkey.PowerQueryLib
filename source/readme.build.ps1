@@ -79,42 +79,92 @@ $find_pq = fd -e pq --base-directory (gi $Config.AppRoot )
 filter MdFormat-EscapePath {
     $_ -replace ' ', '%20' -replace '\\', '/'
 }
-# drop files not commited
-$group_byParent         = $find_pq | Group DirectoryBaseName
-$group_byRelPath        = $find_pq | Group RelativePath
-$group_byDirectory      = $find_pq | Group Directory
-
-
-function RenderByGroup {
+function MdFormat-Link {
     param(
-        [Microsoft.PowerShell.Commands.GroupInfo] $GroupedBy,
-        [string] $PathOutput
+        [Parameter(Mandatory)]
+        [string]$Name,
 
+        [Parameter(Mandatory)]
+        [string]$Url,
+
+        [Alias('EscapePath')]
+        [switch]$AlwaysEscapeUrlPath,
+
+        [Alias('EscapeName')]
+        [switch]$AlwaysEscapeKey
     )
+    $maybeEscapedPath =
+        if( -not $AlwaysEscapeUrlPath ) {
+            $url
+        } else {
+            $url | MdFormat-EscapePath
+        }
+    $maybeEscapedName =
+        if( -not $AlwaysEscapeKey ) {
+            $Name
+        } else {
+            $Name -replace '\(', '\(' -replace '\)', '\)' -replace '\[', '\[' -replace '\]', '\]'
+        }
+    [string] $rendMdLink  = @(
+        '[',
+        $maybeEscapedName,
+        ']', '(',
+        $maybeEscapedPath
+        ')'
+    ) -join ''
+    $rendMdLink
+}
+function RenderReadmeForGroup {
+    <#
+    .SYNOPSIS
+        Assumes you using grouped items that came from: FormatPQSourceItem
 
-    # if( $GroupedBy[0] -isnot [Microsoft.PowerShell.Commands.GroupInfo] ) {
-    #     throw "UnexpectedError, "
-    # }
+    #>
+    param(
+        # [Microsoft.PowerShell.Commands.GroupInfo] $GroupedBy,
+        $GroupedBy,
+        [string] $PathOutput,
 
-    # }
-
+        [hashtable]$Options = @{}
+    )
     [string]$finalDocRender = ''
 
-        $GroupedBy | %{
-            [string]$rendStr = ''
-            $curGroup = $_
+    # using this, because parameter binding likes to pass a pass a [Object[GroupInfo]]]
 
-            $groupName = $curGroup.Name
-            $rendStr += @(
-                "`n`n"
-                "### ${GroupName}"
-                "`n"
-            ) -join ''
+    if( $GroupedBy[0] -isnot [Microsoft.PowerShell.Commands.GroupInfo] ) {
+        throw "UnhandledInputTypeException: Requires object to be a [GroupInfo]"
+    }
 
-            $curGroup.Group | %{
-                $curItem     = $_
+    if($Options.TOC) {
+        $GroupedBy.Name
+    }
+
+    $GroupedBy | %{
+        [string]$rendStr = ''
+        $curGroup = $_
+
+        $groupName = $curGroup.Name
+        $rendStr += @(
+            "`n`n"
+            "### ${GroupName}"
+            "`n"
+        ) -join ''
+
+        $curGroup.Group | %{
+            $curItem     = $_
+            $itemName    = $CurItem.Name
+            $itemRelPath = $CurItem.RelativePath
+            $mdFormatLinkSplat = @{
+                Name                = $itemName
+                Url                 = $itemRelPath
+                AlwaysEscapeUrlPath = $true
+            }
+
+            $rendMdLink = MdFormat-Link @mdFormatLinkSplat
+            <# was
                 $itemName    = $CurItem.Name
                 $itemRelPath = $CurItem.RelativePath | MdFormat-EscapePath
+
                 $rendMdLink  = @(
                     '[',
                     $itemName,
@@ -122,22 +172,35 @@ function RenderByGroup {
                     $itemRelPath
                     ')'
                 ) -join ''
+            #>
 
-                $rendStr += "`n${RendMdLink}"
-            } # | Join-String -f "`n{0}`n"
+            $rendStr += @(
+                "`n"
+                $RendMdLink
+            ) -join ''
+        } # | Join-String -f "`n{0}`n"
 
-            $finalDocRender += $rendStr
-        } | Join-String -f "`n{0}`n"
+        $finalDocRender += $rendStr
+    } #| Join-String -f "`n{0}`n"
 
-    $FinalDocRender.length
-
-    $FinalDocRender | Set-Content -Path $Config.ExportMd
-    'wrote: {0}' -f $Config.ExportMd | write-host -fg 'orange'
+    $FinalDocRender | Set-Content -Path $PathOutput
+    'wrote: {0} of length {1}' -f @(
+        $PathOutput
+        $FinalDocRender.length
+    )| write-host -fg 'orange'
 }
+# drop files not commited
+$group_byParent         = $find_pq | Group DirectoryBaseName
+# $group_byRelPath        = $find_pq | Group RelativePath
+$group_byDirectory      = $find_pq | Group Directory
 
+# RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
+RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
+RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.byParent.md'
 
 $find_pq | Select -First 7 # | FormatPqSourceItem
     | ft -auto
 $find_pq | Select -First 2 # | FormatPqSourceItem
     | fl
-write-warning 'todo: make filter test if files are untracked or not'
+write-warning '[ ] todo: make filter test if files are untracked or not'
+write-warning '[ ] todo: make function run relative any directory'
