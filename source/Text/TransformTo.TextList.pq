@@ -1,7 +1,7 @@
 let
     // in:  List { any }
     // out: List { text }
-    List.TransformTo.ListOfText = (
+    TransformTo.TextList = (
         source as list,
         optional culture as nullable text
     ) as list => [
@@ -9,4 +9,5 @@ let
     ][ret]
 
 in
-    List.TransformTo.ListOfText
+    TransformTo.TextList
+    

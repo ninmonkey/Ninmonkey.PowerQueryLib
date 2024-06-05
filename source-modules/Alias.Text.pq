@@ -3,7 +3,13 @@
     Csv                  = Text.FormatCsv,
     Format.Csv           = Csv,
     Fmt.Csv              = Csv,
-    TransformTo.TextList = List.TransformTo.ListOfText
+
+    TransformTo.TextList        = List.TransformTo.ListOfText,
+    ListOf.Text                 = List.TransformTo.ListOfText,
+    As.TextList                 = List.TransformTo.ListOfText,
+
+    List.TransformTo.ListOfText = TransformTo.TextList
+
 
     /*
     old aliases I experimentede with:
@@ -35,5 +41,10 @@
         TextList           = ListOf.Text,
         Transform.TextList = ListOf.Text,
         // AsList.Text        = ListOf.Text,
+        Format.ControlChar = Format.ShowBlank,
+        Fcc            = Format.ShowBlank,
+        Format.Newline = Format.ShowBlank,
+        Format.Blank = Format.ShowBlank,
+
     */
 ]
