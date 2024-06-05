@@ -1,8 +1,10 @@
 let
     /*
     About: Compare different optional parameter types
-    This is from the post: https://ninmonkeys.com/blog/2024/06/05/power-query-functions-part1-using-optional-parameters
-    source:
+
+    From this blog post: https://ninmonkeys.com/blog/2024/06/05/power-query-functions-part1-using-optional-parameters
+
+    source: https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/bf4e1d63b8bb9ffe3b3e4df0d687435bb88be30d/Examples-Blog/Custom%20Functions/Part%201%20-%20Using%20Optional%20Parameters.pq
 
     lets call Text.Combine() to test declaring optional parameters
 
