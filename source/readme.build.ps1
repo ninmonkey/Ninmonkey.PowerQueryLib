@@ -16,10 +16,27 @@ function FormatPqSourceItem {
         build metadata on the objects, making source generation easier
     .NOTES
         if already is formatted, don't mutate it again, return as a no-op.
+
+        now you can pipe directly from native command too
+
+    .EXAMPLE
+        fd inspect.type | gi | FormatPqSourceItem
+
+        # auto converts to Item if it's a string
+        fd inspect.type | FormatPqSourceItem
+
+        # and duplicate calls are safe
+        fd inspect.type | FormatPqSourceItem | FormatPqSourceItem # no-op return
     #>
     [CmdletBinding()]
-    param( [Parameter(Mandatory, ValueFromPipeline)] $InObj )
+    param(
+        # Pass either file info, or paths as a string
+        [Parameter(Mandatory, ValueFromPipeline)] $InObj
+     )
     process {
+        if( $InObj -is [string] ) {
+            $InObj = Get-Item -ea 'stop' $InObj
+        }
 
         if( $InObj.pstypenames -contains 'PqLibSourceItem' ) {
             return $InObj
@@ -194,7 +211,7 @@ $group_byParent         = $find_pq | Group DirectoryBaseName
 # $group_byRelPath        = $find_pq | Group RelativePath
 $group_byDirectory      = $find_pq | Group Directory
 
-# RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
+RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
 RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
 RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.byParent.md'
 
