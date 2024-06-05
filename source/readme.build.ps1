@@ -162,7 +162,9 @@ function RenderReadmeForGroup {
         $GroupedBy,
         [string] $PathOutput,
 
-        [hashtable]$Options = @{}
+        [hashtable]$Options = @{
+            TOC = $true
+        }
     )
     [string]$finalDocRender = ''
 
@@ -174,6 +176,29 @@ function RenderReadmeForGroup {
 
     if($Options.TOC) {
         $GroupedBy.Name
+
+        # $finalDocRender += @(
+        #     "`n`n"
+        #     "## Table of Contents"
+        #     "`n"
+        # ) -join ''
+
+        [string] $renderTOC =
+            $GroupedBy.Name
+                | Sort-Object
+                | %{
+                    MdFormat-Link -Name $_ -Url (Join-String -f '#{0}' -Inp $_)
+                        |Join-String -f ' - {0}'
+                } | Join-String -sep "`n"
+
+        $finalDocRender += @(
+            "`n`n"
+            "## Table of Contents"
+            "`n"
+            $renderTOC
+            "`n"
+        ) -join ''
+
     }
 
     $GroupedBy | %{
@@ -184,6 +209,8 @@ function RenderReadmeForGroup {
         $rendStr += @(
             "`n`n"
             "### ${GroupName}"
+            "`n"
+            '[Top](#table-of-contents)'  # or: MdFormat-link -Name 'Top' -Url '#table-of-contents'
             "`n"
         ) -join ''
 
@@ -210,11 +237,13 @@ function RenderReadmeForGroup {
                     ')'
                 ) -join ''
             #>
+            $RendStr +=
+                $RendMdLink | Join-String -f "`n - {0}"
 
-            $rendStr += @(
-                "`n"
-                $RendMdLink
-            ) -join ''
+            # $rendStr += @(
+            #     "`n"
+            #     $RendMdLink
+            # ) -join ''
         } # | Join-String -f "`n{0}`n"
 
         $finalDocRender += $rendStr
@@ -231,9 +260,9 @@ $group_byParent         = $find_pq | Group DirectoryBaseName
 # $group_byRelPath        = $find_pq | Group RelativePath
 $group_byDirectory      = $find_pq | Group Directory
 
-RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
-RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
+# RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
 RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.byParent.md'
+RenderReadmeForGroup -GroupedBy $group_byDirectory -PathOutput 'readme.byDirectory.md'
 
 $find_pq | Select -First 7 # | FormatPqSourceItem
     | ft -auto
