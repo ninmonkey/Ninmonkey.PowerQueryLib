@@ -4,7 +4,7 @@ Import-Module Pansies -ea 'stop'
 
 $Config = @{
     AppRoot        = gi $PSScriptRoot
-    ExportMd       = Join-Path $PSScriptRoot 'readme.md'
+    # ExportMd       = Join-Path $PSScriptRoot 'readme.md'
 }
 $Config | Ft -auto
 
@@ -78,21 +78,7 @@ function FormatPqSourceItem {
     }
 }
 
-$find_pq_modules = fd -e module.pq --base-directory (gi $Config.AppRoot )
-    | Get-Item
-    | FormatPQSourceItem
 
-$find_pq = fd -e pq --base-directory (gi $Config.AppRoot )
-    | Get-Item
-    | FormatPQSourceItem
-
-
-
-'found: {{ modules: {0}, functions: {1}, root: {2} }}' -f @(
-    $find_pq_modules.count
-    $find_pq.count
-    $Config.AppRoot
-)
 filter MdFormat-EscapePath {
     <#
     .SYNOPSIS
@@ -278,19 +264,67 @@ function RenderReadmeForGroup {
         $FinalDocRender.length
     )| write-host -fg 'orange'
 }
-# drop files not commited
-$group_byParent         = $find_pq | Group DirectoryBaseName
-# $group_byRelPath        = $find_pq | Group RelativePath
-$group_byDirectory      = $find_pq | Group Directory
-$group_byFilePrefix     = $find_pq | Group -p {
-    # support several delims,
-    $_.name -split '\.|-|_' | Select -First 1
-    # $_.name -split '\.' | Select -First 1
+function Build.FindForRoot {
+    $find_pq_modules = fd -e module.pq --base-directory (gi $Config.AppRoot )
+        | Get-Item
+        | FormatPQSourceItem
+
+    $find_pq = fd -e pq --base-directory (gi $Config.AppRoot )
+        | Get-Item
+        | FormatPQSourceItem
+
+    'found: {{ modules: {0}, functions: {1}, root: {2} }}' -f @(
+        $find_pq_modules.count
+        $find_pq.count
+        $Config.AppRoot
+    ) | write-host -fg 'orange'
+
+    [pscustomobject]@{
+        PSTypeName      = 'Build.FindForRoot.Result'
+        pq         = $find_pq
+        pq_Modules = $find_pq_modules
+    }
+}
+function Build.GroupForRoot {
+    param(
+        $foundPqItem
+    )
+    # drop files not commited
+    $group_byParent         = $foundPqItem | Group DirectoryBaseName
+    # $group_byRelPath        = $foundPqItem | Group RelativePath
+    $group_byDirectory      = $foundPqItem | Group Directory
+    $group_byFilePrefix     = $foundPqItem | Group -p {
+        # support several delims,
+        $_.name -split '\.|-|_' | Select -First 1
+    }
+
+    'found: Group sizes {{ ByParent: {0}, ByDirectory: {1}, ByFilePrefix: {2} }}' -f @(
+        $group_ByParent.count
+        $group_ByDirectory.count
+        $group_ByFilePrefix.count
+    ) | write-host -fg 'orange'
+    [pscustomobject]@{
+        PSTypeName   = 'Build.GroupForRoot.Result'
+        ByParent     = $group_ByParent
+        ByDirectory  = $group_ByDirectory
+        ByFilePrefix = $group_ByFilePrefix
+    }
 }
 
-RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.md' # was named: 'readme.byParent.md'
-RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput 'readme.md' # was named: 'readme.byParent.md'
-RenderReadmeForGroup -GroupedBy $group_byFilePrefix -PathOutput 'readme.ByPrefix.md'
+if($false) {
+    $Prefix = $Config.AppRoot
+    # was named: 'readme.byParent.md'
+    RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput (
+        Join-path $Prefix 'readme.md')
+
+    # was named: 'readme.byParent.md'
+    RenderReadmeForGroup -GroupedBy $group_byParent -PathOutput (
+        join-path $Prefix 'readme.md')
+
+    RenderReadmeForGroup -GroupedBy $group_byFilePrefix -PathOutput (
+        Join-Path $Prefix 'readme.ByPrefix.md'
+    )
+}
 
 
 # RenderReadmeForGroup -GroupedBy $group_byRelpath -PathOutput 'readme.byRelpath.md'
