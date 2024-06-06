@@ -1,0 +1,12 @@
+[
+        names = {"Jen", "Hubert", "Nobody", "Somebody" },
+        Default       = Text.JoinString( names ) ,
+        AsCsv         = Text.JoinString( names, [ Delimiter = ", "] ),
+        AsTablePipes  = Text.JoinString( names, [
+            Prefix = "| ", Delimiter = " | ", Suffix = " |" ] ),
+
+        AsBullets     = Text.JoinString( names, [
+            Prefix    = " #(2022) ",
+            Delimiter = " #(cr,lf) #(2022) "
+        ])
+]
