@@ -29,8 +29,9 @@ Custom functions for Power BI
 
 ## Importing External `.pq` files
 
-If you want to load your own `.pq` files, check out this function: [Import.PowerQueryLib.pq](./source/Import.PowerQueryLib.pq)
-Or grab the pbix [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix)
+If you want to load your own `.pq` files, check out this function:
+
+[Import.PowerQueryLib.pq](https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/3a2bd38021b43703af5e8444881bfda5c9d00db2/source/Evaluate/Example/Import.PowerQueryLib.pq.example) Or grab the pbix [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix)
 
 If the script you load has any parsing errors it will show you extra information about the error. Which line, which error kind, uses `xray` to view nested Error Details fields, and more. 
 Example error:
