@@ -1,28 +1,25 @@
 let
     /*
     About: Compare different optional parameter types
-
     From this blog post: https://ninmonkeys.com/blog/2024/06/05/power-query-functions-part1-using-optional-parameters
-
     source: https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/bf4e1d63b8bb9ffe3b3e4df0d687435bb88be30d/Examples-Blog/Custom%20Functions/Part%201%20-%20Using%20Optional%20Parameters.pq
 
-    lets call Text.Combine() to test declaring optional parameters
 
-
+    lets call Text.Combine() to test declaring optional parameters:
 
     For this version:
-    - you can pass a null value for a separator
-    - always requires you pass 2 parameters
+        - you can pass a null value for a separator
+        - always requires you pass 2 parameters
     */
     Join_Nullable = (texts as list, separator as nullable text) =>
         Text.Combine( texts, separator ),
 
     /*
     For this version:
-    - you can pass a null value for a separator
-    - you can skip the second parameter
-    - 'optional' parameters are automatically 'nullable',
-        so you can drop the 'nullable' part
+        - you can pass a null value for a separator
+        - you can skip the second parameter
+        - 'optional' parameters are automatically 'nullable',
+            so you can drop the 'nullable' part
 
     This is how library functions have multiple call signatures
     Power Query defines one function

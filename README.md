@@ -25,12 +25,13 @@ Custom functions for Power BI
 ## New Usage
 
 - This template loads any external `pq` file [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix) or [Template-Import-ninlib.pq](./Template-Import-ninlib.pq)
-- You can use it to load libraries like [Ninmonkey.PowerQueryLib.pq](./build/2024-04.ninlib.pq) or [Write.Html.pq](./source/Html/Write.Html.pq)
+- You can use it to load libraries like [Ninmonkey.PowerQueryLib.pq](./build/2024-04.ninlib.pq) or [Write.Html.pq](https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/c56147e99962d8d9bfc1b5f5b0799700fa2d65ca/source-modules/Write.Html.module.pq)
 
 ## Importing External `.pq` files
 
-If you want to load your own `.pq` files, check out this function: [Import.PowerQueryLib.pq](./source/Import.PowerQueryLib.pq)
-Or grab the pbix [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix)
+If you want to load your own `.pq` files, check out this function:
+
+[Import.PowerQueryLib.pq](https://github.com/ninmonkey/Ninmonkey.PowerQueryLib/blob/3a2bd38021b43703af5e8444881bfda5c9d00db2/source/Evaluate/Example/Import.PowerQueryLib.pq.example) Or grab the pbix [Template-Import-ninlib.pbix](./Template-Import-ninlib.pbix)
 
 If the script you load has any parsing errors it will show you extra information about the error. Which line, which error kind, uses `xray` to view nested Error Details fields, and more. 
 Example error:
@@ -51,7 +52,10 @@ Context:
 
 ## Other projects
 
+- [answering forums: ninMonkQuery Example](https://github.com/ninmonkey/ninMonkQuery-examples/tree/main/forumQuestions)
 - [OscarValerock/PowerQueryFunctions](https://github.com/OscarValerock/PowerQueryFunctions)
+- [tirnovar/m-custom-functions](https://github.com/tirnovar/m-custom-functions)
+- [tirnovar/Power-BI-Admin-REST-API-Connector](https://github.com/tirnovar/Power-BI-Admin-REST-API-Connector) and [tirnovar/Power BI REST API using Power Query](https://github.com/tirnovar/Power_BI_REST_API_PQ?tab=readme-ov-file#power-bi-rest-api-custom-function-library)
 
 ## Special functions
 
