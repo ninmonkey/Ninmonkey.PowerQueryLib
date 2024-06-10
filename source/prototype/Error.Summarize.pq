@@ -1,27 +1,28 @@
 let
-    fullPath = ..., // # try func to ensure naming
-    bytes = File.Contents( fullPath ),
+    fullPath = ...,                                           // # try func to ensure naming
+    bytes    = File.Contents( fullPath ),
     raw_text = Text.FromBinary( bytes, TextEncoding.Utf8 ),
+
     final_evaluation = try Expression.Evaluate( raw_text , #shared ),
-    z = error
 
     FormatError = (source as any) as any =>
         error "NYI: refactor the formatting logic",
 
-        error_ast = final_evaluation[Error],
-        error_json = Text.FromBinary( Json.FromValue( final_evaluation[Error] ), TextEncoding.Utf8 ),
+        error_ast       = final_evaluation[Error],
+        error_json      = Text.FromBinary( Json.FromValue( final_evaluation[Error] ), TextEncoding.Utf8 ),
         summary_message = Text.Replace( error_ast[Message], "] ", "]#(cr,lf)"),
+
 
         // converts strings "[171-18-171-28]" to structured location data
         error_location
             =  let
                 rawText = Text.AfterDelimiter( Text.BeforeDelimiter( error_ast[Message], "]"), "["),
-                pairs = Text.Split( rawText, "-"),
-                return = [
-                        StartLine = Number.From( Text.BeforeDelimiter( pairs{0}, "," )),
+                pairs   = Text.Split( rawText, "-"),
+                return  = [
+                        StartLine   = Number.From( Text.BeforeDelimiter( pairs{0}, "," )),
                         StartColumn = Number.From( Text.AfterDelimiter( pairs{0}, "," )),
-                        EndLine = Number.From( Text.BeforeDelimiter( pairs{1}, "," )),
-                        EndColumn = Number.From( Text.AfterDelimiter( pairs{1}, "," ))
+                        EndLine     = Number.From( Text.BeforeDelimiter( pairs{1}, "," )),
+                        EndColumn   = Number.From( Text.AfterDelimiter( pairs{1}, "," ))
                 ]
             in
                 return,
@@ -57,3 +58,5 @@ let
             else if not final_evaluation[HasError]
             then final_evaluation[Value]
             else formatted_errors
+in
+    return

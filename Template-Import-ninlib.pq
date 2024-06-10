@@ -6,11 +6,11 @@
 let
     // evaluates a .pq text file that's editable outside of power bi, without pasting updates. just refresh.
     EvalQueryFunc = (filePath as text, optional options as nullable record) as any => [
-        encoding = options[Encoding]? ?? TextEncoding.Utf8,
+        encoding    = options[Encoding]? ?? TextEncoding.Utf8,
         environment = options[Environment]? ?? #shared,
-        bytes = File.Contents(filePath),
-        lines = Text.FromBinary( bytes, encoding ),
-        return = Expression.Evaluate( lines, environment )
+        bytes       = File.Contents(filePath),
+        lines       = Text.FromBinary( bytes, encoding ),
+        return      = Expression.Evaluate( lines, environment )
     ][return]
 in
     EvalQueryFunc
@@ -21,11 +21,9 @@ in
 
 // with extra
 let
-    // AsWebRequest = Web.Contents( "https://github.com", [RelativePath = "/ninmonkey/Ninmonkey.PowerQueryLib/blob/318cea1e52b2d1ab456a004dca79d235dec3f82e/build/2024-04.ninlib.pq" ]),
-
     /* this is the entry point */
-    EvalQuery = (filePath as text, optional options as nullable record) as any => [
-        encoding    = options[Encoding]? ?? TextEncoding.Utf8,
+    EvalQuery = ( filePath as text, optional options as nullable record ) as any => [
+        encoding    = options[Encoding]?    ?? TextEncoding.Utf8,
         environment = options[Environment]? ?? #shared,
         bytes       = File.Contents(filePath),
         lines       = Text.FromBinary( bytes, encoding ),
@@ -94,18 +92,14 @@ in
 
 // lib_meta
 let
-    // summarize the module
     Source = lib,
-    top_items = Table.Buffer(
-        Table.FromValue( lib ), [ BufferMode = BufferMode.Delayed ] ),
-
-    // Custom1 = top_items,
+    top_items = Table.Buffer( Table.FromValue( lib ) ),
+    Custom1 = top_items,
     procRow = ( source as any) as nullable record => [
-        target  = Value.Metadata( Value.Type( source ) ),
+        target  = Value.Metadata( source ),
         hasKeys = Record.FieldCount( target ) > 0,
         ret     = if hasKeys then source else null
     ][target],
-    // #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow(row), Record.Type )
-    #"Added Custom" = Table.AddColumn(top_items, "Custom", (row) => procRow( row[Value] ), type any)
+    #"Added Custom" = Table.AddColumn(Custom1, "Custom", (row) => procRow( row[Value] ), type record)
 in
     #"Added Custom"
