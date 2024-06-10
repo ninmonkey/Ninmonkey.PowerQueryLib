@@ -7,7 +7,7 @@
   - [New Usage](#new-usage)
   - [Importing External `.pq` files](#importing-external-pq-files)
   - [Other projects](#other-projects)
-  - [Special functions](#special-functions)
+  - [Functions](#functions)
   - [Other links](#other-links)
   - [Usage ( Old version )](#usage--old-version-)
   - [Language data](#language-data)
@@ -57,32 +57,34 @@ Context:
 - [tirnovar/m-custom-functions](https://github.com/tirnovar/m-custom-functions)
 - [tirnovar/Power-BI-Admin-REST-API-Connector](https://github.com/tirnovar/Power-BI-Admin-REST-API-Connector) and [tirnovar/Power BI REST API using Power Query](https://github.com/tirnovar/Power_BI_REST_API_PQ?tab=readme-ov-file#power-bi-rest-api-custom-function-library)
 
-## Special functions
+## Functions
 
-- [Values](https://docs.microsoft.com/en-us/powerquery-m/value-functions) Functions
-- [Type](https://docs.microsoft.com/en-us/powerquery-m/type-functions) Functions
-- [Expression](https://docs.microsoft.com/en-us/powerquery-m/expression-functions) Functions
-- [Comparer](https://docs.microsoft.com/en-us/powerquery-m/comparer-functions)
-- [Function](https://docs.microsoft.com/en-us/powerquery-m/function-values)
+
+Categories: [Values](https://docs.microsoft.com/en-us/powerquery-m/value-functions) • [Types](https://docs.microsoft.com/en-us/powerquery-m/type-functions) • [Expressions](https://docs.microsoft.com/en-us/powerquery-m/expression-functions) • [Comparer](https://docs.microsoft.com/en-us/powerquery-m/comparer-functions) • [Functions](https://docs.microsoft.com/en-us/powerquery-m/function-values)
+
+- [Functions - Top Level](https://docs.microsoft.com/en-us/powerquery-m/power-query-m-function-reference)
+- useful functions from the Custom Connector Docs - [microsoft/DataConnectors/Helper Functions](https://github.com/microsoft/DataConnectors/blob/master/docs/helper-functions.md) 
 - [`OAuth` Authentication](https://docs.microsoft.com/en-us/power-query/handlingauthentication)
   - first read: [blog.crossjoin Connecting To Rest APIs with OAuth2 in Power BI](https://blog.crossjoin.co.uk/2021/08/29/connecting-to-rest-apis-with-oauth2-authentication-in-power-query-power-bi/)
 - [Windows Authentication and SSO](https://docs.microsoft.com/en-us/power-query/additional-connector-functionality)
+- [Implementing `Table.Schema` - Custom Connectors - bengribaudo.com](https://bengribaudo.com/blog/2022/06/16/6797/custom-connectors-populating-table-schema)
+
+<!-- 
+for now disable links that were broken by path changes. 
 - [Data Source Kind on SDK MS-DataConnectors](https://github.com/Microsoft/DataConnectors/blob/master/docs/m-extensions.md#data-source-kind)
 - [Implementing `OAuth` Flow](https://github.com/Microsoft/DataConnectors/blob/master/docs/m-extensions.md#implementing-an-oauth-flow)
 - [Implementing `Table.View` for Query Folding](https://github.com/microsoft/DataConnectors/blob/master/docs/table-view.md)
 - [Implementing `Nav table`](https://github.com/microsoft/DataConnectors/blob/master/docs/nav-tables.md)
 - [Extending the `ODBC` connector](https://github.com/microsoft/DataConnectors/blob/master/docs/odbc.md)
 - example: [Swagger and two Auth types](https://github.com/microsoft/DataConnectors/blob/master/samples/DataWorldSwagger/DataWorldSwagger.pq)
-- [Implementing `Table.Schema` : Custom Connectors :bengribaudo](https://bengribaudo.com/blog/2022/06/16/6797/custom-connectors-populating-table-schema)
+-->
 
 ## Other links
+- [Custom Connector tutorial: TripPin](https://github.com/microsoft/DataConnectors/tree/master/samples/TripPin)
 
 - [DataConnectors / samples](https://github.com/microsoft/DataConnectors/tree/master/samples)
-- [Power Query Language Specs](https://docs.microsoft.com/en-us/powerquery-m/power-query-m-language-specification) (aka 'M')
-- top level [Function Docs](https://docs.microsoft.com/en-us/powerquery-m/power-query-m-function-reference)
+- [Power Query M Language Specs](https://docs.microsoft.com/en-us/powerquery-m/power-query-m-language-specification) 
 - Details on [Web.Contents: Special Behavior of HTTP Status Codes](https://github.com/microsoft/DataConnectors/blob/master/docs/other-topics.md)
-- [Helper Functions](https://github.com/microsoft/DataConnectors/blob/master/docs/helper-functions.md) @microsoft/DataConnector
-- [Main Trippin tutorial](https://github.com/microsoft/DataConnectors/tree/master/samples/TripPin)
 
 ## Usage ( Old version )
 
