@@ -52,7 +52,10 @@ Context:
 
 ## Other projects
 
+- [answering forums: ninMonkQuery Example](https://github.com/ninmonkey/ninMonkQuery-examples/tree/main/forumQuestions)
 - [OscarValerock/PowerQueryFunctions](https://github.com/OscarValerock/PowerQueryFunctions)
+- [tirnovar/m-custom-functions](https://github.com/tirnovar/m-custom-functions)
+- [tirnovar/Power-BI-Admin-REST-API-Connector](https://github.com/tirnovar/Power-BI-Admin-REST-API-Connector) and [tirnovar/Power BI REST API using Power Query](https://github.com/tirnovar/Power_BI_REST_API_PQ?tab=readme-ov-file#power-bi-rest-api-custom-function-library)
 
 ## Special functions
 
