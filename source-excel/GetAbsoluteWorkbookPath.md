@@ -7,7 +7,7 @@ The raw output
 ```
 c:\data\excel\[Example Sales Table.xlsx]Sheet2
 ```
-Note: You could drop the worksheet name, then replace `[]` with ``. 
+Note: You could drop the worksheet name, then replace `[]` with `''`. 
 I split this into steps to show how you can use intermediate calculations as variables
 without polluting the scope using named cells 
 
