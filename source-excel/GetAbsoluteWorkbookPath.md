@@ -19,7 +19,7 @@ formula:
   file,
     TEXTBEFORE(
       TEXTAFTER( rawName, "[", 1 ),
-      "]", 1
+      "]", -1
     ),
 
   fullName,
