@@ -8,6 +8,6 @@ Table.AutoExpandTableColumn = (source as table, columnName as text ) =>
             not Text.StartsWith( item, "http://", Comparer.OrdinalIgnoreCase ) ),
 
         prefixedNames = List.Transform( filteredNames, each expandColumnName & "." & _ ),            
-        return = Table.ExpandTableColumn( source, columnName, allNames, filteredNames )
+        return = Table.ExpandTableColumn( source, columnName, filteredNames, prefixedNames )
     in 
-        return
+        return,
