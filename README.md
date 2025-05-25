@@ -12,7 +12,7 @@
   - [Usage ( Old version )](#usage--old-version-)
   - [Language data](#language-data)
 
-Custom functions for Power BI
+new: [Syntax for Conditional Colors in Dax](./source-dax/Conditional-Colors-Dax-CheatSheet.md)
 
 ## View Functions By Category 
 
