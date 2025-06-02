@@ -1,3 +1,35 @@
+## Conditional format using a gradient
+```ts
+[ HSL Hue from Sales ] = 
+    // simpler version, scales hue from 0 degrees to maxHue
+
+    // outputs a gradient like: 
+        // hsl(   0, 80%, 78%) 
+        // hsl(  40, 80%, 78%) 
+        // hsl( 160, 80%, 78%)
+    var hue_1 = 0
+    var hue_2 = 40
+    var hue_3 = 160
+    var maxHue = 160
+
+    VAR CurrentValue = SELECTEDVALUE( Sale[Value], 0 )
+    VAR MinValue     = CALCULATE( MIN(Sale[Value]), All( Sale[Value] ) )  
+    VAR MaxValue     = CALCULATE( MAX(Sale[Value]), All( Sale[Value] ) )
+    // Can this ALL() be rewritten to run faster? 
+    
+    var relativeValue = 
+        DIVIDE(
+            CurrentValue - MinValue,
+            MaxValue - MinValue, 
+            0 
+        )
+
+    // outputs the color string: "hsl( 60, 80%, 78% )"
+    var renderInt  = format( (relativeValue * maxHue), "#,0", "en-us" )
+    var finalColor = "hsl( " & renderInt & ", 80%, 80%)"
+    return finalColor
+```
+
 ## Static Measure to Test Syntax
 
 To use one, choose conditional formatting:
