@@ -1,21 +1,17 @@
 ## Conditional format using a gradient
 ```ts
 [ HSL Hue from Sales ] = 
-    // simpler version, scales hue from 0 degrees to maxHue
-
+    // simpler version, which scales hue from 0 degrees to maxHue
     // outputs a gradient like: 
         // hsl(   0, 80%, 78%) 
         // hsl(  40, 80%, 78%) 
         // hsl( 160, 80%, 78%)
-    var hue_1 = 0
-    var hue_2 = 40
-    var hue_3 = 160
     var maxHue = 160
 
+    // Can this ALL() be rewritten to run faster? 
     VAR CurrentValue = SELECTEDVALUE( Sale[Value], 0 )
     VAR MinValue     = CALCULATE( MIN(Sale[Value]), All( Sale[Value] ) )  
     VAR MaxValue     = CALCULATE( MAX(Sale[Value]), All( Sale[Value] ) )
-    // Can this ALL() be rewritten to run faster? 
     
     var relativeValue = 
         DIVIDE(
