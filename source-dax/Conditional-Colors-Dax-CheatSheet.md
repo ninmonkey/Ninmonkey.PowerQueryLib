@@ -1,3 +1,20 @@
+## Making Text Foreground Color fully transparent for 0 
+
+Do you want text to be fully transparent when the value is 0? 
+You can use **8-digit** hex codes or `hsla()` or `rgba()` functions to make it transparent.
+
+
+```ts
+[ FontTransparentColor ] = 
+    var curValue   = SELECTEDVALUE( Nums[Value], 0 )
+    var finalColor = If( 
+        curValue = 0,
+        "#ff00ff00", // or: "hsla(300, 100%, 50%, 0)"
+        "#ff00ff99"
+)
+return finalColor
+```
+
 ## Conditional format using a gradient
 ```ts
 [ HSL Hue from Sales ] = 
