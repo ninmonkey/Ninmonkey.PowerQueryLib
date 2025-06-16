@@ -1,0 +1,15 @@
+-- control negative format strings, like: '-2048' vs '(2048)'
+-- for details, see: https://learn.microsoft.com/en-us/dax/format-function-dax#custom-numeric-formats
+-- try it live: https://dax.do/qSYzNK4RTGP4lN/
+DEFINE
+    TABLE Numbers = { -2034, 127, -512, 134593459  }
+
+var fstr_1  = "$#,##0;-$#,##0"
+var fstr_2  = "$#,##0;($#,##0)"
+
+EVALUATE
+ADDCOLUMNS (
+    Numbers,
+    "Format 1", FORMAT ( Numbers[Value], fstr_1  ),
+    "Format 2", FORMAT ( Numbers[Value], fstr_2 )    
+)
